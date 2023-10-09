@@ -12,6 +12,6 @@ def button_function():
 
 # Use CTkButton instead of tkinter Button
 button = customtkinter.CTkButton(master=root, text="CTkButton", command=button_function)
-button.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER)
+button.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER) # El ancla permite que esté en medio de donde le indiquemos, utiliza la ventana, no pantalla
 
 root.mainloop()
