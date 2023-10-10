@@ -3,7 +3,6 @@
 
 -- SHOW TABLES;
 
-
 CREATE TABLE Pago (
     id_Pago INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     metodo VARCHAR(50)
@@ -21,7 +20,7 @@ CREATE TABLE Empleado (
     celular VARCHAR(11) NOT NULL,
     sueldo DOUBLE NOT NULL,
     id_RolFK INT,
-    contraseña varchar(20),
+    contraseña VARCHAR(20),
     FOREIGN KEY (id_RolFK) REFERENCES Rol(id_Rol)
 );
 
@@ -32,6 +31,7 @@ CREATE TABLE usuario(
     
 );
 */
+
 CREATE TABLE Venta (
     id_Venta INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     fecha_De_Venta DATE NOT NULL,
@@ -93,5 +93,5 @@ CREATE TABLE Promocion (
     id_Tipo_PromocionFK INT,
     FOREIGN KEY (id_ProductoFK) REFERENCES Producto(id_Producto),
     FOREIGN KEY (id_Tipo_PromocionFK) REFERENCES Tipo_de_promocion(id_Tipo_Promocion),
-    CONSTRAINT fecha_valida CHECK (fecha_de_inicio <= fecha_de_finalizacion)
+    CONSTRAINT fecha_valida CHECK (fecha_de_inicio <= fecha_de_finalizacion) --VERIFICA QUE LA FECHA DE INICIO SEA MENOR A LA FECHA FINAL
 );
