@@ -1,3 +1,3 @@
 import tkinter
-import customtkinter
+import customtkinter as ctk
 
