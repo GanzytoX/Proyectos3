@@ -21,7 +21,7 @@ CREATE TABLE Empleado (
     celular VARCHAR(11) NOT NULL,
     sueldo DOUBLE NOT NULL,
     id_RolFK INT,
-    contraseña varchar(20),
+    contraseña VARCHAR(20),
     FOREIGN KEY (id_RolFK) REFERENCES Rol(id_Rol)
 );
 
@@ -32,6 +32,7 @@ CREATE TABLE usuario(
     
 );
 */
+
 CREATE TABLE Venta (
     id_Venta INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     fecha_De_Venta DATE NOT NULL,
