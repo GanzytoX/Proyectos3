@@ -2,6 +2,13 @@
 from tkinter import *
 from customtkinter import *
 
+# Paleta de colores
+c_gris_claro = "#e7e7e5"
+c_rojo = "#e73a4b"
+c_gris = "#b8bab9"
+c_azul = "#185791"
+c_rojo_palido = "#c9636c"
+c_blanco = "#ffffff"
 
 # Configuración de la ventana
 root = CTk()
