@@ -1,4 +1,4 @@
-# pip install mysql-connector-python
+# #pip install mysql-connector-python
 # Esa librería es necesaria para los CRUD
 
 import mysql.connector
@@ -10,13 +10,8 @@ if __name__ != "__main__":
         def get(self, id=None):
             raise NotImplementedError()
 
-        def __init__(self):
-            self.__conexion = mysql.connector.connect(
-                user="root",
-                host="localhost",
-                port="3307",
-                database="pollosexpress"
-            )
+        def __init__(self, conexion):
+            self.__conexion = conexion
             self.__cursor = self.__conexion.cursor()
 
         def add(self, nombre, apellido, celular, sueldo, id_rol, contraseña=None) -> None:
@@ -31,12 +26,12 @@ if __name__ != "__main__":
 
             self.__conexion.commit()
 
-        def eliminar(self, id) -> None:
+        def Delete(self, id) -> None:
             SQLScript = f"DELETE FROM empleado WHERE id_Empleado = {id}"
             self.__cursor.execute(SQLScript)
             self.__conexion.commit()
 
-        def editar(self, id) -> None:
+        def Update(self, id) -> None:
             raise NotImplementedError()
 
         def iniciarSesion(self, numeroTelefono, contraseña) -> bool:
