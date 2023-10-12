@@ -1,17 +1,23 @@
 from abc import ABC, abstractmethod
 
 class CRUD(ABC):
+
     @abstractmethod
-    def Update(self, id):
-        pass
+    def Create(self, object: object):
+        raise NotImplementedError()
+
+    @abstractmethod
+    def Read(self, id=None):
+        raise NotImplementedError()
 
     @abstractmethod
     def Delete(self, id):
-        pass
+        raise NotImplementedError()
 
     @abstractmethod
-    def get(self, id=None):
-        pass
+    def Update(self, object: object):
+        NotImplementedError()
+
 
 
 

@@ -1,6 +1,6 @@
 from AbstractCRUD import CRUD
 
-if __name__ == "__main__":
+if __name__ != "__main__":
     class Crud_Producto(CRUD):
         def __init__(self, conection):
             self.__conection = conection
