@@ -1,6 +1,7 @@
 # Importamos las librerías
 from tkinter import *
 from customtkinter import *
+from Widgets import *
 
 # Paleta de colores
 c_gris_claro = "#e7e7e5"
@@ -10,6 +11,7 @@ c_azul = "#185791"
 c_rojo_palido = "#c9636c"
 c_blanco = "#ffffff"
 
+""""
 # Configuración de la ventana
 root = CTk()
 root.geometry("600x500")
@@ -21,3 +23,16 @@ logo = PhotoImage(file = "img/logo.png")
 
 root.call("wm", "iconphoto", root._w, logo)
 root.mainloop()
+"""""
+
+
+ventana = Window("Inicio de sesión", "1200x700")
+
+
+
+# Asociar la función con el evento de configuración de la ventana
+
+
+ventana.backgroundImage("img/Inicio de sesión.png")
+
+ventana.mainloop()
