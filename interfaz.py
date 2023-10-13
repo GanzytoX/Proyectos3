@@ -23,11 +23,11 @@ c_azul = "#185791"
 c_rojo_palido = "#c9636c"
 c_blanco = "#ffffff"
 
-ventana = CTk()
-ventana.geometry("1200x700")
-ventana.title("Inicio de sesión")
-# ventana = Window("Inicio de sesión", "1200x700")
-ventana.setBackgroundImage("img/Inicio de sesión.png")
+# ventana = CTk()
+# ventana.geometry("1200x700")
+# ventana.title("Inicio de sesión")
+ventana = Window("Inicio de sesión", "1200x700")
+ventana.setBackgroundImage("img/inicioDeSesion.png")
 
 frame = CTkFrame(ventana, bg_color="gray")
 frame.place(x=ventana.winfo_width() /2, y=ventana.winfo_height() /10, anchor=CENTER)
