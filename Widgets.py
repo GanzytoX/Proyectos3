@@ -1,27 +1,30 @@
 from customtkinter import *
-from PIL import Image
+from tkinter import *
+from PIL import Image, ImageTk
 class Window(CTk):
     def __init__(self, title: str, size: str, **kwargs):
         super().__init__(**kwargs)
         self.geometry(size)
         self.title(title)
-        self.xSize = 1
-        self.ySize = 1
-
-
-    def backgroundImage(self, imageRoute: str):
+        self.update()
         print(self.winfo_width())
-        raw = Image.open(imageRoute)
-        raw.resize((self.xSize, self.ySize))
-        raw.show()
-        image = CTkImage(raw)
-        background = CTkLabel(self, text="", image=image, bg_color="black")
-        background.pack(expand=True, fill=BOTH)
+        self.canva = Canvas(self, width=self.winfo_width(), height=self.winfo_height(), background="black")
 
-    def obtener_tamano_ventana(self, event):
-        self.xSize = event.width
-        self.ySize = event.height
-        self.backgroundImage("img/Inicio de sesión.png")
+
+    def setBackgroundImage(self, imageRoute: str):
+        raw = Image.open(imageRoute)
+        resized = raw.resize((1200, 700))
+        resized.save("prueba.png")
+        image = ImageTk.PhotoImage(resized)
+
+        label = Label(self, image=image, text="", background="black", compound="left")
+        label.image = image
+        label.pack()
+        #raw.thumbnail((1100, 700))
+        #self.canva.create_image(0, 0, image=image, anchor='nw')
+
+        #self.canva.pack(expand=True, fill=BOTH)
+
 
 
 class ScrollableFrame(CTkScrollableFrame):

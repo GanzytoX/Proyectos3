@@ -1,5 +1,5 @@
 # Importamos las librerías
-from tkinter import *
+
 from customtkinter import *
 from Widgets import *
 
@@ -28,11 +28,6 @@ root.mainloop()
 
 ventana = Window("Inicio de sesión", "1200x700")
 
-
-
-# Asociar la función con el evento de configuración de la ventana
-
-
-ventana.backgroundImage("img/Inicio de sesión.png")
+ventana.setBackgroundImage("img/logo.png")
 
 ventana.mainloop()
