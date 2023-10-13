@@ -28,6 +28,11 @@ root.mainloop()
 
 ventana = Window("Inicio de sesión", "1200x700")
 
-ventana.setBackgroundImage("img/logo.png")
+ventana.setBackgroundImage("img/Inicio de sesión.png")
 
+frame = CTkFrame(ventana, bg_color="gray")
+
+
+button = CTkButton(ventana)
+frame.place(x=ventana.winfo_width() /2, y=ventana.winfo_height() /10, anchor=CENTER)
 ventana.mainloop()

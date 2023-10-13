@@ -7,23 +7,32 @@ class Window(CTk):
         self.geometry(size)
         self.title(title)
         self.update()
-        print(self.winfo_width())
-        self.canva = Canvas(self, width=self.winfo_width(), height=self.winfo_height(), background="black")
+        self.__bgImage = None
+        self.bind("<Configure>", self.__onResize)
 
 
     def setBackgroundImage(self, imageRoute: str):
-        raw = Image.open(imageRoute)
-        resized = raw.resize((1200, 700))
-        resized.save("prueba.png")
+        self.raw = Image.open(imageRoute)
+        resized = self.raw.resize((self.winfo_width(), self.winfo_height()))
         image = ImageTk.PhotoImage(resized)
 
-        label = Label(self, image=image, text="", background="black", compound="left")
-        label.image = image
-        label.pack()
-        #raw.thumbnail((1100, 700))
-        #self.canva.create_image(0, 0, image=image, anchor='nw')
+        self.__bgImage = Canvas(self, width=self.winfo_width(), height=self.winfo_height())
+        self.__bgImage.create_image(0,0, image=image, anchor='nw')
+        self.__bgImage.image = image
+        self.__bgImage.place(x=0, y=0)
 
-        #self.canva.pack(expand=True, fill=BOTH)
+    def __onResize(self, event):
+        if self.raw is not None:
+            self.update_idletasks()
+            self.__bgImage.config(width=self.winfo_width(), height=self.winfo_height())
+            resized = self.raw.resize((event.width, event.height))
+            image = ImageTk.PhotoImage(resized)
+
+            self.__bgImage.create_image(0, 0, image=image, anchor='nw')
+            self.__bgImage.image = image
+
+
+
 
 
 
