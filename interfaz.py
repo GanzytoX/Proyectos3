@@ -31,8 +31,12 @@ ventana = Window("Inicio de sesión", "1200x700")
 ventana.setBackgroundImage("img/Inicio de sesión.png")
 
 frame = CTkFrame(ventana, bg_color="gray")
+frame2 = CTkFrame(ventana, bg_color="gray")
+widget = CTkBaseClass(ventana, bg_color="black")
 
 
-button = CTkButton(ventana)
-frame.place(x=ventana.winfo_width() /2, y=ventana.winfo_height() /10, anchor=CENTER)
+frame.grid(row=0, pady=(0,10), sticky=NSEW)
+frame2.grid(row=2, sticky=NSEW)
+
+
 ventana.mainloop()
