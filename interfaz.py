@@ -30,7 +30,7 @@ c_blanco = "#ffffff"
 
 ventana = Window("Inicio de sesión", "1200x700")
 ventana.setBackgroundImage("img/inicioDeSesion.png")
-ventana.iconbitmap("img/logo.jpg")
+ventana.iconbitmap("img/logo.ico")
 
 frame = CTkFrame(ventana, bg_color="gray")
 frame.place(x=ventana.winfo_width() /2, y=ventana.winfo_height() /10, anchor=CENTER)
