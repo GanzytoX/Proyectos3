@@ -7,17 +7,19 @@ from AbstractCRUD import CRUD
 if __name__ != "__main__":
 
     class Empleado:
-        def __init__(self, nombre, apellido, celular, sueldo, id_rol, contraseña=None, id=None):
+        def __init__(self, nombre, apellido_paterno, apellido_materno, celular, sueldo, id_rol, contraseña=None, id=None):
+            self.contraseña = None
+            self.id = None
             if id is not None:
                 self.id = id
             if contraseña is not None:
                 self.contraseña = contraseña
             self.nombre = nombre
-            self.apellido = apellido
+            self.apellido_paterno = apellido_paterno
+            self.apellido_materno = apellido_materno
             self.celular = celular
             self.sueldo = sueldo
             self.id_rol = id_rol
-
 
 
     class CrudEmpleado(CRUD):
@@ -28,12 +30,12 @@ if __name__ != "__main__":
 
         def Create(self, empleado: Empleado) -> None:
             if empleado.contraseña is None:
-                SQLScript = ("INSERT INTO empleado(nombre, apellido, celular, sueldo, id_rolFK) "
-                             f"VALUES('{empleado.nombre}', '{empleado.apellido}', '{empleado.celular}', {empleado.sueldo}, {empleado.id_rol})")
+                SQLScript = ("INSERT INTO empleado(nombre,apellido_paterno, apellido_materno, celular, sueldo, id_rol) "
+                             f"VALUES('{empleado.nombre}', '{empleado.apellido_paterno}', '{empleado.apellido_materno}', '{empleado.celular}', {empleado.sueldo}, {empleado.id_rol})")
                 self.__cursor.execute(SQLScript)
             else:
-                SQLScript = ("INSERT INTO empleado(nombre, apellido, celular, sueldo, id_rolFK, contraseña) "
-                             f"VALUES('{empleado.nombre}', '{empleado.apellido}', '{empleado.celular}', {empleado.sueldo}, {empleado.id_rol}, '{empleado.contraseña}')")
+                SQLScript = ("INSERT INTO empleado(nombre, apellido_paterno, apellido_materno, celular, sueldo, id_rol, contraseña)"
+                             f"VALUES('{empleado.nombre}', '{empleado.apellido_paterno}', '{empleado.apellido_materno}', '{empleado.celular}', {empleado.sueldo}, {empleado.id_rol}, '{empleado.contraseña}')")
                 self.__cursor.execute(SQLScript)
 
             self.__conexion.commit()
@@ -42,13 +44,13 @@ if __name__ != "__main__":
             raise NotImplementedError()
 
         def Delete(self, id) -> None:
-            SQLScript = f"DELETE FROM empleado WHERE id_Empleado = {id}"
+            SQLScript = f"DELETE FROM empleado WHERE id_empleado = {id}"
             self.__cursor.execute(SQLScript)
             self.__conexion.commit()
 
         def Update(self, empleado: Empleado) -> None:
-            SQLScript = (f"UPDATE empleado SET nombre = '{empleado.nombre}', apellido = '{empleado.apellido}',"
-                         f"celular = '{empleado.celular}', sueldo = {empleado.sueldo}, id_rolFK = {empleado.id_rol}, contraseña = '{empleado.contraseña}'"
+            SQLScript = (f"UPDATE empleado SET nombre = '{empleado.nombre}', apellido_paterno = '{empleado.apellido_paterno}', apellido_materno = '{empleado.apellido_materno}'"
+                         f"celular = '{empleado.celular}', sueldo = {empleado.sueldo}, id_rol = {empleado.id_rol}, contraseña = '{empleado.contraseña}'"
                          f"WHERE id_Empleado = {empleado.id}")
             self.__cursor.execute(SQLScript)
             self.__conexion.commit()
