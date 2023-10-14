@@ -13,6 +13,7 @@
 # Importamos las librerías
 from customtkinter import *
 from Widgets import *
+from tkinter import *
 
 
 # Paleta de colores
@@ -23,16 +24,17 @@ c_azul = "#185791"
 c_rojo_palido = "#c9636c"
 c_blanco = "#ffffff"
 
-# ventana = CTk()
+# ventana = Tk()
 # ventana.geometry("1200x700")
-# ventana.title("Inicio de sesión")
+# ventana.title("Inicio de Sesión")
+
 ventana = Window("Inicio de sesión", "1200x700")
 ventana.setBackgroundImage("img/inicioDeSesion.png")
+ventana.iconbitmap("img/logo.jpg")
 
 frame = CTkFrame(ventana, bg_color="gray")
 frame.place(x=ventana.winfo_width() /2, y=ventana.winfo_height() /10, anchor=CENTER)
 
 button = CTkButton(ventana)
-
 
 ventana.mainloop()
