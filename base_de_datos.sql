@@ -43,7 +43,7 @@ CREATE TABLE producto (
     nombre NVARCHAR(100) NOT NULL,
     descripcion NVARCHAR(200) NOT NULL,
     precio DOUBLE NOT NULL,
-    imagen LONGTEXT NOT NULL
+    imagen LONGBLOB NOT NULL
 );
 
 CREATE TABLE gasto (
