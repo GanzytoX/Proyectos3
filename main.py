@@ -8,8 +8,8 @@ if __name__ == "__main__":
     conection = mysql.connector.connect(
         user="root",
         host="localhost",
-        port="3307",
-        database="pollosExpress"
+        port="3306",
+        database="basededatos_polleria"
     )
 
     #NO ME BORREN DE AQUI SON PRUEBAS QUE USARE
