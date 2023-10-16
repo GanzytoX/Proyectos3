@@ -40,10 +40,14 @@ if __name__ == "__main__":
     #with open('img/logo.png', 'rb') as archivo:
         #imagen = archivo.read()
     #productManager.Update(Producto("Papitas", "Estan ricas", 26, imagen, 1))
-
+    """""
     productManager = CrudProducto(conection)
     productos = productManager.Read()
     productos[0].imagen.show()
+    """""
+    productManager = CrudProducto(conection)
+    productos = productManager.Read(1)
+    productos.imagen.show()
 
 
 

@@ -37,9 +37,13 @@ if __name__ != "__main__":
             self.__conection.commit()
 
         def Delete(self, id):
-            script = f"DELETE FROM producto WHERE id = {id}"
-            self.__cursor.execute(script)
-            self.__conection.commit()
+            if isinstance(id, int):
+                script = f"DELETE FROM producto WHERE id = {id}"
+                self.__cursor.execute(script)
+                self.__conection.commit()
+            else:
+                raise ValueError("Id must be an integer")
+
 
         def Read(self, id=None):
             if id is None:
@@ -54,11 +58,13 @@ if __name__ != "__main__":
                     producto = Producto(resultado[1], resultado[2], resultado[3], img, resultado[0])
                     productos.append(producto)
                 return productos
-            elif id is int:
-                script = f"SELECT * from producto WHERE id_empleado = {id}"
+            elif isinstance(id, int):
+                script = f"SELECT * from producto WHERE id_producto = {id}"
                 self.__cursor.execute(script)
                 resultado = self.__cursor.fetchone()
                 imgBytes = BytesIO(resultado[4])
                 img = Image.open(imgBytes)
                 producto = Producto(resultado[1], resultado[2], resultado[3], img, resultado[0])
                 return producto
+            else:
+                raise ValueError("Id must be an integer")
