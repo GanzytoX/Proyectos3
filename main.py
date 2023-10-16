@@ -9,7 +9,7 @@ if __name__ == "__main__":
         user="root",
         host="localhost",
         port="3306",
-        database="basededatos_polleria"
+        database="pollosexpress"
     )
 
     #NO ME BORREN DE AQUI SON PRUEBAS QUE USARE
