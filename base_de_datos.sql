@@ -27,7 +27,7 @@ CREATE TABLE empleado (
     CONSTRAINT UQcelular UNIQUE(celular)
 );
 
-CREATE TABLE Venta (
+CREATE TABLE venta (
     id_Venta INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     fecha_De_Venta DATE NOT NULL,
     total_De_Compra DOUBLE NOT NULL,
