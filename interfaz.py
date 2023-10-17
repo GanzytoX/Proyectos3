@@ -83,7 +83,7 @@ separador2 = tk.Label(frame, text=" ", bg=c_gris_claro)
 separador2.pack()
 
 # Botón para iniciar sesión
-iniciar_sesion_button = tk.Button(frame, text="Iniciar Sesión", bg=c_azul, fg=c_blanco, command=openMain)
+iniciar_sesion_button = tk.Button(frame, text="Iniciar Sesión", bg=c_azul, fg=c_blanco)
 iniciar_sesion_button.pack(pady=10)
 
 
