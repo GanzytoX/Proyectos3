@@ -3,12 +3,14 @@ from tkinter import Tk
 from PIL import Image, ImageTk
 
 # Paleta de colores
+c_blanco = "#ffffff"
+c_gris = "#b8bab9"
 c_gris_claro = "#e7e7e5"
 c_rojo = "#e73a4b"
-c_gris = "#b8bab9"
-c_azul = "#185791"
 c_rojo_palido = "#c9636c"
-c_blanco = "#ffffff"
+c_azul = "#185791"
+c_azul_claro = "#397bb8"
+c_azul_palido = "#AFEEEE"
 
 
 # Crear una ventana de inicio de sesión
@@ -56,7 +58,7 @@ usuario_label = tk.Label(frame, text="Usuario:", bg=c_gris_claro)
 usuario_label.pack()
 
 # Campo de entrada para el usuario
-usuario_entry = tk.Entry(frame, width=30)
+usuario_entry = tk.Entry(frame, width=30, bg=c_azul_palido)
 usuario_entry.pack(pady=5)  # Espacio entre usuario y contraseña
 
 # Etiqueta de contraseña
@@ -64,7 +66,7 @@ contrasena_label = tk.Label(frame, text="Contraseña:", bg=c_gris_claro)
 contrasena_label.pack()
 
 # Campo de entrada para la contraseña
-contrasena_entry = tk.Entry(frame, show="*", width=30)
+contrasena_entry = tk.Entry(frame, show="*", width=30, bg=c_azul_palido)
 contrasena_entry.pack()
 
 # Separación entre contraseña y el botón
@@ -72,7 +74,7 @@ separador2 = tk.Label(frame, text=" ", bg=c_gris_claro)
 separador2.pack()
 
 # Botón para iniciar sesión
-iniciar_sesion_button = tk.Button(frame, text="Iniciar Sesión", bg=c_azul)
+iniciar_sesion_button = tk.Button(frame, text="Iniciar Sesión" ,bg=c_azul, fg=c_blanco)
 iniciar_sesion_button.pack(pady=10)
 
 # Ejecutar la ventana
