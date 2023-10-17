@@ -1,6 +1,8 @@
 from customtkinter import *
 from tkinter import *
 from PIL import Image, ImageTk
+
+
 class Window(CTk):
     def __init__(self, title: str, size: str, **kwargs):
         super().__init__(**kwargs)

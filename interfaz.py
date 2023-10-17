@@ -1,3 +1,5 @@
+# Bibliotecas
+import subprocess
 import tkinter as tk
 from tkinter import Tk
 from PIL import Image, ImageTk
@@ -11,6 +13,13 @@ c_rojo_palido = "#c9636c"
 c_azul = "#185791"
 c_azul_claro = "#397bb8"
 c_azul_palido = "#AFEEEE"
+
+
+# Función para abrir INTERFAZ_DE_PRUEBA.py
+# def openMain():
+#     # Utiliza subprocess para ejecutar el archivo (nombre del archivo)
+#     subprocess.Popen(["python", "(archivo_a_abrir)"], shell=True)
+#     print("Ventana abierta")
 
 
 # Crear una ventana de inicio de sesión
@@ -74,8 +83,9 @@ separador2 = tk.Label(frame, text=" ", bg=c_gris_claro)
 separador2.pack()
 
 # Botón para iniciar sesión
-iniciar_sesion_button = tk.Button(frame, text="Iniciar Sesión" ,bg=c_azul, fg=c_blanco)
+iniciar_sesion_button = tk.Button(frame, text="Iniciar Sesión", bg=c_azul, fg=c_blanco)
 iniciar_sesion_button.pack(pady=10)
+
 
 # Ejecutar la ventana
 ventana.mainloop()
