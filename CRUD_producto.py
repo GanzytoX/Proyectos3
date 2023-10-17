@@ -1,13 +1,13 @@
 from AbstractCRUD import CRUD
+from drive import uploadImage
 from PIL import Image
 from io import BytesIO
 
 
 if __name__ != "__main__":
 
-
     class Producto():
-        def __init__(self, nombre: str, descripcion: str, precio: float, imagen: any, id: int = None ):
+        def __init__(self, nombre: str, descripcion: str, precio: float, imagen: str, id: int = None ):
             self.id = 0
             if id is not None:
                 self.id = id

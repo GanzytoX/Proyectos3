@@ -44,10 +44,11 @@ if __name__ == "__main__":
     productManager = CrudProducto(conection)
     productos = productManager.Read()
     productos[0].imagen.show()
-    """""
+    
     productManager = CrudProducto(conection)
     productos = productManager.Read(1)
     productos.imagen.show()
+    """""
 
 
 
