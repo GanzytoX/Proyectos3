@@ -23,9 +23,9 @@ if __name__ != "__main__":
                 "parents": [folder_id]
             }
 
-            media = MediaFileUpload("./img/{0}".format(file_name), mimetype=mime_type)
+            media = MediaFileUpload(file_name, mimetype=mime_type)
 
-            id=service.files().create(
+            id = service.files().create(
                 body=file_metadata,
                 media_body=media,
                 fields="id"
@@ -39,9 +39,8 @@ if __name__ != "__main__":
         SCOPES = ["https://www.googleapis.com/auth/drive"]
         service = Create_Service(CLIENT_SECRET_FILE, API_NAME, API_VERSION, SCOPES)
 
-        file_id = id
 
-        request = service.files().get_media(file=file_id)
+        request = service.files().get_media(fileId = id)
         fh = io.BytesIO()
         downloader = MediaIoBaseDownload(fd= fh, request=request)
 

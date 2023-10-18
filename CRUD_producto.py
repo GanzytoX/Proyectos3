@@ -1,5 +1,6 @@
+import drive
 from AbstractCRUD import CRUD
-from drive import uploadImage
+from drive import uploadImage, downloadImage
 from PIL import Image
 from io import BytesIO
 
@@ -52,19 +53,24 @@ if __name__ != "__main__":
                 result = self.__cursor.fetchall()
                 productos = []
                 for resultado in result:
-                    imgBytes = BytesIO(resultado[4])
-                    img = Image.open(imgBytes)
+                    route = f"img/product_{resultado.name}"
+                    downloadImage(resultado[4], route)
 
-                    producto = Producto(resultado[1], resultado[2], resultado[3], img, resultado[0])
+                    producto = Producto(resultado[1], resultado[2], resultado[3], route, resultado[0])
                     productos.append(producto)
                 return productos
             elif isinstance(id, int):
                 script = f"SELECT * from producto WHERE id_producto = {id}"
                 self.__cursor.execute(script)
                 resultado = self.__cursor.fetchone()
-                imgBytes = BytesIO(resultado[4])
-                img = Image.open(imgBytes)
-                producto = Producto(resultado[1], resultado[2], resultado[3], img, resultado[0])
+                route = f"img/product_{resultado[1]}.png"
+                print(resultado[4])
+                downloadImage(resultado[4], route)
+                producto = Producto(resultado[1], resultado[2], resultado[3], route, resultado[0])
                 return producto
             else:
                 raise ValueError("Id must be an integer")
+
+        def UploadImage(self, url):
+            id = drive.uploadImage(url)
+            return id

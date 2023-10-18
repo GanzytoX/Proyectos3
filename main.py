@@ -8,7 +8,7 @@ if __name__ == "__main__":
     conection = mysql.connector.connect(
         user="root",
         host="localhost",
-        port="3306",
+        port="3307",
         database="pollosexpress"
     )
 
@@ -49,6 +49,11 @@ if __name__ == "__main__":
     productos = productManager.Read(1)
     productos.imagen.show()
     """""
+    productManager = CrudProducto(conection)
+    #productManager.Create(Producto("Si", "Takvez", 69.420, productManager.UploadImage("img/mimikiu.png")["id"]))
+    productManager.Read(1)
+
+
 
 
 
