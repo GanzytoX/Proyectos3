@@ -4,6 +4,7 @@ import tkinter as tk
 from tkinter import Tk
 from PIL import Image, ImageTk
 
+
 # Paleta de colores
 c_blanco = "#ffffff"
 c_gris = "#b8bab9"
