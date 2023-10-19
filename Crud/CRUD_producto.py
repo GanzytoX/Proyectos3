@@ -1,4 +1,4 @@
-from AbstractCRUD import CRUD
+from Crud.AbstractCRUD import CRUD
 from Drive.drive import DriveManager
 
 

@@ -2,12 +2,12 @@
 # Esa librería es necesaria para los CRUD
 import mysql.connector.errors
 
-from AbstractCRUD import CRUD
+from Crud.AbstractCRUD import CRUD
 
 if __name__ != "__main__":
 
     class Empleado:
-        def __init__(self, nombre, apellido_paterno, apellido_materno, celular, sueldo, id_rol, contraseña=None, id=None):
+        def __init__(self, nombre, apellido_paterno, apellido_materno, celular, sueldo, id_rol, administrator: bool, contraseña=None, id=None):
             self.contraseña = None
             self.id = None
             if id is not None:
@@ -20,6 +20,7 @@ if __name__ != "__main__":
             self.celular = celular
             self.sueldo = sueldo
             self.id_rol = id_rol
+            self.administrador = administrator
 
 
     class CrudEmpleado(CRUD):
@@ -30,12 +31,12 @@ if __name__ != "__main__":
 
         def Create(self, empleado: Empleado) -> None:
             if empleado.contraseña is None:
-                SQLScript = ("INSERT INTO empleado(nombre,apellido_paterno, apellido_materno, celular, sueldo, id_rol) "
-                             f"VALUES('{empleado.nombre}', '{empleado.apellido_paterno}', '{empleado.apellido_materno}', '{empleado.celular}', {empleado.sueldo}, {empleado.id_rol})")
+                SQLScript = ("INSERT INTO empleado(nombre,apellido_paterno, apellido_materno, celular, sueldo, id_rol, administrator) "
+                             f"VALUES('{empleado.nombre}', '{empleado.apellido_paterno}', '{empleado.apellido_materno}', '{empleado.celular}', {empleado.sueldo}, {empleado.id_rol}, {empleado.administrador})")
                 self.__cursor.execute(SQLScript)
             else:
-                SQLScript = ("INSERT INTO empleado(nombre, apellido_paterno, apellido_materno, celular, sueldo, id_rol, contraseña)"
-                             f"VALUES('{empleado.nombre}', '{empleado.apellido_paterno}', '{empleado.apellido_materno}', '{empleado.celular}', {empleado.sueldo}, {empleado.id_rol}, '{empleado.contraseña}')")
+                SQLScript = ("INSERT INTO empleado(nombre, apellido_paterno, apellido_materno, celular, sueldo, id_rol, contraseña, administrator)"
+                             f"VALUES('{empleado.nombre}', '{empleado.apellido_paterno}', '{empleado.apellido_materno}', '{empleado.celular}', {empleado.sueldo}, {empleado.id_rol}, '{empleado.contraseña}', {empleado.administrador})")
                 self.__cursor.execute(SQLScript)
 
             self.__conexion.commit()
@@ -50,22 +51,22 @@ if __name__ != "__main__":
 
         def Update(self, id, empleado: Empleado) -> None:
             SQLScript = (f"UPDATE empleado SET nombre = '{empleado.nombre}', apellido_paterno = '{empleado.apellido_paterno}', apellido_materno = '{empleado.apellido_materno}'"
-                         f"celular = '{empleado.celular}', sueldo = {empleado.sueldo}, id_rol = {empleado.id_rol}, contraseña = '{empleado.contraseña}'"
+                         f"celular = '{empleado.celular}', sueldo = {empleado.sueldo}, id_rol = {empleado.id_rol}, contraseña = '{empleado.contraseña}', administrator = {empleado.administrador}"
                          f"WHERE id_Empleado = {id}")
             self.__cursor.execute(SQLScript)
             self.__conexion.commit()
 
-        def iniciarSesion(self, numeroTelefono, contraseña) -> bool:
-            SQLScript = f"SELECT pass FROM empleado WHERE celular = '{numeroTelefono}'"
+        def iniciarSesion(self, numeroTelefono, contraseña) -> (bool, bool):
+            SQLScript = f"SELECT pass, administrator FROM empleado WHERE celular = '{numeroTelefono}'"
             self.__cursor.execute(SQLScript)
             result = self.__cursor.fetchone()
 
             if result:
                 if result[0] == contraseña:
-                    return True
+                    return True, result[1]
                 else:
                     print("Inicio de sesion fallido")
-                    return False
+                    return False, False
             else:
                 raise DataException("Usuario no encontrado en la base de datos")
 

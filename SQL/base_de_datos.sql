@@ -27,6 +27,9 @@ CREATE TABLE empleado (
     CONSTRAINT UQcelular UNIQUE(celular)
 );
 
+ALTER TABLE empleado
+ADD COLUMN administrator bool NOT NULL;
+
 CREATE TABLE venta (
     id_Venta INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     fecha_De_Venta DATE NOT NULL,

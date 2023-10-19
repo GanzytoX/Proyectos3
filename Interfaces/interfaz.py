@@ -41,10 +41,16 @@ def iniciarSesion():
     user = usuario_entry.get()
     password = contrasena_entry.get()
 
-    if(user != "" and password != ""):
+    if user != "" and password != "":
         try:
-            if(userManager.iniciarSesion(user, password)):
+            result = userManager.iniciarSesion(user, password)
+            if result[0]:
                 messagebox.showinfo("Message", "Iniciando sesión")
+                if result[1]:
+                    print("Es admin")
+
+                else:
+                    print("NO Es admin")
                 return
             messagebox.showerror("Error", "Usuario o contraseña incorrectos")
             return
@@ -63,7 +69,7 @@ ventana.geometry("1200x700")
 ventana.resizable(False, False)
 
 # Cargar la imagen de fondo
-imagen_fondo = Image.open("img/inicioDeSesion.png")
+imagen_fondo = Image.open("../img/inicioDeSesion.png")
 imagen_fondo = ImageTk.PhotoImage(imagen_fondo)
 
 # Crear un widget Label para mostrar la imagen de fondo
@@ -75,7 +81,7 @@ frame = tk.Frame(ventana, bg=c_gris_claro, padx=100, pady=100)
 frame.pack(expand=True)
 
 # Cargar la imagen del icono de foto de perfil y ajustar su tamaño (más pequeño)
-icono_imagen = Image.open("img/iconoFotoDePerfil.png")
+icono_imagen = Image.open("../img/iconoFotoDePerfil.png")
 icono_imagen = icono_imagen.resize((50, 50), Image.LANCZOS)  # Ajusta el tamaño aquí
 icono_imagen = ImageTk.PhotoImage(icono_imagen)
 
@@ -88,7 +94,7 @@ login_label = tk.Label(frame, text="Login User", bg=c_gris_claro, font=("Helveti
 login_label.pack()
 
 # Cargar la imagen del logo y ajustar su tamaño
-logo_imagen = Image.open("img/logo.png")
+logo_imagen = Image.open("../img/logo.png")
 logo_imagen = logo_imagen.resize((100, 100), Image.LANCZOS)  # Ajusta el tamaño aquí
 logo_imagen = ImageTk.PhotoImage(logo_imagen)
 
