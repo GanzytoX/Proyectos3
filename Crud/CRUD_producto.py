@@ -1,7 +1,5 @@
-import os
-
 from AbstractCRUD import CRUD
-from drive import DriveManager
+from Drive.drive import DriveManager
 
 
 if __name__ != "__main__":

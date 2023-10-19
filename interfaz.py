@@ -4,7 +4,7 @@ import tkinter as tk
 from tkinter import Tk
 from tkinter import messagebox
 from PIL import Image, ImageTk
-from CRUD_Usuario import CrudEmpleado
+from Crud.CRUD_Usuario import CrudEmpleado
 import mysql.connector
 
 

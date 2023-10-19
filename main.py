@@ -1,5 +1,4 @@
-from CRUD_Usuario import CrudEmpleado, Empleado
-from CRUD_producto import CrudProducto, Producto
+from Crud.CRUD_producto import CrudProducto
 import mysql.connector
 from PIL import Image, ImageTk
 
