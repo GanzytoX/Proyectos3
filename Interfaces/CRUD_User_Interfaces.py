@@ -7,6 +7,40 @@ from Crud.CRUD_Usuario import CrudEmpleado
 from PIL import Image, ImageTk
 
 
+class NoImageFrame(tk.Frame):
+    def __init__(self, text: str):
+        super().__init__()
+        self.config(height=50)
+        contenedor = tk.Label(self, text=text)
+        contenedor.pack(side=tk.LEFT)
+
+
+class AutomaticScrollableFrame(CTkScrollableFrame):
+    def __init__(self, master: any, height=None, width=None):
+        if height is not None and width is not None:
+            super().__init__(master, height=height, width=width)
+        elif height is not None:
+            super().__init__(master, height=height)
+        elif width is not None:
+            super().__init__(master, width=width)
+        self.__items = []
+
+    def add(self, element: any) -> None:
+        element.grid(column=0, row=len(self.__items), sticky="ew")
+        self.__items.append(element)
+
+    def deleteAt(self, index):
+        if len(self.__items) > index >= 0:
+            item = self.__items[index]
+            self.__items[index].remove(index)
+            item.destroy()
+
+    def getItem(self, index):
+        if len(self.__items) > index >= 0:
+            return self.__items[index]
+        raise IndexError("Index out of range")
+
+
 class CUInterface(Tk):
     def __init__(self):
         super().__init__()
@@ -31,14 +65,20 @@ class CUInterface(Tk):
         #Configurar cuadrícula de la ventana
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=5)
+        self.rowconfigure(0, weight=3)
+        self.rowconfigure(1, weight=2)
 
-        #Creare un widget donde desplegar los empleados
-        marginEmpleados = CTkScrollableFrame(self, height=500, width=250)
+        # Creare un widget donde desplegar las cosas para buscar los empleados
+        marginEmpleados = tk.Frame(self, height=500, width=250)
         marginEmpleados.grid(column=0, row=0, pady=50, ipadx=20, ipady=20, sticky=tk.NS)
 
-        #Barra del buscador
-        nav = tk.Entry(marginEmpleados)
-        nav.pack()
+        # Barra del buscador
+        nav = tk.Entry(marginEmpleados, background="#397bb8")
+        nav.pack(pady=20)
+
+        # Un frame donde acomodar los empleados
+        listEmpleados = AutomaticScrollableFrame(marginEmpleados, height=500)
+        listEmpleados.pack(fill="both", padx=20)
 
 
         marginUnEmpleado = tk.Frame(self)
@@ -47,8 +87,4 @@ class CUInterface(Tk):
 
 ventana = CUInterface()
 
-
-class NoImageFrame(tk.Frame):
-    def __init__(self):
-        super().__init__()
 
