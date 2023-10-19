@@ -22,7 +22,7 @@ CREATE TABLE empleado (
     celular VARCHAR(11) NOT NULL,
     sueldo DOUBLE NOT NULL,
     id_rol INT,
-    contraseña NVARCHAR(30),
+    pass NVARCHAR(30),
     FOREIGN KEY (id_rol) REFERENCES rol(id_Rol),
     CONSTRAINT UQcelular UNIQUE(celular)
 );
@@ -43,7 +43,7 @@ CREATE TABLE producto (
     nombre NVARCHAR(100) NOT NULL,
     descripcion NVARCHAR(200) NOT NULL,
     precio DOUBLE NOT NULL,
-    imagen NVARCHAR NOT NULL
+    imagen text NOT NULL
 );
 
 CREATE TABLE gasto (

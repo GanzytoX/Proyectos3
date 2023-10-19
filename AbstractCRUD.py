@@ -15,7 +15,7 @@ class CRUD(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def Update(self, object: object):
+    def Update(self, id: int , object: object):
         NotImplementedError()
 
 

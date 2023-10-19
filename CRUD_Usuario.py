@@ -48,14 +48,15 @@ if __name__ != "__main__":
             self.__cursor.execute(SQLScript)
             self.__conexion.commit()
 
-        def Update(self, empleado: Empleado) -> None:
+        def Update(self, id, empleado: Empleado) -> None:
             SQLScript = (f"UPDATE empleado SET nombre = '{empleado.nombre}', apellido_paterno = '{empleado.apellido_paterno}', apellido_materno = '{empleado.apellido_materno}'"
                          f"celular = '{empleado.celular}', sueldo = {empleado.sueldo}, id_rol = {empleado.id_rol}, contraseña = '{empleado.contraseña}'"
-                         f"WHERE id_Empleado = {empleado.id}")
+                         f"WHERE id_Empleado = {id}")
             self.__cursor.execute(SQLScript)
             self.__conexion.commit()
+
         def iniciarSesion(self, numeroTelefono, contraseña) -> bool:
-            SQLScript = f"SELECT contraseña FROM empleado WHERE celular = {numeroTelefono}"
+            SQLScript = f"SELECT pass FROM empleado WHERE celular = '{numeroTelefono}'"
             self.__cursor.execute(SQLScript)
             result = self.__cursor.fetchone()
 

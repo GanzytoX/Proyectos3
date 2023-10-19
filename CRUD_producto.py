@@ -1,21 +1,24 @@
-import drive
+import os
+
 from AbstractCRUD import CRUD
 from drive import DriveManager
-from PIL import Image
-from io import BytesIO
 
 
 if __name__ != "__main__":
 
     class Producto():
-        def __init__(self, nombre: str, descripcion: str, precio: float, imagen: str, id: int = None):
+        def __init__(self, nombre: str, descripcion: str, precio: float, imagen: str = None, id: int = None, driveCode: str = None):
             self.id = 0
             if id is not None:
                 self.id = id
             self.nombre = nombre
             self.descripcion = descripcion
             self.precio = precio
-            self.imagen = imagen
+            if imagen is not None:
+                self.imagen = imagen
+            self._driveCode = None
+            if driveCode is not None:
+                self._driveCode = driveCode
 
 
     class CrudProducto(CRUD):
@@ -26,23 +29,26 @@ if __name__ != "__main__":
 
         def Create(self, product):
             script = "INSERT INTO producto(nombre, descripcion, precio, imagen) VALUES (%s, %s, %s, %s)"
-            datos_producto = (product.nombre, product.descripcion, product.precio, product.imagen)
+            datos_producto = (product.nombre, product.descripcion, product.precio, product.driveCode)
             self.__cursor.execute(script, datos_producto) #seria fetch si pidiera datos
             self.__conection.commit() # commit siempre que se modifique la tabla
 
-        def Update(self, product: Producto):
+        def Update(self, id, product: Producto):
             script = ("UPDATE producto "
                       "SET nombre = %s, descripcion = %s, precio = %s, imagen = %s "
                       "WHERE id_producto = %s")
-            datos_producto = (product.nombre, product.descripcion, product.precio, product.imagen, product.id)
+            datos_producto = (product.nombre, product.descripcion, product.precio, product.imagen, id)
+
+            producto = self.Read(id)
+            self.__driveConnection.deleteImage(producto._driveCode)
             self.__cursor.execute(script, datos_producto)
             self.__conection.commit()
 
         def Delete(self, id):
             if isinstance(id, int):
                 producto = self.Read(id)
-
-                script = f"DELETE FROM producto WHERE id = {id}"
+                self.__driveConnection.deleteImage(producto._driveCode)
+                script = f"DELETE FROM producto WHERE id_producto = {id}"
                 self.__cursor.execute(script)
                 self.__conection.commit()
             else:
@@ -59,7 +65,7 @@ if __name__ != "__main__":
                     route = f"img/product_{resultado.name}"
                     self.__driveConnection.downloadImage(resultado[4], route)
 
-                    producto = Producto(resultado[1], resultado[2], resultado[3], route, resultado[0])
+                    producto = Producto(resultado[1], resultado[2], resultado[3], route, resultado[0], driveCode=resultado[4])
                     productos.append(producto)
                 return productos
             elif isinstance(id, int):
@@ -69,7 +75,7 @@ if __name__ != "__main__":
                 route = f"img/product_{resultado[1]}.png"
                 print(resultado[4])
                 self.__driveConnection.downloadImage(resultado[4], route)
-                producto = Producto(resultado[1], resultado[2], resultado[3], route, resultado[0])
+                producto = Producto(resultado[1], resultado[2], resultado[3], route, resultado[0], driveCode=resultado[4])
                 return producto
             else:
                 raise ValueError("Id must be an integer")

@@ -2,7 +2,11 @@
 import subprocess
 import tkinter as tk
 from tkinter import Tk
+from tkinter import messagebox
 from PIL import Image, ImageTk
+from CRUD_Usuario import CrudEmpleado
+import mysql.connector
+
 
 
 # Paleta de colores
@@ -21,6 +25,35 @@ c_azul_palido = "#AFEEEE"
 #     # Utiliza subprocess para ejecutar el archivo (nombre del archivo)
 #     subprocess.Popen(["python", "(archivo_a_abrir)"], shell=True)
 #     print("Ventana abierta")
+
+
+# Importo el Crud Usuario para poder hacer inicio de sesion y le paso un conection, o sea coneccion a la BD
+conection = mysql.connector.connect(
+        user="root",
+        host="localhost",
+        port="3307",
+        database="pollosexpress"
+    )
+userManager = CrudEmpleado(conection)
+
+# Funcion para poner en marcha el inicio de sesion
+def iniciarSesion():
+    user = usuario_entry.get()
+    password = contrasena_entry.get()
+
+    if(user != "" and password != ""):
+        try:
+            if(userManager.iniciarSesion(user, password)):
+                messagebox.showinfo("Message", "Iniciando sesión")
+                return
+            messagebox.showerror("Error", "Usuario o contraseña incorrectos")
+            return
+        except:
+            messagebox.showerror("Error", "Usuario no registrado")
+            return 
+
+    messagebox.showerror("Error", "Rellene los campos por favor")
+
 
 
 # Crear una ventana de inicio de sesión
@@ -84,7 +117,7 @@ separador2 = tk.Label(frame, text=" ", bg=c_gris_claro)
 separador2.pack()
 
 # Botón para iniciar sesión
-iniciar_sesion_button = tk.Button(frame, text="Iniciar Sesión", bg=c_azul, fg=c_blanco)
+iniciar_sesion_button = tk.Button(frame, text="Iniciar Sesión", bg=c_azul, fg=c_blanco, command=iniciarSesion)
 iniciar_sesion_button.pack(pady=10)
 
 

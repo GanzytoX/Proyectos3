@@ -51,7 +51,8 @@ if __name__ == "__main__":
     """""
     productManager = CrudProducto(conection)
     #productManager.Create(Producto("Si", "Takvez", 69.420, productManager.UploadImage("img/mimikiu.png")["id"]))
-    productManager.Read(1)
+    #productManager.Read(1)
+    productManager.Delete(3)
 
 
 
