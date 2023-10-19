@@ -1,7 +1,9 @@
 # Paleta de colores
+c_blanco = "#ffffff"
+c_gris = "#b8bab9"
 c_gris_claro = "#e7e7e5"
 c_rojo = "#e73a4b"
-c_gris = "#b8bab9"
-c_azul = "#185791"
 c_rojo_palido = "#c9636c"
-c_blanco = "#ffffff"
+c_azul = "#185791"
+c_azul_claro = "#397bb8"
+c_azul_palido = "#AFEEEE"
