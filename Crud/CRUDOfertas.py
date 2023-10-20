@@ -1,5 +1,5 @@
 import mysql.connector.errors
-from AbstractCRUD import CRUD
+from Crud.AbstractCRUD import CRUD
 
 class Promocion():
     def __init__(self, id_producto : int, descripcion : str, fechaInicio : str, fechaFinal : str, id_tipopromocion : int, id = None ):
@@ -14,13 +14,13 @@ class Promocion():
 
 
 
-class CRUDOfertas(CRUD):
+class CRUDPromociones(CRUD):
     def __init__(self, conection):
         self.__conection = conection
         self.__cursor = self.__conection.cursor()
     def Create(self, promocion):
-        script = "INSERT INTO promocion(id_producto, fecha_de_inicio, fecha_de_finalizacion, id_tipo_promocion) VALUES (%s, %s, %s, %s)"
-        datos_promocion = (promocion.id_producto, promocion.descripcion, promocion.fechaInicio, promocion.fechaFinal)
+        script = "INSERT INTO promocion(id_producto, fecha_de_inicio, fecha_de_finalizacion, id_tipo_promocion) VALUES (%s, %s, %s, %s,%s)"
+        datos_promocion = (promocion.id_producto, promocion.descripcion, promocion.fechainicio, promocion.fechafinal, promocion.id_tipopromocion)
         self.__cursor.execute(script, datos_promocion)  # seria fetch si pidiera datos
         self.__conection.commit()  # commit siempre que se modifique la tabla
 

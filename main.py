@@ -1,7 +1,7 @@
-from Crud.CRUD_producto import CrudProducto
+#from Crud.CRUD_producto import CrudProducto
 import mysql.connector
 from PIL import Image, ImageTk
-
+from Crud.CRUDOfertas import CRUDPromociones, Promocion
 
 if __name__ == "__main__":
     conection = mysql.connector.connect(
@@ -48,11 +48,13 @@ if __name__ == "__main__":
     productos = productManager.Read(1)
     productos.imagen.show()
     """""
-    productManager = CrudProducto(conection)
+    #productManager = CrudProducto(conection)
     #productManager.Create(Producto("Si", "Takvez", 69.420, productManager.UploadImage("img/mimikiu.png")["id"]))
     #productManager.Read(1)
-    productManager.Delete(3)
+    #productManager.Delete(3)
 
+    promocionManager = CRUDPromociones(conection)
+    promocionManager.Create(Promocion(1,"Esto es una prueba","2023/10/20","2023/10/21",1));
 
 
 
