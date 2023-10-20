@@ -6,7 +6,7 @@ if __name__ != "__main__":
 
     class Producto():
         def __init__(self, nombre: str, descripcion: str, precio: float, imagen: str = None, id: int = None, driveCode: str = None):
-            self.id = 0
+            self.id = None
             if id is not None:
                 self.id = id
             self.nombre = nombre
@@ -25,7 +25,7 @@ if __name__ != "__main__":
             self.__cursor = self.__conection.cursor()
             self.__driveConnection = DriveManager()
 
-        def Create(self, product):
+        def Create(self, product: Producto):
             script = "INSERT INTO producto(nombre, descripcion, precio, imagen) VALUES (%s, %s, %s, %s)"
             datos_producto = (product.nombre, product.descripcion, product.precio, product.driveCode)
             self.__cursor.execute(script, datos_producto) #seria fetch si pidiera datos
