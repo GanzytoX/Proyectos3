@@ -47,13 +47,18 @@ class CRUDOfertas(CRUD):
     def Delete(self, id):
         if isinstance(id, int):
             oferta = self.Read(id)
-            self
-            script = f"DELETE FROM producto WHERE id_producto = {id}"
+            script = f"DELETE FROM promocion WHERE id_promocion = {id}"
             self.__cursor.execute(script)
             self.__conection.commit()
         else:
             raise ValueError("Id must be an integer")
 
-    def Update(self, id: int, object: object):
-        pass
+    def Update(self, id: int, promocion: Promocion):
+        script = ("UPDATE promocion "
+                  "SET id_producto = %s, descripcion = %s, fecha_de_inicio = %s, fecha_de_finalizacion = %s,  "
+                  "WHERE id_producto = %s")
+        datos_promocion = (promocion.id_producto, promocion.descripcion, promocion.fechainicio, promocion.fechafinal)
+        promocion = self.Read(id)
+        self.__cursor.execute(script, datos_promocion)
+        self.__conection.commit()
 
