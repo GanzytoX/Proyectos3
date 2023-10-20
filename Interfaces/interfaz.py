@@ -8,7 +8,6 @@ from Crud.CRUD_Usuario import CrudEmpleado
 import mysql.connector
 
 
-
 # Paleta de colores
 c_blanco = "#ffffff"
 c_gris = "#b8bab9"
