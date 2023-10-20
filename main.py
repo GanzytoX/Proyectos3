@@ -1,4 +1,4 @@
-#from Crud.CRUD_producto import CrudProducto
+#from Crud.CRUD_producto import CrudProducto, Producto
 import mysql.connector
 from PIL import Image, ImageTk
 from Crud.CRUDOfertas import CRUDPromociones, Promocion
@@ -54,9 +54,11 @@ if __name__ == "__main__":
     #productManager.Delete(3)
 
     promocionManager = CRUDPromociones(conection)
-    promocionManager.Create(Promocion(1,"Esto es una prueba","2023/10/20","2023/10/21",1));
+    #promocionManager.Create(Promocion(1, "Esto es una prueba 2", "2023/10/21","2023/10/21",1))
 
+    #for i in promocionManager.Read():
+    #    print(i.descripcion)
 
+    #promocionManager.Update(5, Promocion(1,"Acabo de actualizar la prueba", "2023/10/20", "2023/10/29",1,2))
 
-
-
+    #promocionManager.Delete(6)
