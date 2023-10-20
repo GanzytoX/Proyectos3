@@ -58,7 +58,7 @@ class CUInterface(Tk):
         self.__conection = mysql.connector.connect(
             user="root",
             host="localhost",
-            port="3307",
+            port="3306",
             database="pollosexpress"
         )
         self.__userManager = CrudEmpleado(self.__conection)

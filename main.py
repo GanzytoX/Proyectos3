@@ -7,7 +7,7 @@ if __name__ == "__main__":
     conection = mysql.connector.connect(
         user="root",
         host="localhost",
-        port="3307",
+        port="3306",
         database="pollosexpress"
     )
 
