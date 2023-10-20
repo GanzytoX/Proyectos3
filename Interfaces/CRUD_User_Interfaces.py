@@ -8,11 +8,21 @@ from PIL import Image, ImageTk
 
 
 class NoImageFrame(tk.Frame):
-    def __init__(self, text: str):
-        super().__init__()
-        self.config(height=50)
-        contenedor = tk.Label(self, text=text)
-        contenedor.pack(side=tk.LEFT)
+    def __init__(self, master, text: str = None, object = None):
+        super().__init__(master=master)
+        self.columnconfigure(0, weight=1)
+        self.columnconfigure(1, weight=4)
+        imagen_raw = Image.open("../img/dot.png")
+        imagen_raw.thumbnail((10, 10))
+        imagen_tk = ImageTk.PhotoImage(imagen_raw)
+        image = tk.Label(self, image=imagen_tk)
+        image.image = imagen_tk
+        image.grid(column=0, row=0)
+        if text is not None:
+            text = tk.Label(self, height=4, justify="left")
+        elif object is not None:
+            if hasattr()
+        text.grid(column=1, row=0, sticky="W")
 
 
 class AutomaticScrollableFrame(CTkScrollableFrame):
@@ -24,9 +34,10 @@ class AutomaticScrollableFrame(CTkScrollableFrame):
         elif width is not None:
             super().__init__(master, width=width)
         self.__items = []
+        self.columnconfigure(0, weight=3)
 
     def add(self, element: any) -> None:
-        element.grid(column=0, row=len(self.__items), sticky="ew")
+        element.grid(column=0, row=len(self.__items), sticky="ew", pady="5")
         self.__items.append(element)
 
     def deleteAt(self, index):
@@ -73,17 +84,20 @@ class CUInterface(Tk):
         marginEmpleados.grid(column=0, row=0, pady=50, ipadx=20, ipady=20, sticky=tk.NS)
 
         # Barra del buscador
-        nav = tk.Entry(marginEmpleados, background="#397bb8")
-        nav.pack(pady=20)
+        nav = tk.Entry(marginEmpleados, background="#397bb8", foreground="white")
+        nav.pack(pady=20, fill="x", padx=20)
 
         # Un frame donde acomodar los empleados
         listEmpleados = AutomaticScrollableFrame(marginEmpleados, height=500)
         listEmpleados.pack(fill="both", padx=20)
 
 
+        listEmpleados.add(NoImageFrame(listEmpleados, "Hello World"))
+
         marginUnEmpleado = tk.Frame(self)
         marginUnEmpleado.grid(column=1, row=0, padx=(30, 50), pady=50, ipadx=30, ipady=20, sticky="ewns")
         self.mainloop()
+
 
 ventana = CUInterface()
 
