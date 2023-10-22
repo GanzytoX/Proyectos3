@@ -52,7 +52,6 @@ def iniciarSesion():
 
     messagebox.showerror("Error", "Rellene los campos por favor")
 
-
 # Crear una ventana de inicio de sesión
 ventana = Tk()
 ventana.title("Inicio de sesión")
