@@ -28,10 +28,12 @@ c_azul_palido = "#AFEEEE"
 
 # Importo el Crud Usuario para poder hacer inicio de sesion y le paso un conection, o sea coneccion a la BD
 conection = mysql.connector.connect(
-        user="root",
-        host="localhost",
-        port="3307",
-        database="pollosexpress"
+    user="root",
+    host="localhost",
+    port="3306",
+    #port="3307",
+    password="0123456789",
+    database="pollosexpress"
     )
 userManager = CrudEmpleado(conection)
 
@@ -58,7 +60,6 @@ def iniciarSesion():
             return 
 
     messagebox.showerror("Error", "Rellene los campos por favor")
-
 
 
 # Crear una ventana de inicio de sesión
