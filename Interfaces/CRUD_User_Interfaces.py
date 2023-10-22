@@ -8,7 +8,7 @@ from PIL import Image, ImageTk
 
 
 class NoImageFrame(tk.Frame):
-    def __init__(self, master, text: str = None, object = None):
+    def __init__(self, master, text: str = None, objet = None):
         super().__init__(master=master)
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=4)
@@ -18,12 +18,11 @@ class NoImageFrame(tk.Frame):
         image = tk.Label(self, image=imagen_tk)
         image.image = imagen_tk
         image.grid(column=0, row=0)
-        if text is not None:
-            text = tk.Label(self, height=4, justify="left")
-        elif object is not None:
-            if hasattr()
+        text = tk.Label(self, height=4, justify="left", text=text)
         text.grid(column=1, row=0, sticky="W")
-
+        if objet is not None:
+            self.object = objet
+            
 
 class AutomaticScrollableFrame(CTkScrollableFrame):
     def __init__(self, master: any, height=None, width=None):
@@ -58,7 +57,7 @@ class CUInterface(Tk):
         self.__conection = mysql.connector.connect(
             user="root",
             host="localhost",
-            port="3306",
+            port="3307",
             database="pollosexpress"
         )
         self.__userManager = CrudEmpleado(self.__conection)
@@ -91,8 +90,11 @@ class CUInterface(Tk):
         listEmpleados = AutomaticScrollableFrame(marginEmpleados, height=500)
         listEmpleados.pack(fill="both", padx=20)
 
+        #Agregar todos los empleados posibles:
+        self.empleados = self.__userManager.Read()
+        for empleado in self.empleados:
+            listEmpleados.add(NoImageFrame(listEmpleados, f"{empleado.nombre} {empleado.apellido_paterno} {empleado.apellido_materno}"))
 
-        listEmpleados.add(NoImageFrame(listEmpleados, "Hello World"))
 
         marginUnEmpleado = tk.Frame(self)
         marginUnEmpleado.grid(column=1, row=0, padx=(30, 50), pady=50, ipadx=30, ipady=20, sticky="ewns")

@@ -53,8 +53,8 @@ if __name__ != "__main__":
                 raise ValueError("Id must be an integer")
 
 
-        def Read(self, id=None):
-            if id is None:
+        def Read(self, id=None, condition:str=None):
+            if id is None and condition is None:
                 script = "SELECT * from producto"
                 self.__cursor.execute(script)
                 result = self.__cursor.fetchall()
@@ -75,7 +75,8 @@ if __name__ != "__main__":
                 self.__driveConnection.downloadImage(resultado[4], route)
                 producto = Producto(resultado[1], resultado[2], resultado[3], route, resultado[0], driveCode=resultado[4])
                 return producto
-            else:
+
+            elif not isinstance(id, int):
                 raise ValueError("Id must be an integer")
 
         def UploadImage(self, url):

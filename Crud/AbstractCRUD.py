@@ -7,7 +7,7 @@ class CRUD(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def Read(self, id=None):
+    def Read(self, id=None, condition=None):
         raise NotImplementedError()
 
     @abstractmethod

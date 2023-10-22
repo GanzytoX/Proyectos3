@@ -13,19 +13,18 @@ class Promocion():
         self.id_tipopromocion = id_tipopromocion
 
 
-
 class CRUDPromociones(CRUD):
     def __init__(self, conection):
         self.__conection = conection
         self.__cursor = self.__conection.cursor()
+
     def Create(self, promocion):
         script = "INSERT INTO promocion(id_producto, descripcion, fecha_de_inicio, fecha_de_finalizacion, id_tipo_promocion) VALUES (%s, %s, %s, %s,%s)"
         datos_promocion = (promocion.id_producto, promocion.descripcion, promocion.fechainicio, promocion.fechafinal, promocion.id_tipopromocion)
         self.__cursor.execute(script, datos_promocion)  # seria fetch si pidiera datos
         self.__conection.commit()  # commit siempre que se modifique la tabla
 
-
-    def Read(self, id=None):
+    def Read(self, id=None, condition=None):
         if id is None:
             script = "SELECT * from promocion"
             self.__cursor.execute(script)
