@@ -1,12 +1,10 @@
 # Bibliotecas
-import subprocess
 import tkinter as tk
 from tkinter import Tk
 from tkinter import messagebox
 from PIL import Image, ImageTk
 from Crud.CRUD_Usuario import CrudEmpleado
 import mysql.connector
-
 
 # Paleta de colores
 c_blanco = "#ffffff"
@@ -19,19 +17,14 @@ c_azul_claro = "#397bb8"
 c_azul_palido = "#AFEEEE"
 
 
-# Función para abrir INTERFAZ_DE_PRUEBA.py
-# def openMain():
-#     # Utiliza subprocess para ejecutar el archivo (nombre del archivo)
-#     subprocess.Popen(["python", "(archivo_a_abrir)"], shell=True)
-#     print("Ventana abierta")
-
-
 # Importo el Crud Usuario para poder hacer inicio de sesion y le paso un conection, o sea coneccion a la BD
 conection = mysql.connector.connect(
-        user="root",
-        host="localhost",
-        port="3307",
-        database="pollosexpress"
+    user="root",
+    host="localhost",
+    port="3306",
+    #port="3307",
+    password="0123456789",
+    database="pollosexpress"
     )
 userManager = CrudEmpleado(conection)
 
@@ -58,8 +51,6 @@ def iniciarSesion():
             return 
 
     messagebox.showerror("Error", "Rellene los campos por favor")
-
-
 
 # Crear una ventana de inicio de sesión
 ventana = Tk()
