@@ -42,7 +42,7 @@ def iniciarSesion():
                     print("Es admin")
 
                 else:
-                    print("NO Es admin")
+                    print("No Es admin")
                 return
             messagebox.showerror("Error", "Usuario o contraseña incorrectos")
             return
