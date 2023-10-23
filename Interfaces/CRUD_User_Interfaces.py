@@ -128,6 +128,7 @@ class CUInterface(Tk):
     # Esta funcion se manda a llamar cuando clickean algo de la lista
     def __showEmpleado(self, empleado):
         print("clicked")
+        isAdmin = tk.IntVar()
         # Si no se ha activado el panel que muestra un solo empleado, entonces lo crea
         if not self.__singleActivated:
             labelName = tk.Label(self.__marginUnEmpleado, text="Nombre: ")
@@ -150,6 +151,19 @@ class CUInterface(Tk):
             inputCel = tk.Entry(self.__marginUnEmpleado)
             inputCel.grid(column=0, row=3, columnspan=4, sticky="ew")
 
+            labelSueldo = tk.Label(self.__marginUnEmpleado, text="Sueldo: ")
+            labelSueldo.grid(column=0, row=4)
+            inputSueldo = tk.Entry(self.__marginUnEmpleado)
+            inputSueldo.grid(column=0, row=5, columnspan=4, sticky="ew")
+
+            labelContraseña = tk.Label(self.__marginUnEmpleado, text="Contraseña: ")
+            labelContraseña.grid(column=0, row=6)
+            inputContraseña = tk.Entry(self.__marginUnEmpleado)
+            inputContraseña.grid(column=0, row=7, columnspan=2, sticky="ew")
+
+            radioAdmin = tk.Checkbutton(self.__marginUnEmpleado, text="Admin", variable=isAdmin, onvalue=1, offvalue=0)
+            radioAdmin.grid(column=3, row=7, columnspan=4, sticky="ew")
+
         inputName.delete(0, tk.END)
         inputName.insert(0, empleado.nombre)
         inputLastname1.delete(0, tk.END)
@@ -158,6 +172,13 @@ class CUInterface(Tk):
         inputLastname2.insert(0, empleado.apellido_materno)
         inputCel.delete(0, tk.END)
         inputCel.insert(0, empleado.celular)
+        inputSueldo.delete(0, tk.END)
+        inputSueldo.insert(0, empleado.sueldo)
+        inputContraseña.delete(0, tk.END)
+        if empleado.contraseña is not None:
+            inputContraseña.insert(0, empleado.contraseña)
+        isAdmin.set(empleado.administrador)
+        radioAdmin.mainloop()
 
 
 
