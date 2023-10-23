@@ -134,13 +134,31 @@ class CUInterface(Tk):
             labelName.grid(column=0, row=0)
             inputName = tk.Entry(self.__marginUnEmpleado)
             inputName.grid(column=0, row=1)
-            labelLastname1 = tk.Label(self.__marginUnEmpleado, text="Apellido Materno: ")
+
+            labelLastname1 = tk.Label(self.__marginUnEmpleado, text="Apellido Paterno: ")
             labelLastname1.grid(column=1, row=0)
             inputLastname1 = tk.Entry(self.__marginUnEmpleado)
             inputLastname1.grid(column=1, row=1)
 
+            labelLastname2 = tk.Label(self.__marginUnEmpleado, text="Apellido Materno: ")
+            labelLastname2.grid(column=3, row=0)
+            inputLastname2 = tk.Entry(self.__marginUnEmpleado)
+            inputLastname2.grid(column=3, row=1)
+
+            labelCel = tk.Label(self.__marginUnEmpleado, text="Celular: ")
+            labelCel.grid(column=0, row=2)
+            inputCel = tk.Entry(self.__marginUnEmpleado)
+            inputCel.grid(column=0, row=3, columnspan=4, sticky="ew")
+
         inputName.delete(0, tk.END)
         inputName.insert(0, empleado.nombre)
+        inputLastname1.delete(0, tk.END)
+        inputLastname1.insert(0, empleado.apellido_paterno)
+        inputLastname2.delete(0, tk.END)
+        inputLastname2.insert(0, empleado.apellido_materno)
+        inputCel.delete(0, tk.END)
+        inputCel.insert(0, empleado.celular)
+
 
 
 
