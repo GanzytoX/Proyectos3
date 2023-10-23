@@ -1,5 +1,6 @@
 #from Crud.CRUD_producto import CrudProducto, Producto
 import mysql.connector
+from Crud.CRUD_Usuario import *
 from PIL import Image, ImageTk
 from Crud.CRUDOfertas import CRUDPromociones, Promocion
 
@@ -28,6 +29,7 @@ if __name__ == "__main__":
         #file.write(data[4])
 
     #userManager = CrudEmpleado(conection)
+    #userManager.Create(Empleado("victor","Escalante","Alpuche","9994413308",40000,1,True,"Si"))
     #userManager.Create(Empleado("Dios", "Si", "quiza", "8788", 25000, 1, "si"))
     #print(userManager.iniciarSesion("2788", "si"))
     #empleadito = Empleado("Diosito", "Si", "8788", 25000, 1, "si", 12)
