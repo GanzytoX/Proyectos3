@@ -1,28 +1,13 @@
 import tkinter as tk
 from tkinter import Tk
+from typing import Callable, Literal
+
 from customtkinter import CTkScrollableFrame
 from tkinter import messagebox
 import mysql.connector
 from Crud.CRUD_Usuario import CrudEmpleado
 from PIL import Image, ImageTk
-
-
-class NoImageFrame(tk.Frame):
-    def __init__(self, master, text: str = None, object = None):
-        super().__init__(master=master)
-        self.columnconfigure(0, weight=1)
-        self.columnconfigure(1, weight=4)
-        imagen_raw = Image.open("../img/dot.png")
-        imagen_raw.thumbnail((10, 10))
-        imagen_tk = ImageTk.PhotoImage(imagen_raw)
-        image = tk.Label(self, image=imagen_tk)
-        image.image = imagen_tk
-        image.grid(column=0, row=0)
-        if text is not None:
-            text = tk.Label(self, height=4, justify="left")
-        elif object is not None:
-            if hasattr()
-        text.grid(column=1, row=0, sticky="W")
+from multipledispatch import dispatch
 
 
 class AutomaticScrollableFrame(CTkScrollableFrame):
@@ -52,19 +37,55 @@ class AutomaticScrollableFrame(CTkScrollableFrame):
         raise IndexError("Index out of range")
 
 
+class NoImageFrame(tk.Frame):
+    def __init__(self, master: AutomaticScrollableFrame, text: str = None, objet = None):
+        super().__init__(master=master)
+        self.columnconfigure(0, weight=1)
+        self.columnconfigure(1, weight=4)
+        imagen_raw = Image.open("../img/dot.png")
+        imagen_raw.thumbnail((10, 10))
+        imagen_tk = ImageTk.PhotoImage(imagen_raw)
+        self.__image = tk.Label(self, image=imagen_tk)
+        self.__image.image = imagen_tk
+        self.__image.grid(column=0, row=0)
+        self.__text = tk.Label(self, height=4, justify="left", text=text)
+        self.__text.grid(column=1, row=0, sticky="W")
+        if objet is not None:
+            self.object = objet
+
+    def addEvent(
+            self: tk.W,
+            sequence: str | None = ...,
+            func: Callable[[object], None] | None = ...):
+        self.__function = func
+        string = super().bind(sequence, self.__returnObject)
+        self.__image.bind(sequence, self.__returnObject)
+        self.__text.bind(sequence, self.__returnObject)
+        return string
+
+    def __returnObject(self, event):
+        self.__function(self.object)
+
+
 class CUInterface(Tk):
     def __init__(self):
         super().__init__()
         self.__conection = mysql.connector.connect(
             user="root",
             host="localhost",
-            port="3306",
+            port="3307",
+            #port="3306",
+            #password="0123456789",
             database="pollosexpress"
         )
         self.__userManager = CrudEmpleado(self.__conection)
         self.title("Empleados")
         self.geometry("1200x700")
         self.resizable(False, False)
+
+        # No se si use esto pero será para ver si la interfaz ya ha sido activada
+        self.__singleActivated = False
+
         imagen_fondo = Image.open("../img/Empleado.png")
         imagen_fondo = ImageTk.PhotoImage(imagen_fondo)
 
@@ -92,11 +113,53 @@ class CUInterface(Tk):
         listEmpleados.pack(fill="both", padx=20)
 
 
-        listEmpleados.add(NoImageFrame(listEmpleados, "Hello World"))
+        #Agregar todos los empleados posibles:
+        empleados = self.__userManager.Read()
+        for empleado in empleados:
+            newElement = NoImageFrame(listEmpleados, f"{empleado.nombre} {empleado.apellido_paterno} {empleado.apellido_materno}", empleado)
+            newElement.addEvent("<Button-1>", self.__showEmpleado)
+            listEmpleados.add(newElement)
+        empleados.clear()
 
-        marginUnEmpleado = tk.Frame(self)
-        marginUnEmpleado.grid(column=1, row=0, padx=(30, 50), pady=50, ipadx=30, ipady=20, sticky="ewns")
+        self.__marginUnEmpleado = tk.Frame(self)
+        self.__marginUnEmpleado.grid(column=1, row=0, padx=(30, 50), pady=50, ipadx=30, ipady=20, sticky="ewns")
         self.mainloop()
+
+    # Esta funcion se manda a llamar cuando clickean algo de la lista
+    def __showEmpleado(self, empleado):
+        print("clicked")
+        # Si no se ha activado el panel que muestra un solo empleado, entonces lo crea
+        if not self.__singleActivated:
+            labelName = tk.Label(self.__marginUnEmpleado, text="Nombre: ")
+            labelName.grid(column=0, row=0)
+            inputName = tk.Entry(self.__marginUnEmpleado)
+            inputName.grid(column=0, row=1)
+
+            labelLastname1 = tk.Label(self.__marginUnEmpleado, text="Apellido Paterno: ")
+            labelLastname1.grid(column=1, row=0)
+            inputLastname1 = tk.Entry(self.__marginUnEmpleado)
+            inputLastname1.grid(column=1, row=1)
+
+            labelLastname2 = tk.Label(self.__marginUnEmpleado, text="Apellido Materno: ")
+            labelLastname2.grid(column=3, row=0)
+            inputLastname2 = tk.Entry(self.__marginUnEmpleado)
+            inputLastname2.grid(column=3, row=1)
+
+            labelCel = tk.Label(self.__marginUnEmpleado, text="Celular: ")
+            labelCel.grid(column=0, row=2)
+            inputCel = tk.Entry(self.__marginUnEmpleado)
+            inputCel.grid(column=0, row=3, columnspan=4, sticky="ew")
+
+        inputName.delete(0, tk.END)
+        inputName.insert(0, empleado.nombre)
+        inputLastname1.delete(0, tk.END)
+        inputLastname1.insert(0, empleado.apellido_paterno)
+        inputLastname2.delete(0, tk.END)
+        inputLastname2.insert(0, empleado.apellido_materno)
+        inputCel.delete(0, tk.END)
+        inputCel.insert(0, empleado.celular)
+
+
 
 
 ventana = CUInterface()

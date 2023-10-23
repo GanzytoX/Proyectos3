@@ -1,8 +1,7 @@
--- CREATE DATABASE pollosexpress;
--- USE pollosexpress;
 CREATE DATABASE pollosexpress;
 USE pollosexpress;
--- SHOW TABLES;
+
+SHOW TABLES;
 
 CREATE TABLE pago (
     id_pago INT NOT NULL AUTO_INCREMENT PRIMARY KEY,

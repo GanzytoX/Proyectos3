@@ -41,8 +41,22 @@ if __name__ != "__main__":
 
             self.__conexion.commit()
 
-        def Read(self, id=None):
-            raise NotImplementedError()
+        def Read(self, id=None, condition=None):
+            if id is None and condition is None:
+                script = "SELECT empleado.*, rol.nombre FROM empleado LEFT JOIN rol ON empleado.id_rol = rol.id_rol;"
+                self.__cursor.execute(script)
+                result = self.__cursor.fetchall()
+                empleados = []
+                for empleado in result:
+                    empleados.append(Empleado(nombre=empleado[1],
+                                              apellido_paterno=empleado[2],
+                                              apellido_materno=empleado[3],
+                                              celular=empleado[4],
+                                              sueldo=empleado[5],
+                                              id_rol=empleado[9],
+                                              contraseña=empleado[7],
+                                              administrator=empleado[8]))
+                return empleados
 
         def Delete(self, id) -> None:
             SQLScript = f"DELETE FROM empleado WHERE id_empleado = {id}"
