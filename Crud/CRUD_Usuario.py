@@ -35,7 +35,7 @@ if __name__ != "__main__":
                              f"VALUES('{empleado.nombre}', '{empleado.apellido_paterno}', '{empleado.apellido_materno}', '{empleado.celular}', {empleado.sueldo}, {empleado.id_rol}, {empleado.administrador})")
                 self.__cursor.execute(SQLScript)
             else:
-                SQLScript = ("INSERT INTO empleado(nombre, apellido_paterno, apellido_materno, celular, sueldo, id_rol, contraseña, administrator)"
+                SQLScript = ("INSERT INTO empleado(nombre, apellido_paterno, apellido_materno, celular, sueldo, id_rol, pass, administrator)"
                              f"VALUES('{empleado.nombre}', '{empleado.apellido_paterno}', '{empleado.apellido_materno}', '{empleado.celular}', {empleado.sueldo}, {empleado.id_rol}, '{empleado.contraseña}', {empleado.administrador})")
                 self.__cursor.execute(SQLScript)
 
