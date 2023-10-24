@@ -123,6 +123,9 @@ class CUInterface(Tk):
 
         self.__marginUnEmpleado = tk.Frame(self)
         self.__marginUnEmpleado.grid(column=1, row=0, padx=(30, 50), pady=50, ipadx=30, ipady=20, sticky="ewns")
+        self.__marginUnEmpleado.columnconfigure(0, weight=3)
+        self.__marginUnEmpleado.columnconfigure(1, weight=3)
+        self.__marginUnEmpleado.columnconfigure(2, weight=3)
         self.mainloop()
 
     # Esta funcion se manda a llamar cuando clickean algo de la lista
@@ -156,13 +159,18 @@ class CUInterface(Tk):
             inputSueldo = tk.Entry(self.__marginUnEmpleado)
             inputSueldo.grid(column=0, row=5, columnspan=4, sticky="ew")
 
+            labelRol = tk.Label(self.__marginUnEmpleado, text="Rol: ")
+            labelRol.grid(column=0, row=6)
+            inputRol = tk.Entry(self.__marginUnEmpleado)
+            inputRol.grid(column=0, row=7, columnspan=4, sticky="ew")
+
             labelContraseña = tk.Label(self.__marginUnEmpleado, text="Contraseña: ")
-            labelContraseña.grid(column=0, row=6)
+            labelContraseña.grid(column=0, row=8)
             inputContraseña = tk.Entry(self.__marginUnEmpleado)
-            inputContraseña.grid(column=0, row=7, columnspan=2, sticky="ew")
+            inputContraseña.grid(column=0, row=9, columnspan=2, sticky="ew")
 
             radioAdmin = tk.Checkbutton(self.__marginUnEmpleado, text="Admin", variable=isAdmin, onvalue=1, offvalue=0)
-            radioAdmin.grid(column=3, row=7, columnspan=4, sticky="ew")
+            radioAdmin.grid(column=3, row=9, columnspan=4, sticky="ew")
 
         inputName.delete(0, tk.END)
         inputName.insert(0, empleado.nombre)
@@ -174,6 +182,8 @@ class CUInterface(Tk):
         inputCel.insert(0, empleado.celular)
         inputSueldo.delete(0, tk.END)
         inputSueldo.insert(0, empleado.sueldo)
+        inputRol.delete(0, tk.END)
+        inputRol.insert(0, empleado.id_rol)
         inputContraseña.delete(0, tk.END)
         if empleado.contraseña is not None:
             inputContraseña.insert(0, empleado.contraseña)
