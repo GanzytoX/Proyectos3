@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 
 class CRUD(ABC):
 
+
     @abstractmethod
     def Create(self, object: object):
         raise NotImplementedError()
