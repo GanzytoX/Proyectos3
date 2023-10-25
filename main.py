@@ -3,6 +3,7 @@ import mysql.connector
 from Crud.CRUD_Usuario import *
 from PIL import Image, ImageTk
 from Crud.CRUDOfertas import CRUDPromociones, Promocion
+from  Crud.CRUD_Rol import *
 
 
 #Comenten el port y la contraseña cuando lo vayan a utilizar
@@ -59,7 +60,7 @@ if __name__ == "__main__":
     #productManager.Read(1)
     #productManager.Delete(3)
 
-    promocionManager = CRUDPromociones(conection)
+    #promocionManager = CRUDPromociones(conection)
     #promocionManager.Create(Promocion(1, "Esto es una prueba 2", "2023/10/21","2023/10/21",1))
 
     #for i in promocionManager.Read():
@@ -68,3 +69,10 @@ if __name__ == "__main__":
     #promocionManager.Update(5, Promocion(1,"Acabo de actualizar la prueba", "2023/10/20", "2023/10/29",1,2))
 
     #promocionManager.Delete(6)
+
+    roles = CrudRol(conection)
+    print()
+    #roles.Create(Rol("De manzana"))
+    #roles.Delete("a")
+    #roles.Update(1, Rol("De sus"))
+    roles.Read(1)
