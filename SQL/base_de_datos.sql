@@ -77,6 +77,7 @@ CREATE TABLE venta_producto (
     id_venta_producto INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     id_venta INT,
     id_producto INT,
+    cantidad INT NOT NULL,
     FOREIGN KEY (id_venta) REFERENCES venta(id_venta),
     FOREIGN KEY (id_producto) REFERENCES producto(id_producto)
 );
