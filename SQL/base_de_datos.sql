@@ -38,7 +38,9 @@ CREATE TABLE venta (
     id_pago INT,
     id_empleado INT,
     FOREIGN KEY (id_pago) REFERENCES pago(id_Pago),
-    FOREIGN KEY (id_empleado) REFERENCES empleado(id_Empleado)
+    FOREIGN KEY (id_empleado) REFERENCES empleado(id_Empleado),
+    id_cliente INT,
+    FOREIGN KEY(id_cliente) REFERENCES cliente(id_cliente)
 );
 
 
@@ -64,9 +66,7 @@ CREATE TABLE cliente (
     nombre VARCHAR(50) NOT NULL,
     apellido VARCHAR(50) NOT NULL,
     celular VARCHAR(11) NOT NULL,
-    direccion VARCHAR(150) NOT NULL,
-    id_venta INT,
-    FOREIGN KEY(id_venta) REFERENCES venta(id_Venta)
+    direccion VARCHAR(150) NOT NULL
 );
 
 CREATE TABLE tipo_de_promocion (
