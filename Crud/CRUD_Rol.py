@@ -14,12 +14,13 @@ if __name__ != "__main__":
 
         def _setId(self, id:int) -> None:
             if isinstance(id, int) and id > 0 :
+                print("puse los indices")
                 self.__id = id
             else:
                 raise ValueError("id must be an int and must be greater than 0")
 
         def getNombre(self) -> str:
-            return  self.__nombre
+            return self.__nombre
 
         def setNombre(self, nombre: str) -> None:
             if isinstance(nombre, str) and nombre != "" :

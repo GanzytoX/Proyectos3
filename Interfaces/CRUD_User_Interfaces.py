@@ -1,11 +1,12 @@
 import tkinter as tk
-from tkinter import Tk
+from tkinter import Tk, ttk
 from typing import Callable
 
 from customtkinter import CTkScrollableFrame
 from tkinter import messagebox
 import mysql.connector
 from Crud.CRUD_Usuario import CrudEmpleado, Empleado
+from  Crud.CRUD_Rol import CrudRol, Rol
 from PIL import Image, ImageTk
 from Crud.CRUD_Rol import *
 from multipledispatch import dispatch
@@ -80,6 +81,7 @@ class CUInterface(Tk):
             database="pollosexpress"
         )
         self.__userManager = CrudEmpleado(self.__conection)
+        self.__rolManager = CrudRol(self.__conection)
         self.title("Empleados")
         self.geometry("1200x700")
         self.resizable(False, False)
@@ -104,7 +106,6 @@ class CUInterface(Tk):
         # Creare un widget donde desplegar las cosas para buscar los empleados
         marginEmpleados = tk.Frame(self, height=500, width=250)
         marginEmpleados.grid(column=0, row=0, pady=50, ipadx=20, ipady=20, sticky=tk.NS)
-
 
         # Barra del buscador
         nav = tk.Entry(marginEmpleados, background="#397bb8", foreground="white")
@@ -146,32 +147,25 @@ class CUInterface(Tk):
         self.__labelSueldo = tk.Label(self.__marginUnEmpleado, text="Sueldo: ")
         self.__inputSueldo = tk.Entry(self.__marginUnEmpleado)
         self.__labelRol = tk.Label(self.__marginUnEmpleado, text="Rol: ")
-        self.__inputRol = tk.Entry(self.__marginUnEmpleado)
+        self.__inputRol = ttk.Combobox(self.__marginUnEmpleado)
+        self.__inputRol['state'] = 'readonly'
         self.__labelContraseña = tk.Label(self.__marginUnEmpleado, text="Contraseña: ")
         self.__inputContraseña = tk.Entry(self.__marginUnEmpleado)
         self.__radioAdmin = tk.Checkbutton(self.__marginUnEmpleado, text="Admin", variable=self.__isAdmin, onvalue=1,
                                            offvalue=0)
-
+        self.__roles = []
         self.mainloop()
-
 
     # Esta funcion se manda a llamar cuando clickean algo de la lista y pone los datos del empleado
     def __showEmpleado(self, empleado):
         self.__displayMenu()
-        self.__inputName.delete(0, tk.END)
         self.__inputName.insert(0, empleado.nombre)
-        self.__inputLastname1.delete(0, tk.END)
         self.__inputLastname1.insert(0, empleado.apellido_paterno)
-        self.__inputLastname2.delete(0, tk.END)
         self.__inputLastname2.insert(0, empleado.apellido_materno)
-        self.__inputCel.delete(0, tk.END)
         self.__inputCel.insert(0, empleado.celular)
-        self.__inputSueldo.delete(0, tk.END)
         self.__inputSueldo.insert(0, empleado.sueldo)
-        self.__inputRol.delete(0, tk.END)
-        self.__inputRol.insert(0, empleado.id_rol)
-        self.__inputContraseña.delete(0, tk.END)
-
+        roles = self.__updateRoles()
+        self.__inputRol.set(roles[roles.index(empleado.id_rol)])
         if empleado.contraseña is not None:
             self.__inputContraseña.insert(0, empleado.contraseña)
         self.__isAdmin.set(empleado.administrador)
@@ -181,34 +175,32 @@ class CUInterface(Tk):
         # Si no se ha activado el panel que muestra un solo empleado, entonces lo despliega
         if not self.__singleActivated:
             self.__labelName.grid(column=0, row=0)
-
             self.__inputName.grid(column=0, row=1)
-
             self.__labelLastname1.grid(column=1, row=0)
-
             self.__inputLastname1.grid(column=1, row=1)
-
             self.__labelLastname2.grid(column=3, row=0)
-
             self.__inputLastname2.grid(column=3, row=1)
-
             self.__labelCel.grid(column=0, row=2)
-
             self.__inputCel.grid(column=0, row=3, columnspan=4, sticky="ew")
-
             self.__labelSueldo.grid(column=0, row=4)
-
             self.__inputSueldo.grid(column=0, row=5, columnspan=4, sticky="ew")
-
             self.__labelRol.grid(column=0, row=6)
-
             self.__inputRol.grid(column=0, row=7, columnspan=4, sticky="ew")
-
             self.__labelContraseña.grid(column=0, row=8)
-
             self.__inputContraseña.grid(column=0, row=9, columnspan=2, sticky="ew")
-
             self.__radioAdmin.grid(column=3, row=9, columnspan=4, sticky="ew")
+            roles = self.__updateRoles()
+            self.__inputRol["values"] = roles
+            self.__singleActivated = True
+        else:
+            self.__inputName.delete(0, tk.END)
+            self.__inputLastname1.delete(0, tk.END)
+            self.__inputLastname2.delete(0, tk.END)
+            self.__inputCel.delete(0, tk.END)
+            self.__inputSueldo.delete(0, tk.END)
+            self.__inputContraseña.delete(0, tk.END)
+
+            self.__isAdmin.set(0)
 
     def __configureAgregarEmpleado(self):
         self.__displayMenu()
@@ -223,9 +215,10 @@ class CUInterface(Tk):
                 str(self.__inputLastname2.get()),
                 str(self.__inputCel.get()),
                 float(self.__inputSueldo.get()),
-                int(self.__inputRol.get()),
+                int(self.__findRol(self.__inputRol.get())),
                 bool(self.__isAdmin.get())
             )
+            print(empleado.id_rol)
         else:
             empleado = Empleado(
                 str(self.__inputName.get()),
@@ -233,17 +226,47 @@ class CUInterface(Tk):
                 str(self.__inputLastname2.get()),
                 str(self.__inputCel.get()),
                 float(self.__inputSueldo.get()),
-                int(self.__inputRol.get()),
+                self.__findRol(self.__inputRol.get()),
                 bool(self.__isAdmin.get()),
                 str(self.__inputContraseña.get())
             )
+
+        print(empleado.id_rol)
         self.__userManager.Create(empleado)
         newElement = NoImageFrame(self.__listEmpleados,
                                   f"{empleado.nombre} {empleado.apellido_paterno} {empleado.apellido_materno}",
                                   empleado)
         newElement.addEvent("<Button-1>", self.__showEmpleado)
         self.__listEmpleados.add(newElement)
+        self.__displayMenu()
 
+    def __updateRoles(self):
+        self.__roles = self.__rolManager.Read()
+        rolesNombre = []
+        for rol in self.__roles:
+            rolesNombre.append(rol.getNombre())
+        return rolesNombre
+
+    def __findRol(self, nombre: str):
+        for rol in self.__roles:
+            if rol.getNombre() == nombre:
+                return rol._getId()
+
+class RUInterface(Tk):
+    def __init__(self):
+        super().__init__()
+        self.__conection = mysql.connector.connect(
+            user="root",
+            host="localhost",
+            port="3307",
+            #port="3306",
+            #password="0123456789",
+            database="pollosexpress"
+        )
+        self.__userManager = CrudEmpleado(self.__conection)
+        self.title("Empleados")
+        self.geometry("1200x700")
+        self.resizable(False, False)
 
 ventana = CUInterface()
 
