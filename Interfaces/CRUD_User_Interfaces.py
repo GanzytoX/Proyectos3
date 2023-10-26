@@ -7,6 +7,7 @@ from tkinter import messagebox
 import mysql.connector
 from Crud.CRUD_Usuario import CrudEmpleado, Empleado
 from PIL import Image, ImageTk
+from Crud.CRUD_Rol import *
 from multipledispatch import dispatch
 
 
