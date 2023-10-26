@@ -38,7 +38,9 @@ CREATE TABLE venta (
     id_pago INT,
     id_empleado INT,
     FOREIGN KEY (id_pago) REFERENCES pago(id_Pago),
-    FOREIGN KEY (id_empleado) REFERENCES empleado(id_Empleado)
+    FOREIGN KEY (id_empleado) REFERENCES empleado(id_Empleado),
+    id_cliente INT,
+    FOREIGN KEY(id_cliente) REFERENCES cliente(id_cliente)
 );
 
 
@@ -77,6 +79,7 @@ CREATE TABLE venta_producto (
     id_venta_producto INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     id_venta INT,
     id_producto INT,
+    cantidad INT NOT NULL,
     FOREIGN KEY (id_venta) REFERENCES venta(id_venta),
     FOREIGN KEY (id_producto) REFERENCES producto(id_producto)
 );
