@@ -64,7 +64,9 @@ CREATE TABLE cliente (
     nombre VARCHAR(50) NOT NULL,
     apellido VARCHAR(50) NOT NULL,
     celular VARCHAR(11) NOT NULL,
-    direccion VARCHAR(150) NOT NULL
+    direccion VARCHAR(150) NOT NULL,
+    id_venta INT,
+    FOREIGN KEY(id_venta) REFERENCES venta(id_Venta)
 );
 
 CREATE TABLE tipo_de_promocion (
