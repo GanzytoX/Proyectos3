@@ -18,8 +18,8 @@ CREATE TABLE rol (
 CREATE TABLE empleado (
     id_empleado INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
+	apellido_paterno NVARCHAR(50) NOT NULL,
     apellido_materno NVARCHAR(50) NOT NULL,
-    apellido_paterno NVARCHAR(50) NOT NULL,
     celular VARCHAR(11) NOT NULL,
     sueldo DOUBLE NOT NULL,
     id_rol INT,
@@ -30,6 +30,14 @@ CREATE TABLE empleado (
 
 ALTER TABLE empleado
 ADD COLUMN administrator bool NOT NULL;
+
+CREATE TABLE cliente (
+    id_cliente INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL,
+    apellido VARCHAR(50) NOT NULL,
+    celular VARCHAR(11) NOT NULL,
+    direccion VARCHAR(150) NOT NULL
+);
 
 CREATE TABLE venta (
     id_Venta INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -61,13 +69,6 @@ CREATE TABLE gasto (
     FOREIGN KEY (id_empleado) REFERENCES empleado(id_empleado)
 );
 
-CREATE TABLE cliente (
-    id_cliente INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(50) NOT NULL,
-    apellido VARCHAR(50) NOT NULL,
-    celular VARCHAR(11) NOT NULL,
-    direccion VARCHAR(150) NOT NULL
-);
 
 CREATE TABLE tipo_de_promocion (
     id_tipo_promocion INT NOT NULL AUTO_INCREMENT PRIMARY KEY,

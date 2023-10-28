@@ -23,7 +23,7 @@ if __name__ != "__main__":
             return self.__nombre
 
         def setNombre(self, nombre: str) -> None:
-            if isinstance(nombre, str) and nombre != "" :
+            if isinstance(nombre, str) and nombre != "":
                 self.__nombre = nombre
             else:
                 raise ValueError("Nombre must be a string and can't be an empty string")

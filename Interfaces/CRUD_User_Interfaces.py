@@ -33,6 +33,11 @@ class AutomaticScrollableFrame(CTkScrollableFrame):
             self.__items[index].remove(index)
             item.destroy()
 
+    def clear(self):
+        for objeto in self.__items:
+            objeto.destroy()
+            self.__items.clear()
+
     def getItem(self, index):
         if len(self.__items) > index >= 0:
             return self.__items[index]
@@ -40,7 +45,7 @@ class AutomaticScrollableFrame(CTkScrollableFrame):
 
 
 class NoImageFrame(tk.Frame):
-    def __init__(self, master: AutomaticScrollableFrame, text: str = None, objet = None):
+    def __init__(self, master: AutomaticScrollableFrame, text: str, objet):
         super().__init__(master=master)
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=4)
@@ -52,8 +57,7 @@ class NoImageFrame(tk.Frame):
         self.__image.grid(column=0, row=0)
         self.__text = tk.Label(self, height=4, justify="left", text=text)
         self.__text.grid(column=1, row=0, sticky="W")
-        if objet is not None:
-            self.object = objet
+        self.object = objet
 
     def addEvent(
             self: tk.W,
@@ -86,7 +90,7 @@ class CUInterface(Tk):
         self.geometry("1200x700")
         self.resizable(False, False)
 
-        # No se si use esto pero será para ver si la interfaz ya ha sido activada
+        # para ver si la interfaz ya ha sido activada
         self.__singleActivated = False
 
         imagen_fondo = Image.open("../img/Empleado.png")
@@ -120,12 +124,7 @@ class CUInterface(Tk):
         agregarEmpleadoButton.pack(pady=10, fill="x", padx=20)
 
         #Agregar todos los empleados posibles:
-        empleados = self.__userManager.Read()
-        for empleado in empleados:
-            newElement = NoImageFrame(self.__listEmpleados, f"{empleado.nombre} {empleado.apellido_paterno} {empleado.apellido_materno}", empleado)
-            newElement.addEvent("<Button-1>", self.__showEmpleado)
-            self.__listEmpleados.add(newElement)
-        empleados.clear()
+        self.__updateEmpleados()
 
         # Configura la grid para poder poner datos de un empleado
         self.__marginUnEmpleado = tk.Frame(self)
@@ -153,11 +152,21 @@ class CUInterface(Tk):
         self.__inputContraseña = tk.Entry(self.__marginUnEmpleado)
         self.__radioAdmin = tk.Checkbutton(self.__marginUnEmpleado, text="Admin", variable=self.__isAdmin, onvalue=1,
                                            offvalue=0)
+
+        # Boton para agregar empleado
+        self.__agregarEmpleadoButton = tk.Button(self.__marginUnEmpleado, text="Agregar Empleado",
+                                          command=self.__agregarEmpleado)
+
+        # Es el boton para poder mandar a editar un empleado
+        self.__editEmpleadoButton = tk.Button(self.__marginUnEmpleado, text="Editar empleado", command=self.__editEmpleado)
+
         self.__roles = []
+        self.__empleadoActivo = None
         self.mainloop()
 
     # Esta funcion se manda a llamar cuando clickean algo de la lista y pone los datos del empleado
     def __showEmpleado(self, empleado):
+        self.__agregarEmpleadoButton.grid_forget()
         self.__displayMenu()
         self.__inputName.insert(0, empleado.nombre)
         self.__inputLastname1.insert(0, empleado.apellido_paterno)
@@ -169,7 +178,9 @@ class CUInterface(Tk):
         if empleado.contraseña is not None:
             self.__inputContraseña.insert(0, empleado.contraseña)
         self.__isAdmin.set(empleado.administrador)
-        self.__radioAdmin.mainloop()
+        self.__radioAdmin.update()
+        self.__editEmpleadoButton.grid(column=0, row=10, pady=20, sticky="w")
+        self.__empleadoActivo = empleado
 
     def __displayMenu(self):
         # Si no se ha activado el panel que muestra un solo empleado, entonces lo despliega
@@ -204,10 +215,11 @@ class CUInterface(Tk):
 
     def __configureAgregarEmpleado(self):
         self.__displayMenu()
-        agregarEmpleadoButton = tk.Button(self.__marginUnEmpleado, text="Agregar Empleado", command=self.__agregarEmpleado)
-        agregarEmpleadoButton.grid(column=0, row=10, pady=20, sticky="w")
+        self.__editEmpleadoButton.grid_forget()
+        self.__agregarEmpleadoButton.grid(column=0, row=10, pady=20, sticky="w")
 
-    def __agregarEmpleado(self):
+
+    def __createEmpleadoObject(self) -> Empleado:
         if self.__inputContraseña == "":
             empleado = Empleado(
                 str(self.__inputName.get()),
@@ -218,7 +230,6 @@ class CUInterface(Tk):
                 int(self.__findRol(self.__inputRol.get())),
                 bool(self.__isAdmin.get())
             )
-            print(empleado.id_rol)
         else:
             empleado = Empleado(
                 str(self.__inputName.get()),
@@ -230,14 +241,13 @@ class CUInterface(Tk):
                 bool(self.__isAdmin.get()),
                 str(self.__inputContraseña.get())
             )
+        return empleado
 
+    def __agregarEmpleado(self):
+        empleado = self.__createEmpleadoObject()
         print(empleado.id_rol)
         self.__userManager.Create(empleado)
-        newElement = NoImageFrame(self.__listEmpleados,
-                                  f"{empleado.nombre} {empleado.apellido_paterno} {empleado.apellido_materno}",
-                                  empleado)
-        newElement.addEvent("<Button-1>", self.__showEmpleado)
-        self.__listEmpleados.add(newElement)
+        self.__updateEmpleados()
         self.__displayMenu()
 
     def __updateRoles(self):
@@ -250,7 +260,23 @@ class CUInterface(Tk):
     def __findRol(self, nombre: str):
         for rol in self.__roles:
             if rol.getNombre() == nombre:
-                return rol._getId()
+                return rol.getId()
+
+    def __updateEmpleados(self):
+        self.__listEmpleados.clear()
+        empleados = self.__userManager.Read()
+        for empleado in empleados:
+            newElement = NoImageFrame(self.__listEmpleados,
+                                      f"{empleado.nombre} {empleado.apellido_paterno} {empleado.apellido_materno}",
+                                      empleado)
+            newElement.addEvent("<Button-1>", self.__showEmpleado)
+            self.__listEmpleados.add(newElement)
+        empleados.clear()
+
+    def __editEmpleado(self):
+        empleado = self.__createEmpleadoObject()
+        self.__userManager.Update(self.__empleadoActivo.id, empleado)
+        self.__updateEmpleados()
 
 class RUInterface(Tk):
     def __init__(self):
