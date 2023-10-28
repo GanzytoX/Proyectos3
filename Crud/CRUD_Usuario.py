@@ -55,7 +55,8 @@ if __name__ != "__main__":
                                               sueldo=empleado[5],
                                               id_rol=empleado[9],
                                               contraseña=empleado[7],
-                                              administrator=empleado[8]))
+                                              administrator=empleado[8],
+                                              id=empleado[0]))
                 return empleados
 
         def Delete(self, id) -> None:
@@ -64,10 +65,14 @@ if __name__ != "__main__":
             self.__conexion.commit()
 
         def Update(self, id, empleado: Empleado) -> None:
-            SQLScript = (f"UPDATE empleado SET nombre = '{empleado.nombre}', apellido_paterno = '{empleado.apellido_paterno}', apellido_materno = '{empleado.apellido_materno}'"
-                         f"celular = '{empleado.celular}', sueldo = {empleado.sueldo}, id_rol = {empleado.id_rol}, contraseña = '{empleado.contraseña}', administrator = {empleado.administrador}"
-                         f"WHERE id_Empleado = {id}")
-            self.__cursor.execute(SQLScript)
+
+            SQLScript = (f"UPDATE empleado SET nombre = %s, apellido_paterno = %s, apellido_materno = %s, "
+                             f"celular = %s, sueldo = %s, id_rol = %s, pass = %s, administrator = %s "
+                             f"WHERE id_Empleado = {id}")
+            valores = (empleado.nombre, empleado.apellido_paterno, empleado.apellido_materno, empleado.celular,
+                           empleado.sueldo, empleado.id_rol, empleado.contraseña, empleado.administrador)
+
+            self.__cursor.execute(SQLScript, valores)
             self.__conexion.commit()
 
         def iniciarSesion(self, numeroTelefono, contraseña) -> (bool, bool):

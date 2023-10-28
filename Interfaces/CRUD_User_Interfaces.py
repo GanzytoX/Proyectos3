@@ -6,7 +6,6 @@ from customtkinter import CTkScrollableFrame
 from tkinter import messagebox
 import mysql.connector
 from Crud.CRUD_Usuario import CrudEmpleado, Empleado
-from  Crud.CRUD_Rol import CrudRol, Rol
 from PIL import Image, ImageTk
 from Crud.CRUD_Rol import *
 from multipledispatch import dispatch
@@ -179,8 +178,9 @@ class CUInterface(Tk):
             self.__inputContraseña.insert(0, empleado.contraseña)
         self.__isAdmin.set(empleado.administrador)
         self.__radioAdmin.update()
-        self.__editEmpleadoButton.grid(column=0, row=10, pady=20, sticky="w")
         self.__empleadoActivo = empleado
+        self.__editEmpleadoButton.grid(column=0, row=10, pady=20, sticky="w")
+
 
     def __displayMenu(self):
         # Si no se ha activado el panel que muestra un solo empleado, entonces lo despliega
@@ -200,9 +200,7 @@ class CUInterface(Tk):
             self.__labelContraseña.grid(column=0, row=8)
             self.__inputContraseña.grid(column=0, row=9, columnspan=2, sticky="ew")
             self.__radioAdmin.grid(column=3, row=9, columnspan=4, sticky="ew")
-            roles = self.__updateRoles()
-            self.__inputRol["values"] = roles
-            self.__singleActivated = True
+
         else:
             self.__inputName.delete(0, tk.END)
             self.__inputLastname1.delete(0, tk.END)
@@ -213,8 +211,14 @@ class CUInterface(Tk):
 
             self.__isAdmin.set(0)
 
+        roles = self.__updateRoles()
+        self.__inputRol["values"] = roles
+        self.__inputRol.update()
+        self.__singleActivated = True
+
     def __configureAgregarEmpleado(self):
         self.__displayMenu()
+
         self.__editEmpleadoButton.grid_forget()
         self.__agregarEmpleadoButton.grid(column=0, row=10, pady=20, sticky="w")
 
@@ -260,7 +264,7 @@ class CUInterface(Tk):
     def __findRol(self, nombre: str):
         for rol in self.__roles:
             if rol.getNombre() == nombre:
-                return rol.getId()
+                return rol._getId()
 
     def __updateEmpleados(self):
         self.__listEmpleados.clear()
@@ -275,6 +279,7 @@ class CUInterface(Tk):
 
     def __editEmpleado(self):
         empleado = self.__createEmpleadoObject()
+        print(self.__empleadoActivo.id)
         self.__userManager.Update(self.__empleadoActivo.id, empleado)
         self.__updateEmpleados()
 
