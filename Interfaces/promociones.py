@@ -20,22 +20,22 @@ def buscar_promociones():
     texto_busqueda = entry_busqueda.get()
     # Aquí deberías realizar la búsqueda de promociones con el texto ingresado
     # y mostrar los resultados en el Listbox, incluyendo los precios
-    # Simulación de resultados en el Listbox
-    resultados = [("2 pzs. de Pollo", "$10.99"), ("1 pz + 1/4 de Pollo", "$7.99"), ("Promoción 3", "$5.99"), ("Promoción 4", "$9.99")]
+    resultados = [("2 pzs. de Pollo", "$10.99"), ("1 pz + 1/4 de Pollo", "$7.99")]
     # Borra el contenido actual del Listbox
     listbox_promociones.delete(0, tk.END)
     # Agrega los resultados al Listbox con sus precios
-    for promoción, precio in resultados:
-        listbox_promociones.insert(tk.END, f"{promoción} - {precio}")
+    for promocion, precio in resultados:
+        listbox_promociones.insert(tk.END, f"{promocion} - {precio}")
 
 # Función para agregar promoción
 def agregar_promocion():
-    # Aquí deberías agregar la lógica para agregar una nueva promoción
+    texto_busqueda = entry_busqueda.get()
+    listbox_promociones.insert(tk.END, f"{texto_busqueda}")
     pass
 
 # Función para actualizar promociones
 def actualizar_promociones():
-    # Aquí deberías agregar la lógica para actualizar la lista de promociones
+
     pass
 
 # Crea la ventana principal
@@ -53,12 +53,12 @@ imagen_fondo = ImageTk.PhotoImage(imagen_fondo)
 label_imagen = tk.Label(ventana, image=imagen_fondo)
 label_imagen.pack(fill=tk.BOTH, expand=True)
 
-# Crea un frame a la derecha de la ventana
+# Crea un frame a la izquierda del frame
 frame_pequeno = tk.Frame(ventana, bg=c_gris, width=800, height=400)
-frame_pequeno.place(relx=0.25, rely=0.5, anchor=tk.W)  # Mueve el frame hacia la derecha
+frame_pequeno.place(relx=0.25, rely=0.5, anchor=tk.W)
 
 # Crea un contenedor para Entry y Botón
-contenedor_entry_boton = tk.Frame(frame_pequeno)
+contenedor_entry_boton = tk.Frame(frame_pequeno, bg=c_gris)
 contenedor_entry_boton.pack(side=tk.TOP, padx=10, pady=10)
 
 # Crea un Entry para la búsqueda
@@ -69,12 +69,12 @@ entry_busqueda.pack(side=tk.LEFT, padx=(0, 10))  # Agrega espacio a la derecha d
 boton_buscar = tk.Button(contenedor_entry_boton, text="Buscar", command=buscar_promociones)
 boton_buscar.pack(side=tk.LEFT)
 
-# Crea un Listbox para mostrar las promociones con padding
+# Crea un Listbox para mostrar las promociones
 listbox_promociones = tk.Listbox(frame_pequeno)
 listbox_promociones.pack(side=tk.TOP, padx=10, pady=10, fill=tk.BOTH, expand=True)
 
 # Crea un contenedor para los botones "Agregar Promoción" y "Actualizar"
-contenedor_botones = tk.Frame(frame_pequeno)
+contenedor_botones = tk.Frame(frame_pequeno, bg=c_gris)
 contenedor_botones.pack(side=tk.TOP, padx=10, pady=10)
 
 # Crea un botón "Agregar Promoción" debajo del Listbox
@@ -85,8 +85,9 @@ boton_agregar_promocion.pack(side=tk.LEFT)
 espacio_horizontal = tk.Label(contenedor_botones, text=" ", bg=c_gris)
 espacio_horizontal.pack(side=tk.LEFT, padx=10)  # Espacio horizontal entre los botones
 
-# Crea un botón "Actualizar" al lado del botón "Agregar Promoción"
+# Crea un botón "Actualizar"
 boton_actualizar = tk.Button(contenedor_botones, text="Actualizar", command=actualizar_promociones)
 boton_actualizar.pack(side=tk.LEFT)
+
 
 ventana.mainloop()
