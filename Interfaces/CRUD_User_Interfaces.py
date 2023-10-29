@@ -48,14 +48,17 @@ class AutomaticScrollableFrame(CTkScrollableFrame):
     def countItems(self) -> int:
         return len(self.__items)
 
+class ListFrame(tk.Frame):
+    __image = None
+    __text = str
+    __object = None
 
-class NoImageFrame(tk.Frame):
-    def __init__(self, master: AutomaticScrollableFrame, text: str, objet):
+    def __init__(self, master: AutomaticScrollableFrame, text: str, objet, imageroute: str, imageSize: (int, int)):
         super().__init__(master=master)
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=4)
-        imagen_raw = Image.open("../img/dot.png")
-        imagen_raw.thumbnail((10, 10))
+        imagen_raw = Image.open(imageroute)
+        imagen_raw.thumbnail(imageSize)
         imagen_tk = ImageTk.PhotoImage(imagen_raw)
         self.__image = tk.Label(self, image=imagen_tk)
         self.__image.image = imagen_tk
@@ -76,6 +79,10 @@ class NoImageFrame(tk.Frame):
 
     def __returnObject(self, event):
         self.__function(self.object)
+
+class NoImageFrame(ListFrame):
+    def __init__(self, master: AutomaticScrollableFrame, text: str, objet):
+        super().__init__(master, text, objet, "../img/dot.png", (10, 10))
 
 
 class CUInterface(Tk):
