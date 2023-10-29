@@ -28,9 +28,11 @@ CREATE TABLE empleado (
     FOREIGN KEY (id_rol) REFERENCES rol(id_Rol),
     CONSTRAINT UQcelular UNIQUE(celular)
 );
-
 ALTER TABLE empleado
 ADD COLUMN administrator bool NOT NULL;
+
+#INSERT INTO empleado (nombre, apellido_paterno, apellido_materno, celular, sueldo, pass, administrator) 
+#VALUES ('NombreEmpleado', 'ApellidoPaterno', 'ApellidoMaterno', '1234567890', 2000.00, 'pass', 1);
 
 CREATE TABLE cliente (
     id_cliente INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
