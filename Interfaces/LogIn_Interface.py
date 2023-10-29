@@ -18,7 +18,7 @@ c_azul_palido = "#AFEEEE"
 
 
 # Importo el Crud Usuario para poder hacer inicio de sesion y le paso un conection, o sea coneccion a la BD
-conection = mysql.connector.connect(
+connection = mysql.connector.connect(
         user="root",
         host="localhost",
         #port="3307",
@@ -26,7 +26,7 @@ conection = mysql.connector.connect(
         password="0123456789",
         database="pollosexpress"
     )
-userManager = CrudEmpleado(conection)
+userManager = CrudEmpleado(connection)
 
 # Funcion para poner en marcha el inicio de sesion
 def iniciarSesion():
@@ -35,22 +35,26 @@ def iniciarSesion():
 
     if user != "" and password != "":
         try:
+            userManager = CrudEmpleado(connection)  # Crear una instancia de CrudEmpleado
             result = userManager.iniciarSesion(user, password)
+
             if result[0]:
-                messagebox.showinfo("Message", "Iniciando sesión")
+                messagebox.showinfo("Message", "Iniciando sesión...")
                 if result[1]:
-                    print("Es admin")
-
+                    print("Es admin.")
+                    # Realiza acciones específicas para usuarios administradores
                 else:
-                    print("No Es admin")
+                    print("No es admin.")
+                    # Realiza acciones para usuarios no administradores
                 return
-            messagebox.showerror("Error", "Usuario o contraseña incorrectos")
+            messagebox.showerror("Error", "Usuario o contraseña incorrecto")
             return
-        except:
-            messagebox.showerror("Error", "Usuario no registrado")
-            return 
+        except Exception as e:
+            messagebox.showerror("Error", "Error al iniciar sesión: " + str(e))
+            return
 
-    messagebox.showerror("Error", "Rellene los campos por favor")
+    messagebox.showerror("Error", "Debe rellenar todos los campos")
+
 
 # Crear una ventana de inicio de sesión
 ventana = Tk()

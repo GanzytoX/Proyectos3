@@ -1,6 +1,7 @@
-CREATE DATABASE pollosexpress;
+#CREATE DATABASE pollosexpress;
 USE pollosexpress;
 
+#DROP TABLE IF EXISTS pago, rol, empleado, cliente, venta, producto, gasto, tipo_de_promocion, venta_producto, promocion;
 SHOW TABLES;
 
 CREATE TABLE pago (
@@ -96,3 +97,5 @@ CREATE TABLE promocion (
     FOREIGN KEY (id_tipo_promocion) REFERENCES tipo_de_promocion(id_tipo_promocion),
     CONSTRAINT fecha_valida CHECK (fecha_de_inicio <= fecha_de_finalizacion)
 );
+
+SHOW TABLES;
