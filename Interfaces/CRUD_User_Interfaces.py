@@ -33,14 +33,20 @@ class AutomaticScrollableFrame(CTkScrollableFrame):
             item.destroy()
 
     def clear(self):
-        for objeto in self.__items:
-            objeto.destroy()
-            self.__items.clear()
+        print("activado")
+        print(self.__items)
+        for item in self.__items:
+            item.destroy()
+        self.__items.clear()
+        self.update()
 
     def getItem(self, index):
         if len(self.__items) > index >= 0:
             return self.__items[index]
         raise IndexError("Index out of range")
+
+    def countItems(self) -> int:
+        return len(self.__items)
 
 
 class NoImageFrame(tk.Frame):
@@ -159,6 +165,10 @@ class CUInterface(Tk):
         # Es el boton para poder mandar a editar un empleado
         self.__editEmpleadoButton = tk.Button(self.__marginUnEmpleado, text="Editar empleado", command=self.__editEmpleado)
 
+        # Boton para poder mandar a eliminar un empleado
+        self.__deleteEmpleadoButton = tk.Button(self.__marginUnEmpleado, text="Eliminar empleado",
+                                              command=self.__deleteEmpleado)
+
         self.__roles = []
         self.__empleadoActivo = None
         self.mainloop()
@@ -180,6 +190,7 @@ class CUInterface(Tk):
         self.__radioAdmin.update()
         self.__empleadoActivo = empleado
         self.__editEmpleadoButton.grid(column=0, row=10, pady=20, sticky="w")
+        self.__deleteEmpleadoButton.grid(column=1, row=10, pady=20, sticky="w")
 
 
     def __displayMenu(self):
@@ -220,6 +231,7 @@ class CUInterface(Tk):
         self.__displayMenu()
 
         self.__editEmpleadoButton.grid_forget()
+        self.__deleteEmpleadoButton.grid_forget()
         self.__agregarEmpleadoButton.grid(column=0, row=10, pady=20, sticky="w")
 
 
@@ -277,11 +289,22 @@ class CUInterface(Tk):
             self.__listEmpleados.add(newElement)
         empleados.clear()
 
+
     def __editEmpleado(self):
         empleado = self.__createEmpleadoObject()
-        print(self.__empleadoActivo.id)
         self.__userManager.Update(self.__empleadoActivo.id, empleado)
         self.__updateEmpleados()
+
+    def __deleteEmpleado(self):
+        self.__userManager.Delete(self.__empleadoActivo.id)
+        self.__empleadoActivo = None
+        self.__updateEmpleados()
+        self.__displayMenu()
+        if self.__listEmpleados.countItems() > 0:
+            self.__showEmpleado(self.__listEmpleados.getItem(0).object)
+        else:
+            self.__configureAgregarEmpleado()
+
 
 class RUInterface(Tk):
     def __init__(self):

@@ -14,7 +14,6 @@ if __name__ != "__main__":
 
         def _setId(self, id:int) -> None:
             if isinstance(id, int) and id > 0 :
-                print("puse los indices")
                 self.__id = id
             else:
                 raise ValueError("id must be an int and must be greater than 0")
