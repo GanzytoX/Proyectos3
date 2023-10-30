@@ -1,9 +1,9 @@
-#from Crud.CRUD_producto import CrudProducto, Producto
+from Crud.CRUD_producto import CrudProducto, Producto
 import mysql.connector
 from Crud.CRUD_Usuario import *
 from PIL import Image, ImageTk
 from Crud.CRUDOfertas import CRUDPromociones, Promocion
-from  Crud.CRUD_Rol import *
+from Crud.CRUD_Rol import *
 
 
 #Comenten el port y la contraseña cuando lo vayan a utilizar
@@ -39,8 +39,8 @@ if __name__ == "__main__":
     #print(userManager.iniciarSesion("2788", "si"))
     #empleadito = Empleado("Diosito", "Si", "8788", 25000, 1, "si", 12)
     #userManager.Update(empleadito)
-    #gestorProducto = Crud_Producto(conection)
-    #gestorProducto.add("si", "a veces", 200, "img/mimikiu.png")
+    gestorProducto = CrudProducto(conection)
+    gestorProducto.Create(Producto("si", "a veces", 200, "img/mimikiu.png"))
 
     #productManager = CrudProducto(conection)
     #with open('img/logo.png', 'rb') as archivo:

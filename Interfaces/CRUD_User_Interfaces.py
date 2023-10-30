@@ -110,7 +110,6 @@ class CUInterface(Tk):
 
         # Crear un widget Label para mostrar la imagen de fondo
         label_imagen = tk.Label(self, image=imagen_fondo)
-        #label_imagen.imagen = imagen_fondo
         label_imagen.place(relwidth=1, relheight=1)  # Estirar la imagen para que cubra toda la ventana
 
         #Configurar cuadrícula de la ventana
@@ -329,6 +328,6 @@ class RUInterface(Tk):
         self.geometry("1200x700")
         self.resizable(False, False)
 
-ventana = CUInterface()
+#ventana = CUInterface()
 
 

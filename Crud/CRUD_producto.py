@@ -27,7 +27,7 @@ if __name__ != "__main__":
 
         def Create(self, product: Producto):
             script = "INSERT INTO producto(nombre, descripcion, precio, imagen) VALUES (%s, %s, %s, %s)"
-            datos_producto = (product.nombre, product.descripcion, product.precio, product.driveCode)
+            datos_producto = (product.nombre, product.descripcion, product.precio, product._driveCode)
             self.__cursor.execute(script, datos_producto) #seria fetch si pidiera datos
             self.__conection.commit() # commit siempre que se modifique la tabla
 
@@ -59,9 +59,8 @@ if __name__ != "__main__":
                 result = self.__cursor.fetchall()
                 productos = []
                 for resultado in result:
-                    route = f"img/product_{resultado.name}"
+                    route = f"../userImages/product_{resultado[1]}"
                     self.__driveConnection.downloadImage(resultado[4], route)
-
                     producto = Producto(resultado[1], resultado[2], resultado[3], route, resultado[0], driveCode=resultado[4])
                     productos.append(producto)
                 return productos
@@ -69,7 +68,7 @@ if __name__ != "__main__":
                 script = f"SELECT * from producto WHERE id_producto = {id}"
                 self.__cursor.execute(script)
                 resultado = self.__cursor.fetchone()
-                route = f"img/product_{resultado[1]}.png"
+                route = f"userImages/product_{resultado[1]}.png"
                 print(resultado[4])
                 self.__driveConnection.downloadImage(resultado[4], route)
                 producto = Producto(resultado[1], resultado[2], resultado[3], route, resultado[0], driveCode=resultado[4])

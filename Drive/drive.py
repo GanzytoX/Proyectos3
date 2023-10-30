@@ -1,11 +1,11 @@
 import io
 from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload
-from Google import Create_Service
+from Drive.Google import Create_Service
 
 if __name__ != "__main__":
     class DriveManager:
         def __init__(self):
-            CLIENT_SECRET_FILE = "chatbot.json"
+            CLIENT_SECRET_FILE = "../chatbot.json"
             API_NAME = "drive"
             API_VERSION = "v3"
             SCOPES = ["https://www.googleapis.com/auth/drive"]
