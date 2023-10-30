@@ -61,6 +61,8 @@ ventana = Tk()
 ventana.title("Inicio de sesión")
 ventana.geometry("1200x700")
 ventana.resizable(False, False)
+ventana.iconbitmap("../img/logo.ico")
+
 
 # Cargar la imagen de fondo
 imagen_fondo = Image.open("../img/inicioDeSesion.png")
