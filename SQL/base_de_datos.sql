@@ -30,9 +30,10 @@ CREATE TABLE empleado (
 ALTER TABLE empleado
 ADD COLUMN administrator bool NOT NULL;
 
-#DELETE FROM empleado WHERE celular = 1234567890;
+#DELETE FROM empleado WHERE nombre = 'Gon';
 #INSERT INTO empleado (nombre, apellido_paterno, apellido_materno, celular, sueldo, pass, administrator) 
-#VALUES ('Gon', 'Zar', 'Pado', '1234567890', 1000000.00, '1234', 1);
+#VALUES ('Gon', 'Zar', 'Pado', '1111111111', 1000000.00, '1111', 1);
+#SELECT * FROM empleado;
 
 CREATE TABLE cliente (
     id_cliente INT NOT NULL AUTO_INCREMENT PRIMARY KEY,

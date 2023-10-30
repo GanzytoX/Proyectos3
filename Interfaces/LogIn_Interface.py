@@ -26,35 +26,35 @@ connection = mysql.connector.connect(
         password="0123456789",
         database="pollosexpress"
     )
-userManager = CrudEmpleado(connection)
 
-# Funcion para poner en marcha el inicio de sesion
+# Función para iniciar sesión
 def iniciarSesion():
-    user = usuario_entry.get()
-    password = contrasena_entry.get()
+    user = user_entry.get()
+    password = password_entry.get()
 
     if user != "" and password != "":
         try:
-            userManager = CrudEmpleado(connection)  # Crear una instancia de CrudEmpleado
-            result = userManager.iniciarSesion(user, password)
+            userManager = CrudEmpleado(connection)
+            result, is_administrator = userManager.iniciarSesion(user, password)
 
-            if result[0]:
-                messagebox.showinfo("Message", "Iniciando sesión...")
-                if result[1]:
-                    print("Es admin.")
-                    # Realiza acciones específicas para usuarios administradores
-                else:
-                    print("No es admin.")
-                    # Realiza acciones para usuarios no administradores
+            if result:
+                messagebox.showinfo("Mensaje de inicio de sesión", "Sesión iniciada con éxito")
+                if is_administrator == 1:
+                    messagebox.showinfo("Administrador", "Usuario es administrador")
                 return
-            messagebox.showerror("Error", "Usuario o contraseña incorrecto")
-            return
+            else:
+                messagebox.showerror("Error de inicio de sesión", "Usuario o contraseña incorrecto(s)")
+                return
+
         except Exception as e:
-            messagebox.showerror("Error", "Error al iniciar sesión: " + str(e))
+            messagebox.showerror("Error de inicio de sesión", "ERROR: " + str(e))
             return
 
     messagebox.showerror("Error", "Debe rellenar todos los campos")
 
+def limitar_caracteres(entry, max_chars):
+    if len(entry.get()) > max_chars:
+        entry.delete(max_chars, tk.END)
 
 # Crear una ventana de inicio de sesión
 ventana = Tk()
@@ -65,63 +65,65 @@ ventana.iconbitmap("../img/logo.ico")
 
 
 # Cargar la imagen de fondo
-imagen_fondo = Image.open("../img/inicioDeSesion.png")
-imagen_fondo = ImageTk.PhotoImage(imagen_fondo)
+background_image = Image.open("../img/inicioDeSesion.png")
+background_image = ImageTk.PhotoImage(background_image)
 
 # Crear un widget Label para mostrar la imagen de fondo
-label_imagen = tk.Label(ventana, image=imagen_fondo)
-label_imagen.place(relwidth=1, relheight=1)  # Estirar la imagen para que cubra toda la ventana
+bgImage_label = tk.Label(ventana, image=background_image)
+bgImage_label.place(relwidth=1, relheight=1)  # Estirar la imagen para que cubra toda la ventana
 
 # Crear un frame para los elementos de inicio de sesión
 frame = tk.Frame(ventana, bg=c_gris_claro, padx=100, pady=100)
 frame.pack(expand=True)
 
 # Cargar la imagen del icono de foto de perfil y ajustar su tamaño (más pequeño)
-icono_imagen = Image.open("../img/iconoFotoDePerfil.png")
-icono_imagen = icono_imagen.resize((50, 50), Image.LANCZOS)  # Ajusta el tamaño aquí
-icono_imagen = ImageTk.PhotoImage(icono_imagen)
+icon_image = Image.open("../img/iconoFotoDePerfil.png")
+icon_image = icon_image.resize((50, 50), Image.LANCZOS)
+icon_image = ImageTk.PhotoImage(icon_image)
 
 # Agregar la imagen en el frame, arriba de la etiqueta "Login User"
-icono_label = tk.Label(frame, image=icono_imagen, bg=c_gris_claro)
-icono_label.pack(pady=10)
+icon_label = tk.Label(frame, image=icon_image, bg=c_gris_claro)
+icon_label.pack(pady=10)
 
 # Etiqueta "Login User" en la parte superior en negritas
 login_label = tk.Label(frame, text="Login User", bg=c_gris_claro, font=("Helvetica", 16, "bold"), justify="center")
 login_label.pack()
 
 # Cargar la imagen del logo y ajustar su tamaño
-logo_imagen = Image.open("../img/logo.png")
-logo_imagen = logo_imagen.resize((100, 100), Image.LANCZOS)  # Ajusta el tamaño aquí
-logo_imagen = ImageTk.PhotoImage(logo_imagen)
+logo_image = Image.open("../img/logo.png")
+logo_image = logo_image.resize((100, 100), Image.LANCZOS)  # Ajusta el tamaño aquí
+logo_image = ImageTk.PhotoImage(logo_image)
 
 # Agregar la imagen en la parte superior izquierda
-logo_label = tk.Label(ventana, image=logo_imagen)
+logo_label = tk.Label(ventana, image=logo_image)
 logo_label.place(x=20, y=20)  # Coordenadas para la posición de la imagen
 
 # Etiqueta de usuario
-usuario_label = tk.Label(frame, text="Usuario:", bg=c_gris_claro)
-usuario_label.pack()
+user_label = tk.Label(frame, text="Usuario:", bg=c_gris_claro)
+user_label.pack()
 
 # Campo de entrada para el usuario
-usuario_entry = tk.Entry(frame, width=30, bg=c_azul_palido)
-usuario_entry.pack(pady=5)  # Espacio entre usuario y contraseña
+user_entry = tk.Entry(frame, width=30, bg=c_azul_palido)
+user_entry.pack(pady=5)  # Espacio entre usuario y contraseña
+
+# Llamar a la función limitar_caracteres cuando se escriba en el Entry
+user_entry.bind("<KeyRelease>", lambda event, entry=user_entry, max_chars=10: limitar_caracteres(entry, max_chars))
 
 # Etiqueta de contraseña
-contrasena_label = tk.Label(frame, text="Contraseña:", bg=c_gris_claro)
-contrasena_label.pack()
+password_label = tk.Label(frame, text="Contraseña:", bg=c_gris_claro)
+password_label.pack()
 
 # Campo de entrada para la contraseña
-contrasena_entry = tk.Entry(frame, show="*", width=30, bg=c_azul_palido)
-contrasena_entry.pack()
+password_entry = tk.Entry(frame, show="*", width=30, bg=c_azul_palido)
+password_entry  .pack()
 
 # Separación entre contraseña y el botón
 separador2 = tk.Label(frame, text=" ", bg=c_gris_claro)
 separador2.pack()
 
 # Botón para iniciar sesión
-iniciar_sesion_button = tk.Button(frame, text="Iniciar Sesión", bg=c_azul, fg=c_blanco, command=iniciarSesion)
-iniciar_sesion_button.pack(pady=10)
-
+log_in_button = tk.Button(frame, text="Iniciar Sesión", bg=c_azul, fg=c_blanco, command=iniciarSesion)
+log_in_button.pack(pady=10)
 
 # Ejecutar la ventana
 ventana.mainloop()
