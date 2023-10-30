@@ -1,3 +1,5 @@
+import os
+
 import PIL.Image
 import PIL.ImageTk
 import mysql.connector
@@ -53,12 +55,31 @@ class CPr_Interface(Tk):
         self.__listProductos = AutomaticScrollableFrame(marginProductos, height=470)
         self.__listProductos.pack(fill="both", padx=20)
 
+        # Cosas del margen de un solo producto
+        self.__singleProduct = Frame(self)
+
+        self.__labelNombre = Label(self.__singleProduct, text="Nombre")
+        self.__entryNombre = Entry(self.__singleProduct)
+        self.__imagenProduct = Label(self.__singleProduct, text="Imagen")
+        self.__labelDescripcion = Label(self.__singleProduct, text="Descripcion")
+        self.__entryDescripcion = Entry(self.__singleProduct)
+
+        # Saber si el panel individual ya se activo:
+        self.__singleActivated = False
+
+        # Saber el producto activo
+        self.__activeProduct = None
+
         # Jalar todos los productos posibles
         self.__updateProductos()
 
         self.mainloop()
 
     def __updateProductos(self):
+        for file in os.listdir("../userImages"):
+            f = os.path.join("../userImages", file)
+            os.remove(f)
+
         self.__listProductos.clear()
         productos = self.__productManager.Read()
         for producto in productos:
@@ -70,6 +91,14 @@ class CPr_Interface(Tk):
         productos.clear()
 
     def __showProducto(self, producto):
+        if not self.__singleActivated:
+            self.__singleProduct.grid(column=1, row=0, padx=(30, 50), pady=50, ipadx=30, ipady=20, sticky="ewns")
+            self.__labelNombre.grid(row=0, column=0)
+            self.__entryNombre.grid(column=0, row=1)
+            self.__imagenProduct.grid(column=1, row=0)
+            self.__labelDescripcion.grid(column=0, row=2)
+            self.__entryDescripcion.grid(column=0, row=3, columnspan=1)
+
         pass
 
 conection = mysql.connector.connect(

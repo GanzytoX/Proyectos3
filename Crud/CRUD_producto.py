@@ -59,7 +59,7 @@ if __name__ != "__main__":
                 result = self.__cursor.fetchall()
                 productos = []
                 for resultado in result:
-                    route = f"../userImages/product_{resultado[1]}"
+                    route = f"../userImages/product_{resultado[1]}.png"
                     self.__driveConnection.downloadImage(resultado[4], route)
                     producto = Producto(resultado[1], resultado[2], resultado[3], route, resultado[0], driveCode=resultado[4])
                     productos.append(producto)
