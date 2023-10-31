@@ -3,14 +3,13 @@ import os
 import PIL.Image
 import PIL.ImageTk
 import mysql.connector
-from Interfaces.CRUD_User_Interfaces import AutomaticScrollableFrame, ListFrame
+from Utilities.AutomaticScrollableFrame import AutomaticScrollableFrame
+from Utilities.ListFrames import ImageFrame
 from Crud.CRUD_producto import CrudProducto, Producto
 from tkinter import *
 
 
-class ImageFrame(ListFrame):
-    def __init__(self, master: AutomaticScrollableFrame, text: str, objet, imageroute: str):
-        super().__init__(master, text, objet, imageroute, (60, 60))
+
 
 class CPr_Interface(Tk):
 

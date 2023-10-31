@@ -1,88 +1,13 @@
 import tkinter as tk
 from tkinter import Tk, ttk
-from typing import Callable
 
-from customtkinter import CTkScrollableFrame
 from tkinter import messagebox
 import mysql.connector
 from Crud.CRUD_Usuario import CrudEmpleado, Empleado
 from PIL import Image, ImageTk
 from Crud.CRUD_Rol import *
-from multipledispatch import dispatch
-
-
-class AutomaticScrollableFrame(CTkScrollableFrame):
-    def __init__(self, master: any, height=None, width=None):
-        if height is not None and width is not None:
-            super().__init__(master, height=height, width=width)
-        elif height is not None:
-            super().__init__(master, height=height)
-        elif width is not None:
-            super().__init__(master, width=width)
-        self.__items = []
-        self.columnconfigure(0, weight=3)
-
-    def add(self, element: any) -> None:
-        element.grid(column=0, row=len(self.__items), sticky="ew", pady="5")
-        self.__items.append(element)
-
-    def deleteAt(self, index):
-        if len(self.__items) > index >= 0:
-            item = self.__items[index]
-            self.__items[index].remove(index)
-            item.destroy()
-
-    def clear(self):
-        print("activado")
-        print(self.__items)
-        for item in self.__items:
-            item.destroy()
-        self.__items.clear()
-        self.update()
-
-    def getItem(self, index):
-        if len(self.__items) > index >= 0:
-            return self.__items[index]
-        raise IndexError("Index out of range")
-
-    def countItems(self) -> int:
-        return len(self.__items)
-
-class ListFrame(tk.Frame):
-    __image = None
-    __text = str
-    __object = None
-
-    def __init__(self, master: AutomaticScrollableFrame, text: str, objet, imageroute: str, imageSize: (int, int)):
-        super().__init__(master=master)
-        self.columnconfigure(0, weight=1)
-        self.columnconfigure(1, weight=4)
-        imagen_raw = Image.open(imageroute)
-        imagen_raw.thumbnail(imageSize)
-        imagen_tk = ImageTk.PhotoImage(imagen_raw)
-        self.__image = tk.Label(self, image=imagen_tk)
-        self.__image.image = imagen_tk
-        self.__image.grid(column=0, row=0)
-        self.__text = tk.Label(self, height=4, justify="left", text=text)
-        self.__text.grid(column=1, row=0, sticky="W")
-        self.object = objet
-
-    def addEvent(
-            self: tk.W,
-            sequence: str | None = ...,
-            func: Callable[[object], None] | None = ...):
-        self.__function = func
-        string = super().bind(sequence, self.__returnObject)
-        self.__image.bind(sequence, self.__returnObject)
-        self.__text.bind(sequence, self.__returnObject)
-        return string
-
-    def __returnObject(self, event):
-        self.__function(self.object)
-
-class NoImageFrame(ListFrame):
-    def __init__(self, master: AutomaticScrollableFrame, text: str, objet):
-        super().__init__(master, text, objet, "../img/dot.png", (10, 10))
+from Utilities.AutomaticScrollableFrame import AutomaticScrollableFrame
+from Utilities.ListFrames import NoImageFrame
 
 
 class CUInterface(Tk):
@@ -328,6 +253,6 @@ class RUInterface(Tk):
         self.geometry("1200x700")
         self.resizable(False, False)
 
-#ventana = CUInterface()
+ventana = CUInterface()
 
 
