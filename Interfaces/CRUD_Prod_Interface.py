@@ -56,6 +56,9 @@ class CPr_Interface(Tk):
 
         # Cosas del margen de un solo producto
         self.__singleProduct = Frame(self)
+        self.__singleProduct.columnconfigure(0, weight=1)
+        self.__singleProduct.columnconfigure(1, weight=1)
+
 
         self.__labelNombre = Label(self.__singleProduct, text="Nombre")
         self.__entryNombre = Entry(self.__singleProduct)
@@ -85,29 +88,30 @@ class CPr_Interface(Tk):
             newElement = ImageFrame(self.__listProductos,
                                       f"{producto.nombre}",
                                       producto, producto.imagen)
-            newElement.addEvent("<Button-1>", self.__showProducto)
+            newElement.addEvent("<Button-1>", self.__displayProductoMenu)
             self.__listProductos.add(newElement)
         productos.clear()
 
-    def __showProducto(self, producto):
+    def __displayProductoMenu(self, producto):
         if not self.__singleActivated:
             self.__singleProduct.grid(column=1, row=0, padx=(30, 50), pady=50, ipadx=30, ipady=20, sticky="ewns")
             self.__labelNombre.grid(row=0, column=0)
             self.__entryNombre.grid(column=0, row=1)
-            self.__imagenProduct.grid(column=1, row=0)
+            self.__imagenProduct.grid(column=1, row=0, sticky="nsew")
             self.__labelDescripcion.grid(column=0, row=2)
             self.__entryDescripcion.grid(column=0, row=3, columnspan=1)
+            self.__singleActivated = True
+        else:
+            self.__entryNombre.delete(0, END)
+            imagen_producto = PIL.Image.open("../img/noImage.jpg")
+            imagen_producto = PIL.ImageTk.PhotoImage(imagen_producto)
+            self.__imagenProduct.configure(image=imagen_producto)
+            self.__imagenProduct.Image = imagen_producto
+            self.__entryDescripcion.delete(0, END)
 
-        pass
 
-conection = mysql.connector.connect(
-            user="root",
-            host="localhost",
-            port="3307",
-            #port="3306",
-            #password="0123456789",
-            database="pollosexpress"
-        )
+
+
 #gestorProducto = CrudProducto(conection)
 #productManager = CrudProducto(conection)
 #productManager.Create(Producto("Si", "Takvez", 69.420, driveCode=productManager.UploadImage("../img/mimikiu.png")["id"]))
