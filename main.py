@@ -39,8 +39,8 @@ if __name__ == "__main__":
     #print(userManager.iniciarSesion("2788", "si"))
     #empleadito = Empleado("Diosito", "Si", "8788", 25000, 1, "si", 12)
     #userManager.Update(empleadito)
-    gestorProducto = CrudProducto(conection)
-    gestorProducto.Create(Producto("si", "a veces", 200, "img/mimikiu.png"))
+    #gestorProducto = CrudProducto(conection)
+    #gestorProducto.Create(Producto("si", "a veces", 200, "img/mimikiu.png"))
 
     #productManager = CrudProducto(conection)
     #with open('img/logo.png', 'rb') as archivo:
@@ -70,9 +70,13 @@ if __name__ == "__main__":
 
     #promocionManager.Delete(6)
 
-    roles = CrudRol(conection)
-    print()
+    #roles = CrudRol(conection)
+    #print()
     #roles.Create(Rol("De manzana"))
     #roles.Delete("a")
     #roles.Update(1, Rol("De sus"))
-    roles.Read(1)
+    #roles.Read(1)
+
+    imagen = Image.open("img/noImage.jpg")
+    imagen.thumbnail((200, 200))
+    imagen.save("img/noImage.jpg")
