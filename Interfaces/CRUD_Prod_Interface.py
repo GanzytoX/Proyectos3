@@ -21,7 +21,7 @@ class CPr_Interface(Tk):
         self.__conection = mysql.connector.connect(
             user="root",
             host="localhost",
-            port="3306",
+            port="3307",
             #port="3306",
             #password="0123456789",
             database="pollosexpress"
@@ -112,14 +112,23 @@ class CPr_Interface(Tk):
             self.__singleActivated = True
         else:
             self.__entryNombre.delete(0, END)
+            self.__entryDescripcion.delete("0.0", END)
             imagen_producto = PIL.Image.open("../img/noImage.jpg")
             imagen_producto = PIL.ImageTk.PhotoImage(imagen_producto)
             self.__imagenProduct.configure(image=imagen_producto)
             self.__imagenProduct.Image = imagen_producto
 
 
-    def __showProduct(self, producto):
+    def __showProduct(self, producto:Producto):
         self.__displayProductoMenu()
+        self.__entryNombre.insert(0, producto.nombre)
+        self.__entryDescripcion.insert("0.0", producto.descripcion)
+
+        imagen_producto = PIL.Image.open(producto.imagen)
+        imagen_producto.resize((200, 200))
+        imagen_producto = PIL.ImageTk.PhotoImage(imagen_producto)
+        self.__imagenProduct.configure(image=imagen_producto)
+        self.__imagenProduct.Image = imagen_producto
         pass
 
 
