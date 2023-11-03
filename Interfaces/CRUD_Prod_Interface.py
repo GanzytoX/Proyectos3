@@ -7,9 +7,7 @@ from Utilities.AutomaticScrollableFrame import AutomaticScrollableFrame
 from Utilities.ListFrames import ImageFrame
 from Crud.CRUD_producto import CrudProducto, Producto
 from tkinter import *
-
-
-
+from tkinter import filedialog
 
 
 class CPr_Interface(Tk):
@@ -44,7 +42,7 @@ class CPr_Interface(Tk):
 
         # Creare un widget donde desplegar las cosas para buscar los producos
         marginProductos = Frame(self, height=500, width=250, background="#204484")
-        marginProductos.grid(column=0, row=0, pady=50, padx=50, ipadx=20, ipady=20, sticky="NSW")
+        marginProductos.grid(column=0, row=0, pady=50, padx=50, ipadx=20, sticky="NSW")
 
         # Barra del buscador
         nav = Entry(marginProductos, background="#d8dce4", foreground="white")
@@ -54,6 +52,10 @@ class CPr_Interface(Tk):
         self.__listProductos = AutomaticScrollableFrame(marginProductos, height=470)
         self.__listProductos.pack(fill="both", padx=20)
 
+        # Un boton para agregar productos
+        self.__agregarProductoMenu = Button(marginProductos, text="Crear producto", command=self.__configureAgregar)
+        self.__agregarProductoMenu.pack(pady=10)
+
         # Cosas del margen de un solo producto
         self.__singleProduct = Frame(self)
         self.__singleProduct.columnconfigure(0, weight=4)
@@ -61,9 +63,11 @@ class CPr_Interface(Tk):
         self.__frameNombres = Frame(self.__singleProduct)
         self.__labelNombre = Label(self.__frameNombres, text="Nombre")
         self.__entryNombre = Entry(self.__frameNombres)
+        self.__labelPrecio = Label(self.__singleProduct, text="Precio")
+        self.__entryPrecio = Entry(self.__singleProduct)
         self.__imageDescription = Label(self.__singleProduct, text="Imagen: ")
         self.__imagenProduct = Label(self.__singleProduct, text="Imagen", anchor="e")
-        self.__imageChangeButton = Button(self.__singleProduct, text="Cambiar imagen")
+        self.__imageChangeButton = Button(self.__singleProduct, text="Cambiar imagen", command=self.__changeImagen)
         self.__labelDescripcion = Label(self.__singleProduct, text="Descripcion")
         self.__entryDescripcion = Text(self.__singleProduct, height=3)
 
@@ -76,6 +80,9 @@ class CPr_Interface(Tk):
 
         # Jalar todos los productos posibles
         self.__updateProductos()
+
+        # Boton para mandar a agregar
+        self.__agregarProducto = Button(self.__singleProduct, text="Agregar Producto", command=self.__agregarUnProducto)
 
         self.mainloop()
 
@@ -103,34 +110,60 @@ class CPr_Interface(Tk):
             self.__entryNombre.pack(side="top", anchor="w", expand=True, fill="x", ipady=15)
             self.__imagenProduct.grid(column=1, row=1, sticky="new", rowspan=2, padx=(0, 20))
             self.__imageChangeButton.grid(column=1, row=3, sticky="ne", padx=(0, 20))
-            self.__labelDescripcion.grid(column=0, row=4, sticky="nw", pady=20, padx=30)
-            self.__entryDescripcion.grid(column=0, row=5, columnspan=2, ipady=15, sticky="we", padx=(20, 20))
-            imagen_producto = PIL.Image.open("../img/noImage.jpg")
-            imagen_producto = PIL.ImageTk.PhotoImage(imagen_producto)
-            self.__imagenProduct.configure(image=imagen_producto)
-            self.__imagenProduct.Image = imagen_producto
+            self.__labelPrecio.grid(column=0, row=4, sticky="nw", pady=10, padx=20)
+            self.__entryPrecio.grid(column=0, row=5, sticky="nw", padx=20)
+            self.__labelDescripcion.grid(column=0, row=6, sticky="nw", pady=15, padx=20)
+            self.__entryDescripcion.grid(column=0, row=7, columnspan=2, ipady=15, sticky="we", padx=(20, 20))
+            self.__setImage("../img/noImage.jpg")
+
             self.__singleActivated = True
         else:
             self.__entryNombre.delete(0, END)
             self.__entryDescripcion.delete("0.0", END)
-            imagen_producto = PIL.Image.open("../img/noImage.jpg")
-            imagen_producto = PIL.ImageTk.PhotoImage(imagen_producto)
-            self.__imagenProduct.configure(image=imagen_producto)
-            self.__imagenProduct.Image = imagen_producto
+            self.__entryPrecio.delete(0, END)
+            self.__setImage("../img/noImage.jpg")
 
 
-    def __showProduct(self, producto:Producto):
+    # Pone en la interfaz el producto activo
+    def __showProduct(self, producto: Producto):
         self.__displayProductoMenu()
         self.__entryNombre.insert(0, producto.nombre)
+        self.__entryPrecio.insert(0, str(producto.precio))
         self.__entryDescripcion.insert("0.0", producto.descripcion)
+        self.__setImage(producto.imagen)
 
-        imagen_producto = PIL.Image.open(producto.imagen)
-        imagen_producto.resize((200, 200))
+    # Configurar para Poder agregar un producto
+    def __configureAgregar(self):
+        self.__displayProductoMenu()
+        self.__agregarProducto.grid(column=0, row=8, sticky="w", pady=10, padx=20)
+
+    def __crearObjetoProducto(self) -> Producto:
+        newProduct = Producto(
+            self.__entryNombre.get(),
+            self.__entryDescripcion.get("0.0", 'end-1c'),
+            float(self.__entryPrecio.get()),
+            driveCode=self.__productManager.UploadImage(self.__activeImage)["id"]
+        )
+        return newProduct
+
+
+    def __agregarUnProducto(self):
+        self.__crearObjetoProducto()
+        self.__productManager.Create(self.__crearObjetoProducto())
+        self.__updateProductos()
+
+    # Tiene el objetivo de poner la imagen en la imagen de producto inicial
+    def __setImage(self, ruta):
+        imagen_producto = PIL.Image.open(ruta)
+        imagen_producto = imagen_producto.resize((200, 200))
         imagen_producto = PIL.ImageTk.PhotoImage(imagen_producto)
+        self.__activeImage = ruta
         self.__imagenProduct.configure(image=imagen_producto)
         self.__imagenProduct.Image = imagen_producto
-        pass
 
+    def __changeImagen(self):
+        ruta = filedialog.askopenfilename(filetypes=[("Image", ["*.jpg", "*.png"])])
+        self.__setImage(ruta)
 
 #gestorProducto = CrudProducto(conection)
 #productManager = CrudProducto(conection)

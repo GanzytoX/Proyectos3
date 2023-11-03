@@ -69,7 +69,6 @@ if __name__ != "__main__":
                 self.__cursor.execute(script)
                 resultado = self.__cursor.fetchone()
                 route = f"userImages/product_{resultado[1]}.png"
-                print(resultado[4])
                 self.__driveConnection.downloadImage(resultado[4], route)
                 producto = Producto(resultado[1], resultado[2], resultado[3], route, resultado[0], driveCode=resultado[4])
                 return producto
