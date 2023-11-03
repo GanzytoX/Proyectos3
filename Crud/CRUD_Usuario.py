@@ -1,12 +1,9 @@
 # #pip install mysql-connector-python
 # Esa librería es necesaria para los CRUD
-from typing import overload
-
 import mysql.connector.errors
 
 from Crud.AbstractCRUD import CRUD
 from  Objects.Empleados import Empleado
-
 
 if __name__ != "__main__":
 
@@ -21,22 +18,21 @@ if __name__ != "__main__":
                              f"VALUES('{empleado.getNombre()}', '{empleado.getApellido_paterno()}', "
                              f"'{empleado.getApellido_materno()}', '{empleado.getCelular()}', {empleado.getSueldo()}, "
                              f"{empleado.getIdRol()}, {empleado.getAdministrador()})")
-                self.__cursor.execute(SQLScript)
+                self._CRUD__cursor.execute(SQLScript)
             else:
                 SQLScript = ("INSERT INTO empleado(nombre, apellido_paterno, apellido_materno, celular, sueldo, id_rol, pass, administrator)"
                              f"VALUES('{empleado.getNombre()}', '{empleado.getApellido_paterno()}', "
                              f"'{empleado.getApellido_materno()}', '{empleado.getCelular()}', {empleado.getSueldo()}, "
                              f"{empleado.getIdRol()}, '{empleado.getContraseña()}', {empleado.getAdministrador()})")
-                self.__cursor.execute(SQLScript)
+                self._CRUD__cursor.execute(SQLScript)
 
-            self.__conection.commit()
+            self._CRUD__conection.commit()
 
-        @overload
         def Read(self, id: int = None, condition: int = None) -> list[Empleado] | Empleado:
             if id is None and condition is None:
                 script = "SELECT empleado.*, rol.nombre FROM empleado LEFT JOIN rol ON empleado.id_rol = rol.id_rol;"
-                self.__cursor.execute(script)
-                result = self.__cursor.fetchall()
+                self._CRUD__cursor.execute(script)
+                result = self._CRUD__cursor.fetchall()
                 empleados = []
                 for empleado in result:
                     empleados.append(Empleado(nombre=empleado[1],
@@ -49,15 +45,25 @@ if __name__ != "__main__":
                                               administrator=empleado[8],
                                               id=empleado[0]))
                 return empleados
-
-        @overload
-        def Read(self):
-            pass
+            elif id is not None and condition is None:
+                script = (f"SELECT empleado.*, rol.nombre FROM empleado LEFT JOIN rol ON empleado.id_rol = rol.id_rol"
+                          f" WHERE id_empleado = {id};")
+                self._CRUD__cursor.execute(script)
+                empleado = self._CRUD__cursor.fetchone()
+                return Empleado(nombre=empleado[1],
+                                              apellido_paterno=empleado[2],
+                                              apellido_materno=empleado[3],
+                                              celular=empleado[4],
+                                              sueldo=empleado[5],
+                                              id_rol=empleado[9],
+                                              contraseña=empleado[7],
+                                              administrator=empleado[8],
+                                              id=empleado[0])
 
         def Delete(self, id) -> None:
             SQLScript = f"DELETE FROM empleado WHERE id_empleado = {id}"
-            self.__cursor.execute(SQLScript)
-            self.__conection.commit()
+            self._CRUD__cursor.execute(SQLScript)
+            self._CRUD__conection.commit()
 
         def Update(self, id, empleado: Empleado) -> None:
 
@@ -68,13 +74,13 @@ if __name__ != "__main__":
                        empleado.getCelular(), empleado.getSueldo(), empleado.getIdRol(), empleado.getContraseña(),
                        empleado.getAdministrador())
 
-            self.__cursor.execute(SQLScript, valores)
-            self.__conection.commit()
+            self._CRUD__cursor.execute(SQLScript, valores)
+            self._CRUD__conection.commit()
 
         def iniciarSesion(self, numeroTelefono, contraseña) -> (bool, bool):
             SQLScript = f"SELECT pass, administrator FROM empleado WHERE celular = '{numeroTelefono}'"
-            self.__cursor.execute(SQLScript)
-            result = self.__cursor.fetchone()
+            self._CRUD__cursor.execute(SQLScript)
+            result = self._CRUD__cursor.fetchone()
 
             if result:
                 if result[0] == contraseña:

@@ -1,6 +1,4 @@
 from abc import ABC, abstractmethod
-from typing import overload
-
 
 class CRUD(ABC):
 
@@ -14,12 +12,7 @@ class CRUD(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def Read(self):
-        raise NotImplementedError()
-
-    @overload
-    @abstractmethod
-    def Read(self, id: int) -> object:
+    def Read(self, id=None, condition=None):
         raise NotImplementedError()
 
     @abstractmethod

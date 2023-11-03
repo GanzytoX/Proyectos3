@@ -16,6 +16,8 @@ class Promocion():
 class CRUDPromociones(CRUD):
     def __init__(self, conection):
         super().__init__(conection)
+        self.__conection = conection
+        self.__cursor = self.__conection.cursor()
 
     def Create(self, promocion):
         script = "INSERT INTO promocion(id_producto, descripcion, fecha_de_inicio, fecha_de_finalizacion, id_tipo_promocion) VALUES (%s, %s, %s, %s,%s)"

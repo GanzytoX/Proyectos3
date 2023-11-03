@@ -27,8 +27,8 @@ if __name__ != "__main__":
         def Create(self, product: Producto):
             script = "INSERT INTO producto(nombre, descripcion, precio, imagen) VALUES (%s, %s, %s, %s)"
             datos_producto = (product.nombre, product.descripcion, product.precio, product._driveCode)
-            self.__cursor.execute(script, datos_producto) #seria fetch si pidiera datos
-            self.__conection.commit() # commit siempre que se modifique la tabla
+            self._CRUD__cursor.execute(script, datos_producto) #seria fetch si pidiera datos
+            self._CRUD__conection.commit() # commit siempre que se modifique la tabla
 
         def Update(self, id, product: Producto):
             script = ("UPDATE producto "
@@ -38,24 +38,24 @@ if __name__ != "__main__":
 
             producto = self.Read(id)
             self.__driveConnection.deleteImage(producto._driveCode)
-            self.__cursor.execute(script, datos_producto)
-            self.__conection.commit()
+            self._CRUD__cursor.execute(script, datos_producto)
+            self._CRUD__conection.commit()
 
         def Delete(self, id):
             if isinstance(id, int):
                 producto = self.Read(id)
                 self.__driveConnection.deleteImage(producto._driveCode)
                 script = f"DELETE FROM producto WHERE id_producto = {id}"
-                self.__cursor.execute(script)
-                self.__conection.commit()
+                self._CRUD__cursor.execute(script)
+                self._CRUD__conection.commit()
             else:
                 raise ValueError("Id must be an integer")
 
         def Read(self, id=None, condition:str=None):
             if id is None and condition is None:
                 script = "SELECT * from producto"
-                self.__cursor.execute(script)
-                result = self.__cursor.fetchall()
+                self._CRUD__cursor.execute(script)
+                result = self._CRUD__cursor.fetchall()
                 productos = []
                 for resultado in result:
                     route = f"../userImages/product_{resultado[1]}.png"
@@ -65,8 +65,8 @@ if __name__ != "__main__":
                 return productos
             elif isinstance(id, int):
                 script = f"SELECT * from producto WHERE id_producto = {id}"
-                self.__cursor.execute(script)
-                resultado = self.__cursor.fetchone()
+                self._CRUD__cursor.execute(script)
+                resultado = self._CRUD__cursor.fetchone()
                 route = f"../userImages/product_{resultado[1]}.png"
                 self.__driveConnection.downloadImage(resultado[4], route)
                 producto = Producto(resultado[1], resultado[2], resultado[3], route, resultado[0], driveCode=resultado[4])
