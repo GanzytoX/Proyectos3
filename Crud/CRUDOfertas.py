@@ -2,7 +2,7 @@ import mysql.connector.errors
 from Crud.AbstractCRUD import CRUD
 
 class Promocion():
-    def __init__(self, id_producto : int, descripcion : str, fechaInicio : str, fechaFinal : str, id_tipopromocion : int, id = None ):
+    def __init__(self,id, id_producto : int, descripcion : str, fechaInicio : str, fechaFinal : str, id_tipopromocion : int ):
         self.id = None
         if id is not None:
             self.id = id
@@ -31,7 +31,7 @@ class CRUDPromociones(CRUD):
             result = self.__cursor.fetchall()
             promociones = []
             for resultado in result:
-                promocion = Promocion(resultado[1], resultado[2], resultado[3], resultado[4], resultado[0])
+                promocion = Promocion(resultado[0], resultado[1], resultado[2], resultado[3], resultado[4], resultado[0])
                 promociones.append(promocion)
             return promociones
         elif isinstance(id, int):

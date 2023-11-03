@@ -11,7 +11,7 @@ if __name__ == "__main__":
     conection = mysql.connector.connect(
         user="root",
         host="localhost",
-        port="3307",
+        port="3306",
         #port="3307",
         #password="0123456789",
         database="pollosexpress"
@@ -55,13 +55,14 @@ if __name__ == "__main__":
     productos = productManager.Read(1)
     productos.imagen.show()
     """""
-    productManager = CrudProducto(conection)
-    productManager.Create(Producto("Si", "Takvez", 69.420,driveCode= productManager.UploadImage("img/mimikiu.png")["id"]))
+    #productManager = CrudProducto(conection)
+    #productManager.Create(Producto("Si", "Takvez", 69.420,driveCode= productManager.UploadImage("img/mimikiu.png")["id"]))
     #productManager.Read(1)
     #productManager.Delete(3)
 
-    #promocionManager = CRUDPromociones(conection)
-    #promocionManager.Create(Promocion(1, "Esto es una prueba 2", "2023/10/21","2023/10/21",1))
+
+    #  promocionManager = CRUDPromociones(conection)
+    #  promocionManager.Create(Promocion(6, "La verdad no se si funciones", "2023/10/21","2023/10/21",1))
 
     #for i in promocionManager.Read():
     #    print(i.descripcion)

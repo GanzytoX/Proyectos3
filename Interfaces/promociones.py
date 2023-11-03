@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import Tk
 from tkinter import messagebox
 from PIL import Image, ImageTk
+from Crud.CRUDOfertas import *
 
 # Paleta de colores
 c_blanco = "#ffffff"
@@ -13,6 +14,7 @@ c_rojo_palido = "#c9636c"
 c_azul = "#185791"
 c_azul_claro = "#397bb8"
 c_azul_palido = "#AFEEEE"
+
 
 # Función para realizar la búsqueda
 def buscar_promociones():
@@ -27,16 +29,18 @@ def buscar_promociones():
     for promocion, precio in resultados:
         listbox_promociones.insert(tk.END, f"{promocion} - {precio}")
 
+
 # Función para agregar promoción
 def agregar_promocion():
     texto_busqueda = entry_busqueda.get()
     listbox_promociones.insert(tk.END, f"{texto_busqueda}")
     pass
 
+
 # Función para actualizar promociones
 def actualizar_promociones():
-
     pass
+
 
 # Crea la ventana principal
 ventana = Tk()
@@ -88,6 +92,5 @@ espacio_horizontal.pack(side=tk.LEFT, padx=10)  # Espacio horizontal entre los b
 # Crea un botón "Actualizar"
 boton_actualizar = tk.Button(contenedor_botones, text="Actualizar", command=actualizar_promociones)
 boton_actualizar.pack(side=tk.LEFT)
-
 
 ventana.mainloop()
