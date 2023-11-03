@@ -84,6 +84,11 @@ class CPr_Interface(Tk):
         # Boton para mandar a agregar
         self.__agregarProducto = Button(self.__singleProduct, text="Agregar Producto", command=self.__agregarUnProducto)
 
+        # Boton para editar producto
+        self.__editarProductoButton = Button(self.__singleProduct, text="Editar Producto")
+        self.__eliminarProductoButton = Button(self.__singleProduct, text="Eliminar Producto")
+
+
         self.mainloop()
 
     def __updateProductos(self):
@@ -123,17 +128,21 @@ class CPr_Interface(Tk):
             self.__entryPrecio.delete(0, END)
             self.__setImage("../img/noImage.jpg")
 
-
     # Pone en la interfaz el producto activo
     def __showProduct(self, producto: Producto):
+        self.__agregarProducto.grid_forget()
         self.__displayProductoMenu()
         self.__entryNombre.insert(0, producto.nombre)
         self.__entryPrecio.insert(0, str(producto.precio))
         self.__entryDescripcion.insert("0.0", producto.descripcion)
         self.__setImage(producto.imagen)
+        self.__editarProductoButton.grid(column=0, row=8, sticky="w", pady=10, padx=20)
+        self.__eliminarProductoButton.grid(column=1, row=8, sticky="w", pady=10, padx=20)
 
     # Configurar para Poder agregar un producto
     def __configureAgregar(self):
+        self.__editarProductoButton.grid_forget()
+        self.__eliminarProductoButton.grid_forget()
         self.__displayProductoMenu()
         self.__agregarProducto.grid(column=0, row=8, sticky="w", pady=10, padx=20)
 
@@ -146,9 +155,7 @@ class CPr_Interface(Tk):
         )
         return newProduct
 
-
     def __agregarUnProducto(self):
-        self.__crearObjetoProducto()
         self.__productManager.Create(self.__crearObjetoProducto())
         self.__updateProductos()
         self.__displayProductoMenu()
@@ -166,7 +173,20 @@ class CPr_Interface(Tk):
         ruta = filedialog.askopenfilename(filetypes=[("Image", ["*.jpg", "*.png"])])
         self.__setImage(ruta)
 
+    
+
+
 #gestorProducto = CrudProducto(conection)
-#productManager = CrudProducto(conection)
-#productManager.Create(Producto("Si", "Takvez", 69.420, driveCode=productManager.UploadImage("../img/mimikiu.png")["id"]))
+"""""
+conection = mysql.connector.connect(
+            user="root",
+            host="localhost",
+            port="3307",
+            #port="3306",
+            #password="0123456789",
+            database="pollosexpress"
+        )
+productManager = CrudProducto(conection)
+productManager.Create(Producto("Si", "Takvez", 69.420, driveCode=productManager.UploadImage("../img/mimikiu.png")["id"]))
+"""
 ventana = CPr_Interface()
