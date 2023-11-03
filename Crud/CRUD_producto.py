@@ -4,7 +4,7 @@ from Drive.drive import DriveManager
 
 if __name__ != "__main__":
 
-    class Producto():
+    class Producto:
         def __init__(self, nombre: str, descripcion: str, precio: float, imagen: str = None, id: int = None, driveCode: str = None):
             self.id = None
             if id is not None:
@@ -21,8 +21,7 @@ if __name__ != "__main__":
 
     class CrudProducto(CRUD):
         def __init__(self, conection):
-            self.__conection = conection
-            self.__cursor = self.__conection.cursor()
+            super().__init__(conection)
             self.__driveConnection = DriveManager()
 
         def Create(self, product: Producto):

@@ -1,47 +1,38 @@
 # #pip install mysql-connector-python
 # Esa librería es necesaria para los CRUD
+from typing import overload
+
 import mysql.connector.errors
 
 from Crud.AbstractCRUD import CRUD
+from  Objects.Empleados import Empleado
+
 
 if __name__ != "__main__":
-
-    class Empleado:
-        def __init__(self, nombre, apellido_paterno, apellido_materno, celular, sueldo, id_rol, administrator: bool, contraseña=None, id=None):
-            self.contraseña = None
-            self.id = None
-            if id is not None:
-                self.id = id
-            if contraseña is not None:
-                self.contraseña = contraseña
-            self.nombre = nombre
-            self.apellido_paterno = apellido_paterno
-            self.apellido_materno = apellido_materno
-            self.celular = celular
-            self.sueldo = sueldo
-            self.id_rol = id_rol
-            self.administrador = administrator
-
 
     class CrudEmpleado(CRUD):
 
         def __init__(self, conexion):
-            self.__conexion = conexion
-            self.__cursor = self.__conexion.cursor()
+            super().__init__(conexion)
 
         def Create(self, empleado: Empleado) -> None:
-            if empleado.contraseña is None:
+            if empleado.getContraseña() is None:
                 SQLScript = ("INSERT INTO empleado(nombre,apellido_paterno, apellido_materno, celular, sueldo, id_rol, administrator) "
-                             f"VALUES('{empleado.nombre}', '{empleado.apellido_paterno}', '{empleado.apellido_materno}', '{empleado.celular}', {empleado.sueldo}, {empleado.id_rol}, {empleado.administrador})")
+                             f"VALUES('{empleado.getNombre()}', '{empleado.getApellido_paterno()}', "
+                             f"'{empleado.getApellido_materno()}', '{empleado.getCelular()}', {empleado.getSueldo()}, "
+                             f"{empleado.getIdRol()}, {empleado.getAdministrador()})")
                 self.__cursor.execute(SQLScript)
             else:
                 SQLScript = ("INSERT INTO empleado(nombre, apellido_paterno, apellido_materno, celular, sueldo, id_rol, pass, administrator)"
-                             f"VALUES('{empleado.nombre}', '{empleado.apellido_paterno}', '{empleado.apellido_materno}', '{empleado.celular}', {empleado.sueldo}, {empleado.id_rol}, '{empleado.contraseña}', {empleado.administrador})")
+                             f"VALUES('{empleado.getNombre()}', '{empleado.getApellido_paterno()}', "
+                             f"'{empleado.getApellido_materno()}', '{empleado.getCelular()}', {empleado.getSueldo()}, "
+                             f"{empleado.getIdRol()}, '{empleado.getContraseña()}', {empleado.getAdministrador()})")
                 self.__cursor.execute(SQLScript)
 
-            self.__conexion.commit()
+            self.__conection.commit()
 
-        def Read(self, id=None, condition=None):
+        @overload
+        def Read(self, id: int = None, condition: int = None) -> list[Empleado] | Empleado:
             if id is None and condition is None:
                 script = "SELECT empleado.*, rol.nombre FROM empleado LEFT JOIN rol ON empleado.id_rol = rol.id_rol;"
                 self.__cursor.execute(script)
@@ -59,21 +50,26 @@ if __name__ != "__main__":
                                               id=empleado[0]))
                 return empleados
 
+        @overload
+        def Read(self):
+            pass
+
         def Delete(self, id) -> None:
             SQLScript = f"DELETE FROM empleado WHERE id_empleado = {id}"
             self.__cursor.execute(SQLScript)
-            self.__conexion.commit()
+            self.__conection.commit()
 
         def Update(self, id, empleado: Empleado) -> None:
 
             SQLScript = (f"UPDATE empleado SET nombre = %s, apellido_paterno = %s, apellido_materno = %s, "
                              f"celular = %s, sueldo = %s, id_rol = %s, pass = %s, administrator = %s "
                              f"WHERE id_Empleado = {id}")
-            valores = (empleado.nombre, empleado.apellido_paterno, empleado.apellido_materno, empleado.celular,
-                           empleado.sueldo, empleado.id_rol, empleado.contraseña, empleado.administrador)
+            valores = (empleado.getNombre(), empleado.getApellido_paterno(), empleado.getApellido_materno(),
+                       empleado.getCelular(), empleado.getSueldo(), empleado.getIdRol(), empleado.getContraseña(),
+                       empleado.getAdministrador())
 
             self.__cursor.execute(SQLScript, valores)
-            self.__conexion.commit()
+            self.__conection.commit()
 
         def iniciarSesion(self, numeroTelefono, contraseña) -> (bool, bool):
             SQLScript = f"SELECT pass, administrator FROM empleado WHERE celular = '{numeroTelefono}'"
