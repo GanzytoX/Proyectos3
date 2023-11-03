@@ -151,6 +151,7 @@ class CPr_Interface(Tk):
         self.__crearObjetoProducto()
         self.__productManager.Create(self.__crearObjetoProducto())
         self.__updateProductos()
+        self.__displayProductoMenu()
 
     # Tiene el objetivo de poner la imagen en la imagen de producto inicial
     def __setImage(self, ruta):
