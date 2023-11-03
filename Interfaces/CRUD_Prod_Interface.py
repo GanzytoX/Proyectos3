@@ -85,8 +85,8 @@ class CPr_Interface(Tk):
         self.__agregarProducto = Button(self.__singleProduct, text="Agregar Producto", command=self.__agregarUnProducto)
 
         # Boton para editar producto
-        self.__editarProductoButton = Button(self.__singleProduct, text="Editar Producto")
-        self.__eliminarProductoButton = Button(self.__singleProduct, text="Eliminar Producto")
+        self.__editarProductoButton = Button(self.__singleProduct, text="Editar Producto", command=self.__editarProducto)
+        self.__eliminarProductoButton = Button(self.__singleProduct, text="Eliminar Producto", command=self.__eliminarProducto)
 
 
         self.mainloop()
@@ -138,6 +138,7 @@ class CPr_Interface(Tk):
         self.__setImage(producto.imagen)
         self.__editarProductoButton.grid(column=0, row=8, sticky="w", pady=10, padx=20)
         self.__eliminarProductoButton.grid(column=1, row=8, sticky="w", pady=10, padx=20)
+        self.__activeProduct = producto
 
     # Configurar para Poder agregar un producto
     def __configureAgregar(self):
@@ -151,6 +152,7 @@ class CPr_Interface(Tk):
             self.__entryNombre.get(),
             self.__entryDescripcion.get("0.0", 'end-1c'),
             float(self.__entryPrecio.get()),
+            imagen=self.__activeImage,
             driveCode=self.__productManager.UploadImage(self.__activeImage)["id"]
         )
         return newProduct
@@ -159,6 +161,20 @@ class CPr_Interface(Tk):
         self.__productManager.Create(self.__crearObjetoProducto())
         self.__updateProductos()
         self.__displayProductoMenu()
+
+    def __editarProducto(self):
+        self.__productManager.Update(self.__activeProduct.id, self.__crearObjetoProducto())
+        self.__updateProductos()
+
+    def __eliminarProducto(self):
+        self.__productManager.Delete(self.__activeProduct.id)
+        self.__activeProduct = None
+        self.__updateProductos()
+
+        if self.__listProductos.countItems() > 0:
+            self.__showProduct(self.__listProductos.getItem(0).object)
+        else:
+            self.__configureAgregar()
 
     # Tiene el objetivo de poner la imagen en la imagen de producto inicial
     def __setImage(self, ruta):
@@ -173,7 +189,7 @@ class CPr_Interface(Tk):
         ruta = filedialog.askopenfilename(filetypes=[("Image", ["*.jpg", "*.png"])])
         self.__setImage(ruta)
 
-    
+
 
 
 #gestorProducto = CrudProducto(conection)
