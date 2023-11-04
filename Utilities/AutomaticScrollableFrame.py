@@ -15,6 +15,7 @@ class AutomaticScrollableFrame(CTkScrollableFrame):
     def add(self, element: any) -> None:
         element.grid(column=0, row=len(self.__items), sticky="ew", pady="5")
         self.__items.append(element)
+        self.update_idletasks()
 
     def deleteAt(self, index):
         if len(self.__items) > index >= 0:

@@ -78,3 +78,15 @@ if __name__ != "__main__":
         def UploadImage(self, url):
             id = self.__driveConnection.uploadImage(url)
             return id
+
+        def countProducts(self):
+            script = f"SELECT COUNT(*) from producto"
+            self._CRUD__cursor.execute(script)
+            result = self._CRUD__cursor.fetchone()
+            return result
+
+        def getIds(self):
+            script = f"SELECT id_producto from producto"
+            self._CRUD__cursor.execute(script)
+            result = self._CRUD__cursor.fetchall()
+            return result

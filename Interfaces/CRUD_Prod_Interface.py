@@ -7,7 +7,30 @@ from Utilities.AutomaticScrollableFrame import AutomaticScrollableFrame
 from Utilities.ListFrames import ImageFrame
 from Crud.CRUD_producto import CrudProducto, Producto
 from tkinter import *
+from tkinter.ttk import Progressbar
 from tkinter import filedialog
+import threading
+
+class BarraCarga(Frame):
+    def __init__(self, master, length: int, bg=None, fg=None, text=None, variable=None, maximun=None, mode=None):
+        super().__init__(master, background=bg)
+        self.update_idletasks()
+        self.__titleLabel = Label(self, text=text, background=bg, fg=fg)
+        self.__barraCarga = Progressbar(self, length=length)
+
+        if mode == "indeterminate":
+            self.__barraCarga.config(mode=mode)
+        else:
+            self.__barraCarga.config(mode=mode, variable=variable, maximum=maximun)
+
+        self.__titleLabel.pack()
+        self.__barraCarga.pack(pady=10, padx=10)
+
+    def set(self, value: int):
+        self.__barraCarga["value"] = value
+
+    def start(self):
+        self.__barraCarga.start()
 
 
 class CPr_Interface(Tk):
@@ -71,6 +94,7 @@ class CPr_Interface(Tk):
         self.__labelDescripcion = Label(self.__singleProduct, text="Descripcion")
         self.__entryDescripcion = Text(self.__singleProduct, height=3)
 
+
         # Saber si el panel individual ya se activo:
         self.__singleActivated = False
 
@@ -91,20 +115,34 @@ class CPr_Interface(Tk):
 
         self.mainloop()
 
+
     def __updateProductos(self):
         for file in os.listdir("../userImages"):
             f = os.path.join("../userImages", file)
             os.remove(f)
 
         self.__listProductos.clear()
-        productos = self.__productManager.Read()
-        for producto in productos:
+
+        cuenta = int
+        procesados = 0
+
+        ids = self.__productManager.getIds()
+        barraCarga = BarraCarga(self, length=400, bg="white", fg="black", text="Cargando imágenes", variable=cuenta,
+                                maximun=len(ids))
+        barraCarga.place(x=600, y=350, anchor="center")
+        self.update_idletasks()
+
+        for id in ids:
+            producto = self.__productManager.Read(id[0])
             newElement = ImageFrame(self.__listProductos,
-                                      f"{producto.nombre}",
-                                      producto, producto.imagen)
+                                        f"{producto.nombre}",
+                                        producto, producto.imagen)
             newElement.addEvent("<Button-1>", self.__showProduct)
             self.__listProductos.add(newElement)
-        productos.clear()
+            procesados += 1
+            barraCarga.set(procesados)
+            self.update_idletasks()
+        barraCarga.destroy()
 
     def __displayProductoMenu(self):
         if not self.__singleActivated:
@@ -158,8 +196,15 @@ class CPr_Interface(Tk):
         return newProduct
 
     def __agregarUnProducto(self):
+        barraCarga = BarraCarga(self, length=400, bg="white", fg="black", text="Creando producto", mode="indeterminate")
+        barraCarga.place(x=600, y=350, anchor="center")
+        barraCarga.start()
+        self.update_idletasks()
         self.__productManager.Create(self.__crearObjetoProducto())
+
+        barraCarga.destroy()
         self.__updateProductos()
+
         self.__displayProductoMenu()
 
     def __editarProducto(self):
@@ -167,7 +212,11 @@ class CPr_Interface(Tk):
         self.__updateProductos()
 
     def __eliminarProducto(self):
+        barraCarga = BarraCarga(self, length=400, bg="white", fg="black", text="Eliminando producto", mode="indeterminate")
+        barraCarga.place(x=600, y=350, anchor="center")
+        barraCarga.start()
         self.__productManager.Delete(self.__activeProduct.id)
+        barraCarga.destroy()
         self.__activeProduct = None
         self.__updateProductos()
 
