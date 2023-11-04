@@ -16,7 +16,7 @@ class CUInterface(Tk):
         self.__conection = mysql.connector.connect(
             user="root",
             host="localhost",
-            port="3306",
+            port="3307",
             #port="3306",
             #password="0123456789",
             database="pollosexpress"
@@ -108,16 +108,16 @@ class CUInterface(Tk):
     def __showEmpleado(self, empleado):
         self.__agregarEmpleadoButton.grid_forget()
         self.__displayMenu()
-        self.__inputName.insert(0, empleado.nombre)
-        self.__inputLastname1.insert(0, empleado.apellido_paterno)
-        self.__inputLastname2.insert(0, empleado.apellido_materno)
-        self.__inputCel.insert(0, empleado.celular)
-        self.__inputSueldo.insert(0, empleado.sueldo)
+        self.__inputName.insert(0, empleado.getNombre())
+        self.__inputLastname1.insert(0, empleado.getApellido_paterno())
+        self.__inputLastname2.insert(0, empleado.getApellido_paterno())
+        self.__inputCel.insert(0, empleado.getCelular())
+        self.__inputSueldo.insert(0, empleado.getSueldo())
         roles = self.__updateRoles()
-        self.__inputRol.set(roles[roles.index(empleado.id_rol)])
-        if empleado.contraseña is not None:
-            self.__inputContraseña.insert(0, empleado.contraseña)
-        self.__isAdmin.set(empleado.administrador)
+        self.__inputRol.set(roles[roles.index(empleado.getIdRol())])
+        if empleado.getContraseña() is not None:
+            self.__inputContraseña.insert(0, empleado.getContraseña())
+        self.__isAdmin.set(empleado.getAdministrador())
         self.__radioAdmin.update()
         self.__empleadoActivo = empleado
         self.__editEmpleadoButton.grid(column=0, row=10, pady=20, sticky="w")
@@ -192,7 +192,6 @@ class CUInterface(Tk):
 
     def __agregarEmpleado(self):
         empleado = self.__createEmpleadoObject()
-        print(empleado.id_rol)
         self.__userManager.Create(empleado)
         self.__updateEmpleados()
         self.__displayMenu()
@@ -214,7 +213,7 @@ class CUInterface(Tk):
         empleados = self.__userManager.Read()
         for empleado in empleados:
             newElement = NoImageFrame(self.__listEmpleados,
-                                      f"{empleado.nombre} {empleado.apellido_paterno} {empleado.apellido_materno}",
+                                      f"{empleado.getNombre()} {empleado.getApellido_paterno()} {empleado.getApellido_materno()}",
                                       empleado)
             newElement.addEvent("<Button-1>", self.__showEmpleado)
             self.__listEmpleados.add(newElement)

@@ -87,21 +87,16 @@ class Empleado:
         return self.__id_rol
 
     def setIdRol(self, id_rol: int):
-        if isinstance(id_rol, int):
-            if id_rol > 0:
-                self.__id_rol = id_rol
-            else:
-                raise ValueError("El campo id rol debe ser mayor a 0")
-        raise ValueError("Para el rol se debe proporcionar un id, de numero entero")
+        self.__id_rol = id_rol
+
+
 
     def getAdministrador(self):
         return self.__administrador
 
     def setAdministrador(self, administrador: bool):
-        if isinstance(administrador, bool):
-            self.__administrador = administrador
-        else:
-            raise ValueError("Administrador debe ser verdadero o falso")
+        self.__administrador = administrador
+
 
     def getContraseña(self):
         return self.__contraseña
