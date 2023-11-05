@@ -208,7 +208,11 @@ class CPr_Interface(Tk):
         self.__displayProductoMenu()
 
     def __editarProducto(self):
+        barraCarga = BarraCarga(self, length=400, bg="white", fg="black", text="Creando producto", mode="indeterminate")
+        barraCarga.place(x=600, y=350, anchor="center")
+        barraCarga.start()
         self.__productManager.Update(self.__activeProduct.id, self.__crearObjetoProducto())
+        barraCarga.destroy()
         self.__updateProductos()
 
     def __eliminarProducto(self):
