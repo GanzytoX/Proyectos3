@@ -22,6 +22,11 @@ class PromocionInterface(Tk):
             port="3306",
             database="pollosexpress"
         )
+        self.imagen_fondo = Image.open("../img/promociones.jpg")
+        self.imagen_fondo = self.imagen_fondo.resize((1200, 700), Image.LANCZOS)
+        self.imagen_fondo = ImageTk.PhotoImage(self.imagen_fondo)
+        self.label_imagen = Label(self, image=self.imagen_fondo)
+        self.label_imagen.grid(row=0, column=0, sticky="NWSE")
         self.crud = CRUDPromociones(conection=self.__conection)
         self.title = "Promociones"
         self.geometry("1200x700")
@@ -34,7 +39,7 @@ class PromocionInterface(Tk):
 
         # El cuadrito de las promociones
         self.cuadritoPromociones = Frame(self, width=350, height=500, bg="#442250")
-        self.cuadritoPromociones.grid(column=0, row=0, pady=50, padx=50, ipadx=20)
+        self.cuadritoPromociones.grid(column=0, row=0, pady=50, padx=50, ipadx=20, sticky="W")
 
         # la barra de búsqueda
         self.busqueda = Entry(self.cuadritoPromociones, fg="red")
@@ -76,3 +81,4 @@ class PromocionInterface(Tk):
         print(f'hay una promocion con descripcion "{promocion.descripcion}" ')
 
 interfaz = PromocionInterface()
+
