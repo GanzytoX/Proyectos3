@@ -20,6 +20,7 @@ class PromocionInterface(Tk):
             user="root",
             host="localhost",
             port="3306",
+            password="0123456789",
             database="pollosexpress"
         )
         self.imagen_fondo = Image.open("../img/promociones.jpg")
