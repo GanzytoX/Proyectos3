@@ -5,6 +5,7 @@ from tkinter import messagebox
 from PIL import Image, ImageTk
 from Crud.CRUD_Usuario import CrudEmpleado
 import mysql.connector
+from AdminMainMenu import AdminMainMenu
 
 # Paleta de colores
 c_blanco = "#ffffff"
@@ -22,7 +23,7 @@ connection = mysql.connector.connect(
         user="root",
         host="localhost",
         #port="3307",
-        port="3306",
+        port="3307",
 
         database="pollosexpress"
     )
@@ -40,7 +41,11 @@ def iniciarSesion():
             if result:
                 messagebox.showinfo("Mensaje de inicio de sesión", "Sesión iniciada con éxito")
                 if is_administrator == 1:
-                    messagebox.showinfo("Administrador", "Usuario es administrador")
+                    adminWindow = AdminMainMenu()
+                    ventana.destroy()
+                    adminWindow.mainloop()
+
+
                 return
             else:
                 messagebox.showerror("Error de inicio de sesión", "Usuario o contraseña incorrecto(s)")
@@ -66,7 +71,7 @@ ventana.iconbitmap("../img/logo.ico")
 
 # Cargar la imagen de fondo
 background_image = Image.open("../img/inicioDeSesion.png")
-background_image = ImageTk.PhotoImage(background_image)
+background_image = ImageTk.PhotoImage(background_image, master=ventana)
 
 # Crear un widget Label para mostrar la imagen de fondo
 bgImage_label = tk.Label(ventana, image=background_image)
@@ -79,7 +84,7 @@ frame.pack(expand=True)
 # Cargar la imagen del icono de foto de perfil y ajustar su tamaño (más pequeño)
 icon_image = Image.open("../img/iconoFotoDePerfil.png")
 icon_image = icon_image.resize((50, 50), Image.LANCZOS)
-icon_image = ImageTk.PhotoImage(icon_image)
+icon_image = ImageTk.PhotoImage(icon_image, master= ventana)
 
 # Agregar la imagen en el frame, arriba de la etiqueta "Login User"
 icon_label = tk.Label(frame, image=icon_image, bg=c_gris_claro)
@@ -92,7 +97,7 @@ login_label.pack()
 # Cargar la imagen del logo y ajustar su tamaño
 logo_image = Image.open("../img/logo.png")
 logo_image = logo_image.resize((100, 100), Image.LANCZOS)  # Ajusta el tamaño aquí
-logo_image = ImageTk.PhotoImage(logo_image)
+logo_image = ImageTk.PhotoImage(logo_image, master=ventana)
 
 # Agregar la imagen en la parte superior izquierda
 logo_label = tk.Label(ventana, image=logo_image)

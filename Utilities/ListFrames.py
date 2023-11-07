@@ -14,8 +14,10 @@ class ListFrame(tk.Frame):
         self.columnconfigure(1, weight=4)
         imagen_raw = Image.open(imageroute)
         imagen_raw.thumbnail(imageSize)
-        imagen_tk = ImageTk.PhotoImage(imagen_raw)
-        self.__image = tk.Label(self, image=imagen_tk)
+
+        self.__image = tk.Label(self)
+        imagen_tk = ImageTk.PhotoImage(imagen_raw, master=self.__image)
+        self.__image.configure(image=imagen_tk)
         self.__image.image = imagen_tk
         self.__image.grid(column=0, row=0)
         self.__text = tk.Label(self, height=4, justify="left", text=text)

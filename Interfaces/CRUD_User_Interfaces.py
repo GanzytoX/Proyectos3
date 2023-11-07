@@ -16,7 +16,7 @@ class CUInterface(Tk):
         self.__conection = mysql.connector.connect(
             user="root",
             host="localhost",
-            port="3306",
+            port="3307",
             #port="3306",
             #password="0123456789",
             database="pollosexpress"
@@ -31,11 +31,12 @@ class CUInterface(Tk):
         self.__singleActivated = False
 
         imagen_fondo = Image.open("../img/Empleado.png")
-        imagen_fondo = ImageTk.PhotoImage(imagen_fondo)
+        imagen_fondo = ImageTk.PhotoImage(imagen_fondo, master=self)
 
         # Crear un widget Label para mostrar la imagen de fondo
         label_imagen = tk.Label(self, image=imagen_fondo)
         label_imagen.place(relwidth=1, relheight=1)  # Estirar la imagen para que cubra toda la ventana
+        label_imagen.image = imagen_fondo
 
         #Configurar cuadrícula de la ventana
         self.columnconfigure(0, weight=1)
@@ -102,7 +103,7 @@ class CUInterface(Tk):
 
         self.__roles = []
         self.__empleadoActivo = None
-        self.mainloop()
+
 
     # Esta funcion se manda a llamar cuando clickean algo de la lista y pone los datos del empleado
     def __showEmpleado(self, empleado):
@@ -252,6 +253,5 @@ class RUInterface(Tk):
         self.geometry("1200x700")
         self.resizable(False, False)
 
-ventana = CUInterface()
 
 

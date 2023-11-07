@@ -22,25 +22,22 @@ class AdminMainMenu(Tk):
         self.__frameBotones.columnconfigure(1, weight=3)
         self.__frameBotones.columnconfigure(2, weight=3)
 
-        self.__openEmpleadosButton = Button(self.__frameBotones, text="Abir empleados")
+        self.__openEmpleadosButton = Button(self.__frameBotones, text="Abir empleados", command=self.__openEmpleados)
         self.__openEmpleadosButton.grid(column=0, row=0, padx=20)
 
-        self.__openProductosButton = Button(self.__frameBotones, text="Abir productos")
+        self.__openProductosButton = Button(self.__frameBotones, text="Abir productos", command=self.__openProductos)
         self.__openProductosButton.grid(column=1, row=0, pady=20)
 
-        self.__openOfertasButton = Button(self.__frameBotones, text="Abir empleados")
+        self.__openOfertasButton = Button(self.__frameBotones, text="Abir ofertas")
         self.__openOfertasButton.grid(column=2, row=0, padx=20)
 
-        self.__openEmpleadosButton = Button(self.__frameBotones, text="Abir empleados")
-        self.__openEmpleadosButton.grid(column=0, row=0)
 
-        self.mainloop()
 
     def __openEmpleados(self):
         newVentana = CUInterface()
+        newVentana.mainloop()
 
     def __openProductos(self):
         newVentana = CPr_Interface()
+        newVentana.mainloop()
 
-
-mainWindow = AdminMainMenu()

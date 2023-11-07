@@ -42,7 +42,7 @@ class CPr_Interface(Tk):
         self.__conection = mysql.connector.connect(
             user="root",
             host="localhost",
-            port="3306",
+            port="3307",
             #port="3306",
             #password="0123456789",
             database="pollosexpress"
@@ -53,11 +53,12 @@ class CPr_Interface(Tk):
         self.resizable(False, False)
 
         imagen_fondo = PIL.Image.open("../img/Empleado.png")
-        imagen_fondo = PIL.ImageTk.PhotoImage(imagen_fondo)
+        imagen_fondo = PIL.ImageTk.PhotoImage(imagen_fondo, master=self)
 
         # Crear un widget Label para mostrar la imagen de fondo
         label_imagen = Label(self, image=imagen_fondo)
         label_imagen.place(relwidth=1, relheight=1)  # Estirar la imagen para que cubra toda la ventana
+        label_imagen.imagen = imagen_fondo
 
         # Configurar cuadrícula de la ventana
         self.columnconfigure(0, weight=1)
@@ -113,7 +114,6 @@ class CPr_Interface(Tk):
         self.__eliminarProductoButton = Button(self.__singleProduct, text="Eliminar Producto", command=self.__eliminarProducto)
 
 
-        self.mainloop()
 
 
     def __updateProductos(self):
@@ -233,7 +233,7 @@ class CPr_Interface(Tk):
     def __setImage(self, ruta):
         imagen_producto = PIL.Image.open(ruta)
         imagen_producto = imagen_producto.resize((200, 200))
-        imagen_producto = PIL.ImageTk.PhotoImage(imagen_producto)
+        imagen_producto = PIL.ImageTk.PhotoImage(imagen_producto, master=self.__imagenProduct)
         self.__activeImage = ruta
         self.__imagenProduct.configure(image=imagen_producto)
         self.__imagenProduct.Image = imagen_producto
@@ -258,4 +258,4 @@ conection = mysql.connector.connect(
 productManager = CrudProducto(conection)
 productManager.Create(Producto("Si", "Takvez", 69.420, driveCode=productManager.UploadImage("../img/mimikiu.png")["id"]))
 """
-ventana = CPr_Interface()
+
