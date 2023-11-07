@@ -6,7 +6,7 @@ from tkinter import messagebox
 from PIL import Image, ImageTk
 from Crud.CRUDOfertas import CRUDPromociones, Promocion
 from Utilities.AutomaticScrollableFrame import AutomaticScrollableFrame
-from Utilities.ListFrames import ImageFrame
+from Utilities.ListFramePromociones import ListFrame
 
 
 # Esteticas:
@@ -70,9 +70,8 @@ class PromocionInterface(Tk):
         promociones= self.crud.Read()
         for promocion in promociones:
             frame = Frame(self.cuadroPromociones, height=50)
-            label = Label(frame, text=f"{promocion.id}-. {promocion.descripcion}").pack()
-
-            #frame.addEvent("<Button-1>", self.mostrarPromocion )
+            label = Label(frame, text=f"{promocion.id}-. {promocion.descripcion}")
+            label.pack()
             self.cuadroPromociones.add(frame)
         promociones.clear()
 
