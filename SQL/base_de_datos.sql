@@ -1,8 +1,7 @@
 #CREATE DATABASE pollosexpress;
 USE pollosexpress;
 
-#DROP TABLE IF EXISTS pago, rol, empleado, cliente, venta, producto, gasto, tipo_de_promocion, venta_producto, promocion;
-SHOW TABLES;
+DROP TABLE IF EXISTS pago, rol, empleado, cliente, venta, producto, gasto, tipo_de_promocion, venta_producto, promocion;
 
 CREATE TABLE pago (
     id_pago INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -30,10 +29,11 @@ CREATE TABLE empleado (
 ALTER TABLE empleado
 ADD COLUMN administrator bool NOT NULL;
 
-#DELETE FROM empleado WHERE nombre = 'Gon';
-#INSERT INTO empleado (nombre, apellido_paterno, apellido_materno, celular, sueldo, pass, administrator) 
-#VALUES ('Gon', 'Zar', 'Pado', '1111111111', 1000000.00, '1111', 1);
-#SELECT * FROM empleado;
+DELETE FROM empleado WHERE nombre = 'Gon';
+INSERT INTO empleado (nombre, apellido_paterno, apellido_materno, celular, sueldo, pass, administrator) VALUES
+('Gon', 'Zar', 'Pado', '1111111111', 1000000.00, '1111', 1),
+('Vector', 'Ou','yea', '00000000000', 1, '0000', 0);
+SELECT * FROM empleado;
 
 CREATE TABLE cliente (
     id_cliente INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
