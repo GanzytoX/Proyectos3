@@ -67,7 +67,10 @@ class PromocionInterface(Tk):
         self.cuadroPromociones.clear()
         promociones= self.crud.Read()
         for promocion in promociones:
-            frame = ListFrame(self.cuadroPromociones,"aaa",20)
+            if len(promocion.descripcion) > 40:
+                promocion.descripcion = promocion.descripcion[0:40] + "..."
+            frame = ListFrame(self.cuadroPromociones, promocion.descripcion,40)
+            frame.addEvento("<Button-1>",self.mostrarPromocion(promocion))
             self.cuadroPromociones.add(frame)
         promociones.clear()
 
