@@ -52,6 +52,7 @@ if __name__ != "__main__":
                 raise ValueError("Id must be an integer")
 
         def Read(self, id=None, condition: str = None):
+            self._CRUD__conection.commit()
             if id is None and condition is None:
                 script = "SELECT * from producto"
                 self._CRUD__cursor.execute(script)
@@ -93,6 +94,7 @@ if __name__ != "__main__":
 
         def findSimilar(self, substring: str):
             script = f"SELECT * from producto WHERE nombre LIKE '{substring}%'"
+            self._CRUD__conection.commit()
             self._CRUD__cursor.execute(script)
             result = self._CRUD__cursor.fetchall()
             productos = []
