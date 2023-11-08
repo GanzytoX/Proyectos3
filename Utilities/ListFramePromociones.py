@@ -7,12 +7,12 @@ class ListFrame(tk.Frame):
     __image = None
     __text = str
     __object = None
-    def __init__(self, master : AutomaticScrollableFrame, text:str,height:int):
+    def __init__(self, master : AutomaticScrollableFrame, text:str, objeto):
         tk.Frame.__init__(self, master)
         self.grid()
-        self.config(height=height)
         self.label = tk.Label(self, text=text)
         self.label.grid(row=0, column=0)
+        self.object = objeto
     def addEvento(self: tk.W,
             sequence: str | None = ...,
             func: Callable[[object], None] | None = ...):
