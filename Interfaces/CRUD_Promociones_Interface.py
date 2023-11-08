@@ -61,19 +61,13 @@ class PromocionInterface(Tk):
         self.Cuadrote.columnconfigure(0, weight=4)
         self.Cuadrote.columnconfigure(1, weight=1)
 
-
-
-
         self.mainloop()
-
     #  prueba para añadir las promociones a la lista
     def prueba(self):
         self.cuadroPromociones.clear()
         promociones= self.crud.Read()
         for promocion in promociones:
-            frame = Frame(self.cuadroPromociones, width=20)
-            label = Label(frame, text=f"{promocion.id}-. {promocion.descripcion}", font=("Arial",10))
-            label.pack()
+            frame = ListFrame(self.cuadroPromociones,"aaa",20)
             self.cuadroPromociones.add(frame)
         promociones.clear()
 
@@ -82,4 +76,3 @@ class PromocionInterface(Tk):
         print(f'hay una promocion con descripcion "{promocion.descripcion}" ')
 
 interfaz = PromocionInterface()
-
