@@ -86,6 +86,7 @@ class CPr_Interface(Tk):
 
         # Un frame donde acomodar los productos
         self.__listProductos = AutomaticScrollableFrame(marginProductos, height=470)
+        self.__listProductos.pack(fill="both", padx=20)
         # Un boton para agregar productos
         self.__agregarProductoMenu = Button(marginProductos, text="Crear producto", command=self.__configureAgregar)
         self.__agregarProductoMenu.pack(pady=10)
