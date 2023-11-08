@@ -20,13 +20,12 @@ c_azul_palido = "#AFEEEE"
 
 # Importo el Crud Usuario para poder hacer inicio de sesion y le paso un conection, o sea coneccion a la BD
 connection = mysql.connector.connect(
-        user="root",
-        host="localhost",
-        #port="3307",
-        port="3307",
-
-        database="pollosexpress"
-    )
+            user="sql5660121",
+            host="sql5.freesqldatabase.com",
+            port="3306",
+            password="GWes4WXpXH",
+            database="sql5660121"
+        )
 
 # Función para iniciar sesión
 def iniciarSesion():

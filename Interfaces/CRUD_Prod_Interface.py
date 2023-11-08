@@ -41,12 +41,11 @@ class CPr_Interface(Tk):
     def __init__(self):
         super().__init__()
         self.__conection = mysql.connector.connect(
-            user="root",
-            host="localhost",
-            port="3307",
-            #port="3306",
-            #password="0123456789",
-            database="pollosexpress"
+            user="sql5660121",
+            host="sql5.freesqldatabase.com",
+            port="3306",
+            password="GWes4WXpXH",
+            database="sql5660121"
         )
         self.__productManager = CrudProducto(conection=self.__conection)
         self.title("Productos")
@@ -269,27 +268,21 @@ class CPr_Interface(Tk):
         self.__setImage(ruta)
 
     def __search(self):
-        if self.__nav:
+        if len(self.__nav.get()) > 0:
             self.__listProductos.clear()
 
-            cuenta = int
-            procesados = 0
-
-            ids = self.__productManager.getIds()
-            barraCarga = BarraCarga(self, length=400, bg="white", fg="black", text="Cargando imágenes", variable=cuenta,
-                                    maximun=len(ids))
+            barraCarga = BarraCarga(self, length=400, bg="white", fg="black", text="Cargando imágenes",
+                                    mode="indeterminate")
             barraCarga.place(x=600, y=350, anchor="center")
             self.update_idletasks()
 
-            for id in ids:
-                producto = self.__productManager.findSimilar(id[0])
+            productos = self.__productManager.findSimilar(self.__nav.get())
+            for producto in productos:
                 newElement = ImageFrame(self.__listProductos,
-                                        f"{producto.nombre}",
-                                        producto, producto.imagen)
+                                            f"{producto.nombre}",
+                                            producto, producto.imagen)
                 newElement.addEvent("<Button-1>", self.__showProduct)
                 self.__listProductos.add(newElement)
-                procesados += 1
-                barraCarga.set(procesados)
                 self.update_idletasks()
             barraCarga.destroy()
         else:
