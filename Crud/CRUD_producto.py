@@ -51,7 +51,7 @@ if __name__ != "__main__":
             else:
                 raise ValueError("Id must be an integer")
 
-        def Read(self, id=None, condition:str=None):
+        def Read(self, id=None, condition: str = None):
             if id is None and condition is None:
                 script = "SELECT * from producto"
                 self._CRUD__cursor.execute(script)
@@ -80,13 +80,26 @@ if __name__ != "__main__":
             return id
 
         def countProducts(self):
-            script = f"SELECT COUNT(*) from producto"
+            script = "SELECT COUNT(*) from producto"
             self._CRUD__cursor.execute(script)
             result = self._CRUD__cursor.fetchone()
             return result
 
         def getIds(self):
-            script = f"SELECT id_producto from producto"
+            script = "SELECT id_producto from producto"
             self._CRUD__cursor.execute(script)
             result = self._CRUD__cursor.fetchall()
             return result
+
+        def findSimilar(self, substring: str):
+            script = f"SELECT id_producto from producto WHERE LIKE %{substring}"
+            self._CRUD__cursor.execute(script)
+            result = self._CRUD__cursor.fetchall()
+            productos = []
+            for resultado in result:
+                route = f"../userImages/product_{resultado[1]}.png"
+                self.__driveConnection.downloadImage(resultado[4], route)
+                producto = Producto(resultado[1], resultado[2], resultado[3], route, resultado[0],
+                                    driveCode=resultado[4])
+                productos.append(producto)
+            return productos

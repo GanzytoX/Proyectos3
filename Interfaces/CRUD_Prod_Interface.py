@@ -9,6 +9,7 @@ from Crud.CRUD_producto import CrudProducto, Producto
 from tkinter import *
 from tkinter.ttk import Progressbar
 from tkinter import filedialog
+from tkinter import messagebox
 import threading
 
 class BarraCarga(Frame):
@@ -67,10 +68,22 @@ class CPr_Interface(Tk):
         # Creare un widget donde desplegar las cosas para buscar los producos
         marginProductos = Frame(self, height=500, width=250, background="#204484")
         marginProductos.grid(column=0, row=0, pady=50, padx=50, ipadx=20, sticky="NSW")
+        marginProductos.columnconfigure(0, weight=5)
+        marginProductos.columnconfigure(1, weight=1)
+
+        # Margin de la barra de buscador
+        frameBuscador = Frame(marginProductos, background="#204484")
+        frameBuscador.columnconfigure(0, weight=5)
+        frameBuscador.columnconfigure(1, weight=1)
+        frameBuscador.pack(pady=20, padx=20, fill="x")
 
         # Barra del buscador
-        nav = Entry(marginProductos, background="#d8dce4", foreground="white")
-        nav.pack(pady=20, fill="x", padx=20)
+        self.__nav = Entry(frameBuscador, background="#d8dce4")
+        self.__nav.grid(column=0, row=0, padx=(0, 5), sticky="NSEW")
+
+        # Boton para buscar
+        botonBuscar = Button(frameBuscador, text="B", command=self.__search)
+        botonBuscar.grid(column=1, row=0, sticky="NSEW")
 
         # Un frame donde acomodar los productos
         self.__listProductos = AutomaticScrollableFrame(marginProductos, height=470)
@@ -112,9 +125,6 @@ class CPr_Interface(Tk):
         # Boton para editar producto
         self.__editarProductoButton = Button(self.__singleProduct, text="Editar Producto", command=self.__editarProducto)
         self.__eliminarProductoButton = Button(self.__singleProduct, text="Eliminar Producto", command=self.__eliminarProducto)
-
-
-
 
     def __updateProductos(self):
         for file in os.listdir("../userImages"):
@@ -186,34 +196,50 @@ class CPr_Interface(Tk):
         self.__agregarProducto.grid(column=0, row=8, sticky="w", pady=10, padx=20)
 
     def __crearObjetoProducto(self) -> Producto:
-        newProduct = Producto(
-            self.__entryNombre.get(),
-            self.__entryDescripcion.get("0.0", 'end-1c'),
-            float(self.__entryPrecio.get()),
-            imagen=self.__activeImage,
-            driveCode=self.__productManager.UploadImage(self.__activeImage)["id"]
-        )
-        return newProduct
+        try:
+            float(self.__entryPrecio.get())
+        except ValueError:
+            messagebox.showerror("Error", "El precio ingresado es invalido")
+        else:
+            newProduct = Producto(
+                self.__entryNombre.get(),
+                self.__entryDescripcion.get("0.0", 'end-1c'),
+                float(self.__entryPrecio.get()),
+                imagen=self.__activeImage,
+                driveCode=self.__productManager.UploadImage(self.__activeImage)["id"]
+            )
+            return newProduct
 
     def __agregarUnProducto(self):
         barraCarga = BarraCarga(self, length=400, bg="white", fg="black", text="Creando producto", mode="indeterminate")
         barraCarga.place(x=600, y=350, anchor="center")
         barraCarga.start()
         self.update_idletasks()
-        self.__productManager.Create(self.__crearObjetoProducto())
-
-        barraCarga.destroy()
-        self.__updateProductos()
-
-        self.__displayProductoMenu()
+        try:
+            self.__productManager.Create(self.__crearObjetoProducto())
+        except:
+            pass
+        else:
+            self.__updateProductos()
+            self.__displayProductoMenu()
+        finally:
+            barraCarga.destroy()
 
     def __editarProducto(self):
+
         barraCarga = BarraCarga(self, length=400, bg="white", fg="black", text="Creando producto", mode="indeterminate")
         barraCarga.place(x=600, y=350, anchor="center")
         barraCarga.start()
-        self.__productManager.Update(self.__activeProduct.id, self.__crearObjetoProducto())
-        barraCarga.destroy()
-        self.__updateProductos()
+        try:
+            self.__productManager.Update(self.__activeProduct.id, self.__crearObjetoProducto())
+        except:
+            pass
+        else:
+            self.__updateProductos()
+        finally:
+            barraCarga.destroy()
+
+
 
     def __eliminarProducto(self):
         barraCarga = BarraCarga(self, length=400, bg="white", fg="black", text="Eliminando producto", mode="indeterminate")
@@ -242,8 +268,32 @@ class CPr_Interface(Tk):
         ruta = filedialog.askopenfilename(filetypes=[("Image", ["*.jpg", "*.png"])])
         self.__setImage(ruta)
 
+    def __search(self):
+        if self.__nav:
+            self.__listProductos.clear()
 
+            cuenta = int
+            procesados = 0
 
+            ids = self.__productManager.getIds()
+            barraCarga = BarraCarga(self, length=400, bg="white", fg="black", text="Cargando imágenes", variable=cuenta,
+                                    maximun=len(ids))
+            barraCarga.place(x=600, y=350, anchor="center")
+            self.update_idletasks()
+
+            for id in ids:
+                producto = self.__productManager.findSimilar(id[0])
+                newElement = ImageFrame(self.__listProductos,
+                                        f"{producto.nombre}",
+                                        producto, producto.imagen)
+                newElement.addEvent("<Button-1>", self.__showProduct)
+                self.__listProductos.add(newElement)
+                procesados += 1
+                barraCarga.set(procesados)
+                self.update_idletasks()
+            barraCarga.destroy()
+        else:
+            self.__updateProductos()
 
 #gestorProducto = CrudProducto(conection)
 """""

@@ -32,7 +32,6 @@ class AdminMainMenu(Tk):
         self.__openOfertasButton.grid(column=2, row=0, padx=20)
 
 
-
     def __openEmpleados(self):
         newVentana = CUInterface()
         newVentana.mainloop()
