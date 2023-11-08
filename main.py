@@ -8,15 +8,13 @@ from Crud.CRUD_Rol import *
 
 #Comenten el port y la contraseña cuando lo vayan a utilizar
 if __name__ == "__main__":
-    conection = mysql.connector.connect(
-        user="root",
-        host="localhost",
+    connection = mysql.connector.connect(
+        user="sql5660121",
+        host="sql5.freesqldatabase.com",
         port="3306",
-        #port="3307",
-        #password="0123456789",
-        database="pollosexpress"
+        password="GWes4WXpXH",
+        database="sql5660121"
     )
-
     #NO ME BORREN DE AQUI SON PRUEBAS QUE USARE
 
     #
