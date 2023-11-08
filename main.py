@@ -79,3 +79,6 @@ if __name__ == "__main__":
     #imagen = Image.open("img/noImage.jpg")
     #imagen.thumbnail((200, 200))
     #imagen.save("img/noImage.jpg")
+
+    promocionManager = CRUDPromociones(connection)
+    promocionManager.Create(Promocion(1, 1,"Ya duermete", "2023/10/21","2023/10/21",1))

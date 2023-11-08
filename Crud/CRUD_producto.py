@@ -92,7 +92,7 @@ if __name__ != "__main__":
             return result
 
         def findSimilar(self, substring: str):
-            script = f"SELECT id_producto from producto WHERE LIKE %{substring}"
+            script = f"SELECT * from producto WHERE nombre LIKE '{substring}%'"
             self._CRUD__cursor.execute(script)
             result = self._CRUD__cursor.fetchall()
             productos = []
