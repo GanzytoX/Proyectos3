@@ -69,9 +69,9 @@ if __name__ == "__main__":
 
     #promocionManager.Delete(6)
 
-    roles = CrudRol(conection)
+    #roles = CrudRol(conection)
     #print()
-    roles.Create(Rol("De manzana"))
+    #roles.Create(Rol("De manzana"))
     #roles.Delete("a")
     #roles.Update(1, Rol("De sus"))
     #roles.Read(1)

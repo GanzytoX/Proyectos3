@@ -41,12 +41,12 @@ class CPr_Interface(Tk):
     def __init__(self):
         super().__init__()
         self.__conection = mysql.connector.connect(
-            user="root",
-            host="localhost",
-            port="3307",
-            #port="3306",
-            #password="0123456789",
-            database="pollosexpress"
+            user="sql5660121",
+            host="sql5.freesqldatabase.com",
+            port="3306",
+            password="GWes4WXpXH",
+            database="sql5660121"
+
         )
         self.__productManager = CrudProducto(conection=self.__conection)
         self.title("Productos")
@@ -125,7 +125,7 @@ class CPr_Interface(Tk):
         # Boton para editar producto
         self.__editarProductoButton = Button(self.__singleProduct, text="Editar Producto", command=self.__editarProducto)
         self.__eliminarProductoButton = Button(self.__singleProduct, text="Eliminar Producto", command=self.__eliminarProducto)
-
+        self.mainloop()
     def __updateProductos(self):
         for file in os.listdir("../userImages"):
             f = os.path.join("../userImages", file)
@@ -295,17 +295,6 @@ class CPr_Interface(Tk):
         else:
             self.__updateProductos()
 
-#gestorProducto = CrudProducto(conection)
-"""""
-conection = mysql.connector.connect(
-            user="root",
-            host="localhost",
-            port="3307",
-            #port="3306",
-            #password="0123456789",
-            database="pollosexpress"
-        )
-productManager = CrudProducto(conection)
-productManager.Create(Producto("Si", "Takvez", 69.420, driveCode=productManager.UploadImage("../img/mimikiu.png")["id"]))
-"""
+interfaz = CPr_Interface()
+
 

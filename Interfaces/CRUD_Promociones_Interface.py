@@ -22,6 +22,7 @@ class PromocionInterface(Tk):
             port="3306",
             password="GWes4WXpXH",
             database="sql5660121"
+
         )
         self.imagen_fondo = Image.open("../img/promociones.jpg")
         self.imagen_fondo = self.imagen_fondo.resize((1200, 700), Image.LANCZOS)
@@ -70,8 +71,8 @@ class PromocionInterface(Tk):
         self.cuadroPromociones.clear()
         promociones= self.crud.Read()
         for promocion in promociones:
-            frame = Frame(self.cuadroPromociones, height=50)
-            label = Label(frame, text=f"{promocion.id}-. {promocion.descripcion}")
+            frame = Frame(self.cuadroPromociones, width=20)
+            label = Label(frame, text=f"{promocion.id}-. {promocion.descripcion}", font=("Arial",10))
             label.pack()
             self.cuadroPromociones.add(frame)
         promociones.clear()
