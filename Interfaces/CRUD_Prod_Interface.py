@@ -238,8 +238,6 @@ class CPr_Interface(Tk):
         finally:
             barraCarga.destroy()
 
-
-
     def __eliminarProducto(self):
         barraCarga = BarraCarga(self, length=400, bg="white", fg="black", text="Eliminando producto", mode="indeterminate")
         barraCarga.place(x=600, y=350, anchor="center")
