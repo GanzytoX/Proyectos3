@@ -1,9 +1,11 @@
+import tkcalendar
+
 from Utilities.AutomaticScrollableFrame import AutomaticScrollableFrame
 import tkinter as tk
 from typing import Callable
 from Crud.CRUDOfertas import *
 from tkinter import ttk
-
+from tkcalendar import Calendar
 
 class ListFrame(tk.Frame):
     __image = None
@@ -31,17 +33,7 @@ class ListFrame(tk.Frame):
 class CuadrotePromociones(tk.Frame):
     def __init__(self):
         super().__init__()
-        self.columnconfigure(index=0, weight=1)
-        self.columnconfigure(index=1, weight=4)
-
-        # Para selectionar el id de producto para enviarlo a la base de datos
-        self.listaProdtexto = tk.Label(self, text="A que producto referencia la promocion: ").grid(column=0, row=0)
-        self.listaProd = ttk.Combobox(self, state="readonly", values=self.getProductos())
-        self.listaProd.grid(column=0, row=1)
-        print(self.getProductos())
-
-    def getProductos(self):
-        connection = mysql.connector.connect(
+        self.connection = mysql.connector.connect(
             user="sql5660121",
             host="sql5.freesqldatabase.com",
             port="3306",
@@ -49,12 +41,76 @@ class CuadrotePromociones(tk.Frame):
             database="sql5660121"
 
         )
-        script = "SELECT nombre from producto"
-        cursor = connection.cursor()
+        self.columnconfigure(index=0, weight=1)
+        self.columnconfigure(index=1, weight=1)
+        self.config(padx=10,pady=10)
+        # Para seleccionar el id de producto para enviarlo a la base de datos
+        self.listaProdtexto = tk.Label(self, text="A que producto referencia la promocion: ", padx=30,pady=10).grid(column=0, row=0)
+        self.listaProd = ttk.Combobox(self, state="readonly", values=self.getProductos()[1])
+        self.listaProd.grid(column=0, row=1)
+        #Para seleccionar el id del tipo de promocion y enviarlo a la base de datos
+        self.listaTipoPromocionTexto = tk.Label(self,text="Que tipo de promocion es:",padx=30,pady=10).grid(column=1,row=0)
+        self.listaTipoPromocion = ttk.Combobox(self, state= "readonly", values=self.getPromociones()[1])
+        self.listaTipoPromocion.grid(column=1,row=1)
+        #descripcion
+        self.cuadroDescripcionTexto = tk.Label(self,text="Descripcion: ",padx=30,pady=10).grid(column=0,row=2)
+        self.cuadroDescripcion = tk.Text(self, height=5,width=20)
+        self.cuadroDescripcion.grid(column=0, row= 3)
+        #fechas
+        self.fechaInicioText = tk.Label(self, text="Fecha inicio: (AAAA/MM/DD)",pady=10,padx=30).grid(column=1,row=2)
+        self.fechaInicio = tk.Entry(self)
+        self.fechaInicio.bind("<Button-1>",self.crearCalendario)
+        self.fechaInicio.grid(column=1, row=3)
+
+        self.fechaFinalText = tk.Label(self, text="Fecha final: (AAAA/MM/DD)", pady=10, padx=30).grid(column=1, row=4)
+        self.fechaFinal = tk.Entry(self)
+        self.fechaFinal.bind("<Button-1>", self.crearCalendario)
+        self.fechaFinal.grid(column=1,row=5)
+
+
+    def getProductos(self):
+        script = "SELECT id_producto, nombre from producto"
+        cursor = self.connection.cursor()
         cursor.execute(script)
         result = cursor.fetchall()
+        nombres = []
+        ids = []
         resultados = []
+        #ids y nombres de productos separados
         for i in result:
-            resultados.append(i[0])
-
+            nombres.append(i[1])
+            ids.append(i[0])
+        resultados.append(ids)
+        resultados.append(nombres)
         return resultados
+    def getPromociones(self):
+
+        script = "SELECT id_tipo_promocion, nombre from tipo_de_promocion"
+        cursor = self.connection.cursor()
+        cursor.execute(script)
+        result = cursor.fetchall()
+        ids = []
+        nombres = []
+        resultados = []
+        #separar ids y nombres para devolver un arreglo de arreglos
+        for i in result:
+            ids.append(i[0])
+            nombres.append(i[1])
+        resultados.append(ids)
+        resultados.append(nombres)
+        return resultados
+    def crearCalendario(self,event):
+        calendario = tk.Tk()
+        self.si = Calendar(calendario, day=10,month=11,year=2023)
+        self.si.pack()
+        botoncito = tk.Button(calendario,text="Ya", command=calendario.destroy)
+        botoncito.pack()
+        botoncito1 = tk.Button(calendario,text="Confirmar fecha", command=lambda :self.ponerFecha(event.widget), )
+        botoncito1.pack()
+        calendario.mainloop()
+
+    def ponerFecha(self, entry):
+        entry.delete(0, tk.END)
+        entry.insert(0, self.si.get_date())
+
+

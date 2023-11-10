@@ -52,16 +52,18 @@ class PromocionInterface(Tk):
         self.cuadroPromociones.pack(fill="both", padx=30)
 
         #  boton para agregar promociones
-        self.botoncito = Button(self.cuadritoPromociones, text="refresh(porahora)", font=("Arial", 15), command=self.prueba)
+        self.botoncito = Button(self.cuadritoPromociones, text="crear promocion", font=("Arial", 15), command=self.crearPromocion)
         self.botoncito.pack()
 
         #Cuadrote promociones
         self.cuadrotePromociones = CuadrotePromociones()
-        self.cuadrotePromociones.grid(column=0,row=0)
+        self.cuadrotePromociones.place(x=394,y=82)
 
+        #self.bind("<Button-1>", self.aaa)
+        self.refresh()
         self.mainloop()
     #  prueba para añadir las promociones a la lista
-    def prueba(self):
+    def refresh(self):
         self.cuadroPromociones.clear()
         promociones= self.crud.Read()
         for promocion in promociones:
@@ -74,13 +76,20 @@ class PromocionInterface(Tk):
             frame.addevento("<Button-1>", self.mostrarPromocion)
             self.cuadroPromociones.add(frame)
         promociones.clear()
-
+    def crearPromocion(self):
+        pass
 
     def mostrarPromocion(self, promocion : Promocion):
-        script = (f'SELECT producto.nombre from producto inner join promocion on promocion.id_producto = producto.id_producto HAVINg {promocion.descripcion} = promocion.descripcion;')
+        script = (f'SELECT producto.id_producto, producto.nombre from producto inner join promocion on promocion.id_producto = producto.id_producto WHERE %s = promocion.descripcion')
         cursor = self.__conection.cursor()
-        cursor.execute(script)
+        cursor.execute(script, [promocion.descripcion])
         result = cursor.fetchone()
-        self.cuadrotePromociones.listaProd.set(result)
+        resultado = []
+        for i in result:
+            resultado.append(i)
+        #resultado tiene el id y el nombre del prooduto
+        self.cuadrotePromociones.listaProd.set(resultado[1])
+    def aaa(self,event):
+        print(event.x, event.y)
 
 interfaz = PromocionInterface()
