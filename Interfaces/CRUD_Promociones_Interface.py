@@ -7,6 +7,7 @@ from PIL import Image, ImageTk
 from Crud.CRUDOfertas import CRUDPromociones, Promocion
 from Utilities.AutomaticScrollableFrame import AutomaticScrollableFrame
 from Utilities.ListFramePromociones import ListFrame
+from Utilities.ListFramePromociones import CuadrotePromociones
 
 
 # Esteticas:
@@ -32,7 +33,6 @@ class PromocionInterface(Tk):
         self.crud = CRUDPromociones(conection=self.__conection)
         self.title = "Promociones"
         self.geometry("1200x700")
-        self.config(bg="#812634")
         self.resizable(False, False)
 
         # Pa que se acomode un cuadrito a la izquierda y uno grandote a la derecha
@@ -55,11 +55,9 @@ class PromocionInterface(Tk):
         self.botoncito = Button(self.cuadritoPromociones, text="refresh(porahora)", font=("Arial", 15), command=self.prueba)
         self.botoncito.pack()
 
-        #  Empezamos con el cuadrote de las promociones que tiene todos los datos
-        self.Cuadrote = Frame(self)
-        #  la primera columna mas ancha que la segunda
-        self.Cuadrote.columnconfigure(0, weight=4)
-        self.Cuadrote.columnconfigure(1, weight=1)
+        #Cuadrote promociones
+        self.cuadrotePromociones = CuadrotePromociones()
+        self.cuadrotePromociones.grid(column=0,row=0)
 
         self.mainloop()
     #  prueba para añadir las promociones a la lista
@@ -68,15 +66,21 @@ class PromocionInterface(Tk):
         promociones= self.crud.Read()
         for promocion in promociones:
             if len(promocion.descripcion) > 40:
-                promocion.descripcion = promocion.descripcion[0:40] + "..."
-            frame = ListFrame(self.cuadroPromociones, promocion.descripcion, promocion)
+                enseñar = promocion.descripcion[0:40] + "..."
+            else:
+                enseñar = promocion.descripcion
+            frame = ListFrame(self.cuadroPromociones, enseñar, promocion)
 
-            frame.addEvento("<Button-1>", self.mostrarPromocion)
+            frame.addevento("<Button-1>", self.mostrarPromocion)
             self.cuadroPromociones.add(frame)
         promociones.clear()
 
 
     def mostrarPromocion(self, promocion : Promocion):
-        print(f'hay una promocion con descripcion "{promocion.descripcion}" ')
+        script = (f'SELECT producto.nombre from producto inner join promocion on promocion.id_producto = producto.id_producto HAVINg {promocion.descripcion} = promocion.descripcion;')
+        cursor = self.__conection.cursor()
+        cursor.execute(script)
+        result = cursor.fetchone()
+        self.cuadrotePromociones.listaProd.set(result)
 
 interfaz = PromocionInterface()
