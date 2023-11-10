@@ -68,9 +68,7 @@ class CuadrotePromociones(tk.Frame):
         self.fechaFinal.grid(column=1,row=5)
         #elemento actual para editar
         self.current = -1
-        # boton
-        self.BotonCrear = tk.Button(self, text="Crear Promocion", command=self.crearPromocion,  )
-        self.BotonCrear.grid(column=1, row=6, pady=(50,5))
+
 
 
 
