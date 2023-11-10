@@ -35,11 +35,15 @@ INSERT INTO empleado (nombre, apellido_paterno, apellido_materno, celular, sueld
 ('Vector', 'Ou','yea', '00000000000', 1, '0000', 0);
 SELECT * FROM empleado;
 
+SELECT * FROM empleado
+WHERE celular = '1111111111' AND
+pass = '1111';
+
 CREATE TABLE cliente (
     id_cliente INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
     apellido VARCHAR(50) NOT NULL,
-    celular VARCHAR(11) NOT NULL,
+    celular VARCHAR(10) NOT NULL,
     direccion VARCHAR(150) NOT NULL
 );
 
