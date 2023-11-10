@@ -54,7 +54,7 @@ class CuadrotePromociones(tk.Frame):
         self.listaTipoPromocion.grid(column=1,row=1)
         #descripcion
         self.cuadroDescripcionTexto = tk.Label(self,text="Descripcion: ",padx=30,pady=10).grid(column=0,row=2)
-        self.cuadroDescripcion = tk.Text(self, height=5,width=20)
+        self.cuadroDescripcion = tk.Text(self, height=10,width=20)
         self.cuadroDescripcion.grid(column=0, row= 3)
         #fechas
         self.fechaInicioText = tk.Label(self, text="Fecha inicio: (AAAA/MM/DD)",pady=10,padx=30).grid(column=1,row=2)
@@ -116,6 +116,7 @@ class CuadrotePromociones(tk.Frame):
 
 
     def darFormato(self, entry:tk.Entry):
+        entry.delete(0,tk.END)
         entry.insert(0, self.si.get_date())
         aformatear = entry.get()
         formato = aformatear.split("/")

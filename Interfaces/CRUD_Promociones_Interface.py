@@ -56,6 +56,8 @@ class PromocionInterface(Tk):
         self.cuadrotePromociones.place(x=394,y=82)
         self.BotonCrear = Button(self.cuadrotePromociones, text="Crear Promocion", command=self.crearPromocion)
         self.BotonCrear.grid(column=1, row=6, pady=(50, 5))
+        self.BotonCrear = Button(self.cuadrotePromociones, text="Borrar Promocion", command=self.borrarPromocion)
+        self.BotonCrear.grid(column=0, row=6, pady=(50, 5))
         self.promociones = []
         #self.bind("<Button-1>", self.aaa)
 
@@ -72,7 +74,6 @@ class PromocionInterface(Tk):
                 enseñar = promocion.descripcion
             self.promociones.append(promocion)
             frame = ListFrame(self.cuadroPromociones, enseñar, promocion)
-
             frame.addevento("<Button-1>", self.mostrarPromocion)
             self.cuadroPromociones.add(frame)
         promociones.clear()
@@ -95,8 +96,16 @@ class PromocionInterface(Tk):
         self.cuadrotePromociones.listaProd.set(result[1])
         #buscar aquel tipo de promocion con el que esta relacionado promocion
         self.actTipoPromocion(self.__conection, promocion)
-
+        self.cuadrotePromociones.cuadroDescripcion.delete("1.0", END)
+        self.cuadrotePromociones.cuadroDescripcion.insert("1.0",promocion.descripcion)
+        self.cuadrotePromociones.fechaInicio.delete(0,END)
+        self.cuadrotePromociones.fechaInicio.insert(0,promocion.fechainicio)
+        self.cuadrotePromociones.fechaFinal.delete(0, END)
+        self.cuadrotePromociones.fechaFinal.insert(0, promocion.fechainicio)
+        self.cuadrotePromociones.current = promocion.id
+        print(self.cuadrotePromociones.current)
         self.__conection.close()
+        self.refresh()
 
 
     def actTipoPromocion(self,conection,promocion:Promocion):
@@ -108,6 +117,22 @@ class PromocionInterface(Tk):
         print(result)
         print(result[1])
         self.cuadrotePromociones.listaTipoPromocion.set(result[1])
+    def borrarPromocion(self):
+        coonection = mysql.connector.connect(
+            user="sql5660121",
+            host="sql5.freesqldatabase.com",
+            port="3306",
+            password="GWes4WXpXH",
+            database="sql5660121"
+
+        )
+        script = "Delete from promocion where id_promocion = %s"
+        cursor = coonection.cursor()
+        cursor.execute(script,[self.cuadrotePromociones.current])
+        coonection.commit()
+        print(f"se borro la promocion con id {self.cuadrotePromociones.current}")
+        self.refresh()
+        coonection.close()
     def crearPromocion(self):
         coonection = mysql.connector.connect(
             user="sql5660121",
@@ -138,5 +163,6 @@ class PromocionInterface(Tk):
         cursor.execute(script,[aSubir[0],aSubir[1],aSubir[2],aSubir[3],aSubir[4]])
         coonection.commit()
         coonection.close()
+        self.refresh()
     def aaa(self,event):
         print(event.x, event.y)

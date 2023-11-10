@@ -26,20 +26,31 @@ class CRUDPromociones(CRUD):
         self.__conection.commit()  # commit siempre que se modifique la tabla
 
     def Read(self, id=None, condition=None):
+        con = mysql.connector.connect(
+            user="sql5660121",
+            host="sql5.freesqldatabase.com",
+            port="3306",
+            password="GWes4WXpXH",
+            database="sql5660121"
+
+        )
         if id is None:
             script = "SELECT * from promocion"
-            self.__cursor.execute(script)
-            result = self.__cursor.fetchall()
+            cursor = con.cursor()
+            cursor.execute(script)
+            result = cursor.fetchall()
             promociones = []
             for resultado in result:
                 promocion = Promocion(resultado[0], resultado[1], resultado[2], resultado[3], resultado[4], resultado[5])
                 promociones.append(promocion)
+            con.close()
             return promociones
         elif isinstance(id, int):
             script = f"SELECT * from promocion WHERE id_promocion = {id}"
             self.__cursor.execute(script)
             resultado = self.__cursor.fetchone()
             promocion = Promocion( resultado[0],resultado[1], resultado[2], resultado[3], resultado[4],resultado[5])
+            con.close()
             return promocion
         else:
             raise ValueError("Id must be an integer")
