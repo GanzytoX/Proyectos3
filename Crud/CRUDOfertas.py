@@ -32,14 +32,14 @@ class CRUDPromociones(CRUD):
             result = self.__cursor.fetchall()
             promociones = []
             for resultado in result:
-                promocion = Promocion(resultado[0], resultado[1], resultado[2], resultado[3], resultado[4], resultado[0])
+                promocion = Promocion(resultado[0], resultado[1], resultado[2], resultado[3], resultado[4], resultado[5])
                 promociones.append(promocion)
             return promociones
         elif isinstance(id, int):
             script = f"SELECT * from promocion WHERE id_promocion = {id}"
             self.__cursor.execute(script)
             resultado = self.__cursor.fetchone()
-            promocion = Promocion(resultado[1], resultado[2], resultado[3], resultado[4], resultado[0])
+            promocion = Promocion( resultado[0],resultado[1], resultado[2], resultado[3], resultado[4],resultado[5])
             return promocion
         else:
             raise ValueError("Id must be an integer")

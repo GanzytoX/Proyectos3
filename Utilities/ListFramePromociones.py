@@ -66,6 +66,15 @@ class CuadrotePromociones(tk.Frame):
         self.fechaFinal = tk.Entry(self)
         self.fechaFinal.bind("<Button-1>", self.crearCalendario)
         self.fechaFinal.grid(column=1,row=5)
+        #elemento actual para editar
+        self.current = -1
+        # boton
+        self.BotonCrear = tk.Button(self, text="Crear Promocion", command=self.crearPromocion,  )
+        self.BotonCrear.grid(column=1, row=6, pady=(50,5))
+
+
+
+
 
 
     def getProductos(self):
@@ -100,17 +109,22 @@ class CuadrotePromociones(tk.Frame):
         resultados.append(nombres)
         return resultados
     def crearCalendario(self,event):
-        calendario = tk.Tk()
-        self.si = Calendar(calendario, day=10,month=11,year=2023)
+        self.calendario = tk.Tk()
+        self.si = Calendar(self.calendario, day=10,month=11,year=2023)
         self.si.pack()
-        botoncito = tk.Button(calendario,text="Ya", command=calendario.destroy)
+        botoncito = tk.Button(self.calendario,text="Ya", command=lambda: self.darFormato(event.widget))
         botoncito.pack()
-        botoncito1 = tk.Button(calendario,text="Confirmar fecha", command=lambda :self.ponerFecha(event.widget), )
-        botoncito1.pack()
-        calendario.mainloop()
+        self.calendario.mainloop()
 
-    def ponerFecha(self, entry):
-        entry.delete(0, tk.END)
+
+    def darFormato(self, entry:tk.Entry):
         entry.insert(0, self.si.get_date())
+        aformatear = entry.get()
+        formato = aformatear.split("/")
+        formateo = f"20{formato[2]}/{formato[0]}/{formato[1]}"
+        entry.delete(0,tk.END)
+        entry.insert(0,formateo)
+        self.calendario.destroy()
+
 
 

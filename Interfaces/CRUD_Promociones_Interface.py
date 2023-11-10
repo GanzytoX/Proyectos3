@@ -51,17 +51,13 @@ class PromocionInterface(Tk):
         self.cuadroPromociones = AutomaticScrollableFrame(self.cuadritoPromociones, height=470)
         self.cuadroPromociones.pack(fill="both", padx=30)
 
-        #  boton para agregar promociones
-        self.botoncito = Button(self.cuadritoPromociones, text="crear promocion", font=("Arial", 15), command=self.crearPromocion)
-        self.botoncito.pack()
-
         #Cuadrote promociones
         self.cuadrotePromociones = CuadrotePromociones()
         self.cuadrotePromociones.place(x=394,y=82)
 
         #self.bind("<Button-1>", self.aaa)
         self.refresh()
-        self.mainloop()
+
     #  prueba para añadir las promociones a la lista
     def refresh(self):
         self.cuadroPromociones.clear()
@@ -76,20 +72,53 @@ class PromocionInterface(Tk):
             frame.addevento("<Button-1>", self.mostrarPromocion)
             self.cuadroPromociones.add(frame)
         promociones.clear()
-    def crearPromocion(self):
-        pass
 
     def mostrarPromocion(self, promocion : Promocion):
+        self.__conection = mysql.connector.connect(
+            user="sql5660121",
+            host="sql5.freesqldatabase.com",
+            port="3306",
+            password="GWes4WXpXH",
+            database="sql5660121"
+
+        )
         script = (f'SELECT producto.id_producto, producto.nombre from producto inner join promocion on promocion.id_producto = producto.id_producto WHERE %s = promocion.descripcion')
         cursor = self.__conection.cursor()
         cursor.execute(script, [promocion.descripcion])
         result = cursor.fetchone()
-        resultado = []
-        for i in result:
-            resultado.append(i)
         #resultado tiene el id y el nombre del prooduto
-        self.cuadrotePromociones.listaProd.set(resultado[1])
+        print(result)
+        self.cuadrotePromociones.listaProd.set(result[1])
+        #buscar aquel tipo de promocion con el que esta relacionado promocion
+        self.actTipoPromocion(self.__conection, promocion)
+
+        self.__conection.close()
+
+
+    def actTipoPromocion(self,conection,promocion:Promocion):
+        script = (f'SELECT tipo_de_promocion.id_tipo_promocion, tipo_de_promocion.nombre FROM tipo_de_promocion INNER JOIN promocion ON promocion.id_tipo_promocion = tipo_de_promocion.id_tipo_promocion WHERE %s = tipo_de_promocion.id_tipo_promocion')
+        print(promocion.id_tipopromocion)
+        cursor = conection.cursor()
+        cursor.execute(script, [promocion.id_tipopromocion])
+        result = cursor.fetchone()
+        print(result)
+        print(result[1])
+        self.cuadrotePromociones.listaTipoPromocion.set(result[1])
+    def crearPromocion(self):
+        coonection = mysql.connector.connect(
+            user="sql5660121",
+            host="sql5.freesqldatabase.com",
+            port="3306",
+            password="GWes4WXpXH",
+            database="sql5660121"
+
+        )
+        crud = CRUDPromociones(coonection)
+        aSubir = []
+        aSubir.append(self.listaProd.get())
+        aSubir.append((self.listaTipoPromocion.get()))
+        #aSubir.append(self.)
     def aaa(self,event):
         print(event.x, event.y)
 
-interfaz = PromocionInterface()
+PromocionInterfaca = PromocionInterface()
