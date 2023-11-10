@@ -58,6 +58,8 @@ class PromocionInterface(Tk):
         self.BotonCrear.grid(column=1, row=6, pady=(50, 5))
         self.BotonCrear = Button(self.cuadrotePromociones, text="Borrar Promocion", command=self.borrarPromocion)
         self.BotonCrear.grid(column=0, row=6, pady=(50, 5))
+        self.BotonCrear = Button(self.cuadrotePromociones, text="Editar Promocion", command=self.actualizarPromocion)
+        self.BotonCrear.grid(column=0, row=7, pady=(10, 5))
         self.promociones = []
         #self.bind("<Button-1>", self.aaa)
 
@@ -117,6 +119,37 @@ class PromocionInterface(Tk):
         print(result)
         print(result[1])
         self.cuadrotePromociones.listaTipoPromocion.set(result[1])
+    def actualizarPromocion(self):
+        coonection = mysql.connector.connect(
+            user="sql5660121",
+            host="sql5.freesqldatabase.com",
+            port="3306",
+            password="GWes4WXpXH",
+            database="sql5660121"
+
+        )
+        aSubir = []
+        script = ('select id_producto from producto where %s = nombre')
+        cursor = coonection.cursor()
+        cursor.execute(script, [self.cuadrotePromociones.listaProd.get()])
+        result = cursor.fetchone()
+        aSubir.append(result[0])
+        aSubir.append(self.cuadrotePromociones.cuadroDescripcion.get("1.0", END))
+        aSubir.append(self.cuadrotePromociones.fechaInicio.get())
+        aSubir.append(self.cuadrotePromociones.fechaFinal.get())
+        # Buscar id tipo promocion
+        script = ('select id_tipo_promocion from tipo_de_promocion where %s = nombre')
+        cursor.execute(script, [self.cuadrotePromociones.listaTipoPromocion.get()])
+        result = cursor.fetchone()
+        aSubir.append(result[0])
+        aSubir[1] = aSubir[1][0:len(aSubir[1]) - 1]
+        print(aSubir)
+
+        script =("Update promocion set id_producto = %s, descripcion = %s, fecha_de_inicio = %s, fecha_de_finalizacion = %s, id_tipo_promocion = %s where id_promocion = %s")
+        cursor.execute(script,[aSubir[0],aSubir[1],aSubir[2],aSubir[3],aSubir[4], self.cuadrotePromociones.current])
+        coonection.commit()
+        coonection.close()
+        self.refresh()
     def borrarPromocion(self):
         coonection = mysql.connector.connect(
             user="sql5660121",
