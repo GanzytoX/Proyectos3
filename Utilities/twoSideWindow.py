@@ -7,7 +7,11 @@ import PIL.ImageTk
 class twoSideWindow(Tk):
     __frame_left = Frame
     __frame_buscador = Frame
-    
+    __nav = Entry
+    __boton_buscar = Button
+    __list_productos = AutomaticScrollableFrame
+    __agregar_producto_button = Button
+
     def __init__(self, window_name: str = None, size: str = None, resizable: bool = None, background_image: str = None):
         super().__init__()
         # Configuraciones generales de la ventana
@@ -35,10 +39,28 @@ class twoSideWindow(Tk):
 
         # Margin de la barra de buscador
         self.__set_frame_buscador(Frame(self.get_frame_left(), background="#204484"))
-        self.get_frame_left().columnconfigure(0, weight=5)
-        self.get_frame_left().columnconfigure(1, weight=1)
-        self.get_frame_left().pack(pady=20, padx=20, fill="x")
+        self.get_frame_buscador().columnconfigure(0, weight=5)
+        self.get_frame_buscador().columnconfigure(1, weight=1)
+        self.get_frame_buscador().pack(pady=20, padx=20, fill="x")
 
+        # Barra del buscador
+        self.__set_navegation_bar(Entry(self.get_frame_buscador(), background="#d8dce4"))
+        self.get_navegation_bar().grid(column=0, row=0, padx=(0, 5), sticky="NSEW")
+
+        # Boton para buscar
+        self.__set_boton_buscar(Button(self.get_frame_buscador(), text="B"))
+        self.get_boton_buscar().grid(column=1, row=0, sticky="NSEW")
+
+        # Un frame donde acomodar los elementos
+        self.__set_list_productos(AutomaticScrollableFrame(self.get_frame_left(), height=470))
+        self.get_list_productos().pack(fill="both", padx=20)
+
+
+        # Un boton para poder agregar elementos
+        self.__set_agregar_producto_button(Button(self.get_frame_left(), text="Crear producto"))
+        self.get_agregar_producto_button().pack(pady=10)
+
+    # Encapsulaciones
     def get_frame_left(self) -> Frame:
         return self.__frame_left
 
@@ -52,3 +74,35 @@ class twoSideWindow(Tk):
     def __set_frame_buscador(self, frame: Frame):
         if isinstance(frame, Frame):
             self.__frame_buscador = frame
+
+    def get_navegation_bar(self) -> Entry:
+        return self.__nav
+
+    def __set_navegation_bar(self, nav: Entry):
+        if isinstance(nav, Entry):
+            self.__nav = nav
+
+    def get_boton_buscar(self) -> Button:
+        return self.__boton_buscar
+
+    def __set_boton_buscar(self, button: Button):
+        if isinstance(button, Button):
+            self.__boton_buscar = button
+
+    def get_list_productos(self) -> AutomaticScrollableFrame:
+        return self.__list_productos
+
+    def __set_list_productos(self, automaticScrollableFrame: AutomaticScrollableFrame):
+        if isinstance(automaticScrollableFrame, AutomaticScrollableFrame):
+            self.__list_productos = automaticScrollableFrame
+
+    def get_agregar_producto_button(self) -> Button:
+        return self.__agregar_producto_button
+
+    def __set_agregar_producto_button(self, button: Button):
+        if isinstance(button, Button):
+            self.__agregar_producto_button = button
+
+
+ventanita = twoSideWindow(size="1200x700")
+ventanita.mainloop()
