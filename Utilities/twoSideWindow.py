@@ -9,8 +9,8 @@ class twoSideWindow(Tk):
     __frame_buscador = Frame
     __nav = Entry
     __boton_buscar = Button
-    __list_productos = AutomaticScrollableFrame
-    __agregar_producto_button = Button
+    __list_elements = AutomaticScrollableFrame
+    __agregar_elemento_button = Button
 
     def __init__(self, window_name: str = None, size: str = None, resizable: bool = None, background_image: str = None):
         super().__init__()
@@ -21,7 +21,7 @@ class twoSideWindow(Tk):
         
         # Crear un widget Label para mostrar la imagen de fondo
         if background_image != "" and background_image != None:
-            imagen_fondo = PIL.Image.open("../img/Empleado.png")
+            imagen_fondo = PIL.Image.open(background_image)
             imagen_fondo = PIL.ImageTk.PhotoImage(imagen_fondo, master=self)
             label_imagen = Label(self, image=imagen_fondo)
             label_imagen.place(relwidth=1, relheight=1)  # Estirar la imagen para que cubra toda la ventana
@@ -52,13 +52,13 @@ class twoSideWindow(Tk):
         self.get_boton_buscar().grid(column=1, row=0, sticky="NSEW")
 
         # Un frame donde acomodar los elementos
-        self.__set_list_productos(AutomaticScrollableFrame(self.get_frame_left(), height=470))
-        self.get_list_productos().pack(fill="both", padx=20)
+        self.__set_list_elements(AutomaticScrollableFrame(self.get_frame_left(), height=470))
+        self.get_list_elements().pack(fill="both", padx=20)
 
 
         # Un boton para poder agregar elementos
-        self.__set_agregar_producto_button(Button(self.get_frame_left(), text="Crear producto"))
-        self.get_agregar_producto_button().pack(pady=10)
+        self.__set_agregar_elemento_button(Button(self.get_frame_left()))
+        self.get_agregar_elemento_button().pack(pady=10)
 
     # Encapsulaciones
     def get_frame_left(self) -> Frame:
@@ -89,20 +89,18 @@ class twoSideWindow(Tk):
         if isinstance(button, Button):
             self.__boton_buscar = button
 
-    def get_list_productos(self) -> AutomaticScrollableFrame:
-        return self.__list_productos
+    def get_list_elements(self) -> AutomaticScrollableFrame:
+        return self.__list_elements
 
-    def __set_list_productos(self, automaticScrollableFrame: AutomaticScrollableFrame):
+    def __set_list_elements(self, automaticScrollableFrame: AutomaticScrollableFrame):
         if isinstance(automaticScrollableFrame, AutomaticScrollableFrame):
-            self.__list_productos = automaticScrollableFrame
+            self.__list_elements = automaticScrollableFrame
 
-    def get_agregar_producto_button(self) -> Button:
-        return self.__agregar_producto_button
+    def get_agregar_elemento_button(self) -> Button:
+        return self.__agregar_element_button
 
-    def __set_agregar_producto_button(self, button: Button):
+    def __set_agregar_elemento_button(self, button: Button):
         if isinstance(button, Button):
-            self.__agregar_producto_button = button
+            self.__agregar_element_button = button
 
 
-ventanita = twoSideWindow(size="1200x700")
-ventanita.mainloop()

@@ -4,15 +4,15 @@ from tkinter import Tk, ttk
 from tkinter import messagebox
 import mysql.connector
 from Crud.CRUD_Usuario import CrudEmpleado, Empleado
-from PIL import Image, ImageTk
 from Crud.CRUD_Rol import *
-from Utilities.AutomaticScrollableFrame import AutomaticScrollableFrame
 from Utilities.ListFrames import NoImageFrame
+from Utilities.twoSideWindow import twoSideWindow
 
 
-class CUInterface(Tk):
+class CUInterface(twoSideWindow):
     def __init__(self):
-        super().__init__()
+        super().__init__(window_name="Empleados", size="1200x700", resizable=False,
+                         background_image="../img/Empleado.png")
         self.__conection = mysql.connector.connect(
             user="sql5660121",
             host="sql5.freesqldatabase.com",
@@ -23,43 +23,13 @@ class CUInterface(Tk):
 
         self.__userManager = CrudEmpleado(self.__conection)
         self.__rolManager = CrudRol(self.__conection)
-        self.title("Empleados")
-        self.geometry("1200x700")
-        self.resizable(False, False)
         self.protocol("WM_DELETE_WINDOW", self.__cerrar_ventana)
 
         # para ver si la interfaz ya ha sido activada
         self.__singleActivated = False
 
-        imagen_fondo = Image.open("../img/Empleado.png")
-        imagen_fondo = ImageTk.PhotoImage(imagen_fondo, master=self)
-
-        # Crear un widget Label para mostrar la imagen de fondo
-        label_imagen = tk.Label(self, image=imagen_fondo)
-        label_imagen.place(relwidth=1, relheight=1)  # Estirar la imagen para que cubra toda la ventana
-        label_imagen.image = imagen_fondo
-
-        #Configurar cuadrícula de la ventana
-        self.columnconfigure(0, weight=1)
-        self.columnconfigure(1, weight=5)
-        self.rowconfigure(0, weight=3)
-        self.rowconfigure(1, weight=2)
-
-        # Creare un widget donde desplegar las cosas para buscar los empleados
-        marginEmpleados = tk.Frame(self, height=500, width=250)
-        marginEmpleados.grid(column=0, row=0, pady=50, ipadx=20, ipady=20, sticky=tk.NS)
-
-        # Barra del buscador
-        nav = tk.Entry(marginEmpleados, background="#397bb8", foreground="white")
-        nav.pack(pady=20, fill="x", padx=20)
-
-        # Un frame donde acomodar los empleados
-        self.__listEmpleados = AutomaticScrollableFrame(marginEmpleados, height=470)
-        self.__listEmpleados.pack(fill="both", padx=20)
-
         # Boton para agregar empleado
-        agregarEmpleadoButton = tk.Button(marginEmpleados, text="Agregar empleado", background="#2ED741", command=self.__configureAgregarEmpleado)
-        agregarEmpleadoButton.pack(pady=10, fill="x", padx=20)
+        self.get_agregar_elemento_button().configure(text="Agregar empleado", background="#2ED741", command=self.__configureAgregarEmpleado)
 
         #Agregar todos los empleados posibles:
         self.__updateEmpleados()
@@ -211,14 +181,14 @@ class CUInterface(Tk):
                 return rol._getId()
 
     def __updateEmpleados(self):
-        self.__listEmpleados.clear()
+        self.get_list_elements().clear()
         empleados = self.__userManager.Read()
         for empleado in empleados:
-            newElement = NoImageFrame(self.__listEmpleados,
+            newElement = NoImageFrame(self.get_list_elements(),
                                       f"{empleado.getNombre()} {empleado.getApellido_paterno()} {empleado.getApellido_materno()}",
                                       empleado)
             newElement.addEvent("<Button-1>", self.__showEmpleado)
-            self.__listEmpleados.add(newElement)
+            self.get_list_elements().add(newElement)
         empleados.clear()
 
 
@@ -232,8 +202,8 @@ class CUInterface(Tk):
         self.__empleadoActivo = None
         self.__updateEmpleados()
         self.__displayMenu()
-        if self.__listEmpleados.countItems() > 0:
-            self.__showEmpleado(self.__listEmpleados.getItem(0).object)
+        if self.get_list_elements().countItems() > 0:
+            self.__showEmpleado(self.get_list_elements().getItem(0).object)
         else:
             self.__configureAgregarEmpleado()
 
