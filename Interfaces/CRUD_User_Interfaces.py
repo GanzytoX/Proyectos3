@@ -238,8 +238,8 @@ class CUInterface(Tk):
             self.__configureAgregarEmpleado()
 
     def __cerrar_ventana(self):
-        print("xd")
         self.__conection.close()
+        self.destroy()
 
 
 class RUInterface(Tk):
