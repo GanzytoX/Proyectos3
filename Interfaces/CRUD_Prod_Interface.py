@@ -5,12 +5,13 @@ import PIL.ImageTk
 import mysql.connector
 from Utilities.AutomaticScrollableFrame import AutomaticScrollableFrame
 from Utilities.ListFrames import ImageFrame
+from Utilities.twoSideWindow import twoSideWindow
 from Crud.CRUD_producto import CrudProducto, Producto
 from tkinter import *
 from tkinter.ttk import Progressbar
 from tkinter import filedialog
 from tkinter import messagebox
-import threading
+
 
 class BarraCarga(Frame):
     def __init__(self, master, length: int, bg=None, fg=None, text=None, variable=None, maximun=None, mode=None):
@@ -34,12 +35,12 @@ class BarraCarga(Frame):
         self.__barraCarga.start()
 
 
-class CPr_Interface(Tk):
+class CPr_Interface(twoSideWindow):
 
     __conection = None
 
     def __init__(self):
-        super().__init__()
+        super().__init__(window_name="Productos", size="1200x700", resizable=False, background_image="../img/Producto.png")
         self.__conection = mysql.connector.connect(
             user="sql5660121",
             host="sql5.freesqldatabase.com",
@@ -48,49 +49,13 @@ class CPr_Interface(Tk):
             database="sql5660121"
         )
         self.__productManager = CrudProducto(conection=self.__conection)
-        self.title("Productos")
-        self.geometry("1200x700")
-        self.resizable(False, False)
         self.protocol("WM_DELETE_WINDOW", self.__cerrar_ventana)
 
-        imagen_fondo = PIL.Image.open("../img/Empleado.png")
-        imagen_fondo = PIL.ImageTk.PhotoImage(imagen_fondo, master=self)
-
-        # Crear un widget Label para mostrar la imagen de fondo
-        label_imagen = Label(self, image=imagen_fondo)
-        label_imagen.place(relwidth=1, relheight=1)  # Estirar la imagen para que cubra toda la ventana
-        label_imagen.imagen = imagen_fondo
-
-        # Configurar cuadrícula de la ventana
-        self.columnconfigure(0, weight=1)
-        self.columnconfigure(1, weight=5)
-
-        # Creare un widget donde desplegar las cosas para buscar los producos
-        marginProductos = Frame(self, height=500, width=250, background="#204484")
-        marginProductos.grid(column=0, row=0, pady=50, padx=50, ipadx=20, sticky="NSW")
-        marginProductos.columnconfigure(0, weight=5)
-        marginProductos.columnconfigure(1, weight=1)
-
-        # Margin de la barra de buscador
-        frameBuscador = Frame(marginProductos, background="#204484")
-        frameBuscador.columnconfigure(0, weight=5)
-        frameBuscador.columnconfigure(1, weight=1)
-        frameBuscador.pack(pady=20, padx=20, fill="x")
-
-        # Barra del buscador
-        self.__nav = Entry(frameBuscador, background="#d8dce4")
-        self.__nav.grid(column=0, row=0, padx=(0, 5), sticky="NSEW")
-
         # Boton para buscar
-        botonBuscar = Button(frameBuscador, text="B", command=self.__search)
-        botonBuscar.grid(column=1, row=0, sticky="NSEW")
+        self.get_boton_buscar().config(command=self.__search)
 
-        # Un frame donde acomodar los productos
-        self.__listProductos = AutomaticScrollableFrame(marginProductos, height=470)
-        self.__listProductos.pack(fill="both", padx=20)
         # Un boton para agregar productos
-        self.__agregarProductoMenu = Button(marginProductos, text="Crear producto", command=self.__configureAgregar)
-        self.__agregarProductoMenu.pack(pady=10)
+        self.get_agregar_elemento_button().config(command=self.__configureAgregar, text="Crear producto")
 
         # Cosas del margen de un solo producto
         self.__singleProduct = Frame(self)
@@ -122,15 +87,17 @@ class CPr_Interface(Tk):
         self.__agregarProducto = Button(self.__singleProduct, text="Agregar Producto", command=self.__agregarUnProducto)
 
         # Boton para editar producto
-        self.__editarProductoButton = Button(self.__singleProduct, text="Editar Producto", command=self.__editarProducto)
-        self.__eliminarProductoButton = Button(self.__singleProduct, text="Eliminar Producto", command=self.__eliminarProducto)
+        self.__editarProductoButton = Button(self.__singleProduct, text="Editar Producto",
+                                             command=self.__editarProducto)
+        self.__eliminarProductoButton = Button(self.__singleProduct, text="Eliminar Producto",
+                                               command=self.__eliminarProducto)
 
     def __updateProductos(self):
         for file in os.listdir("../userImages"):
             f = os.path.join("../userImages", file)
             os.remove(f)
 
-        self.__listProductos.clear()
+        self.get_list_elements().clear()
 
         cuenta = int
         procesados = 0
@@ -143,11 +110,11 @@ class CPr_Interface(Tk):
 
         for id in ids:
             producto = self.__productManager.Read(id[0])
-            newElement = ImageFrame(self.__listProductos,
+            newElement = ImageFrame(self.get_list_elements(),
                                         f"{producto.nombre}",
                                         producto, producto.imagen)
             newElement.addEvent("<Button-1>", self.__showProduct)
-            self.__listProductos.add(newElement)
+            self.get_list_elements().add(newElement)
             procesados += 1
             barraCarga.set(procesados)
             self.update_idletasks()
@@ -247,8 +214,8 @@ class CPr_Interface(Tk):
         self.__activeProduct = None
         self.__updateProductos()
 
-        if self.__listProductos.countItems() > 0:
-            self.__showProduct(self.__listProductos.getItem(0).object)
+        if self.get_list_elements().countItems() > 0:
+            self.__showProduct(self.get_list_elements().getItem(0).object)
         else:
             self.__configureAgregar()
 
@@ -267,7 +234,7 @@ class CPr_Interface(Tk):
 
     def __search(self):
         if len(self.__nav.get()) > 0:
-            self.__listProductos.clear()
+            self.get_list_elements().clear()
 
             barraCarga = BarraCarga(self, length=400, bg="white", fg="black", text="Cargando imágenes",
                                     mode="indeterminate")
@@ -276,11 +243,11 @@ class CPr_Interface(Tk):
 
             productos = self.__productManager.findSimilar(self.__nav.get())
             for producto in productos:
-                newElement = ImageFrame(self.__listProductos,
+                newElement = ImageFrame(self.get_list_elements(),
                                             f"{producto.nombre}",
                                             producto, producto.imagen)
                 newElement.addEvent("<Button-1>", self.__showProduct)
-                self.__listProductos.add(newElement)
+                self.get_list_elements().add(newElement)
                 self.update_idletasks()
             barraCarga.destroy()
         else:
