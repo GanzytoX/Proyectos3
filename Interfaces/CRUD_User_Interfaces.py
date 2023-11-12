@@ -26,6 +26,7 @@ class CUInterface(Tk):
         self.title("Empleados")
         self.geometry("1200x700")
         self.resizable(False, False)
+        self.protocol("WM_DELETE_WINDOW", self.__cerrar_ventana)
 
         # para ver si la interfaz ya ha sido activada
         self.__singleActivated = False
@@ -223,11 +224,11 @@ class CUInterface(Tk):
 
     def __editEmpleado(self):
         empleado = self.__createEmpleadoObject()
-        self.__userManager.Update(self.__empleadoActivo.id, empleado)
+        self.__userManager.Update(self.__empleadoActivo.getId(), empleado)
         self.__updateEmpleados()
 
     def __deleteEmpleado(self):
-        self.__userManager.Delete(self.__empleadoActivo.id)
+        self.__userManager.Delete(self.__empleadoActivo.getId())
         self.__empleadoActivo = None
         self.__updateEmpleados()
         self.__displayMenu()
@@ -235,6 +236,10 @@ class CUInterface(Tk):
             self.__showEmpleado(self.__listEmpleados.getItem(0).object)
         else:
             self.__configureAgregarEmpleado()
+
+    def __cerrar_ventana(self):
+        print("xd")
+        self.__conection.close()
 
 
 class RUInterface(Tk):

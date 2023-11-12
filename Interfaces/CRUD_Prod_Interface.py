@@ -51,6 +51,7 @@ class CPr_Interface(Tk):
         self.title("Productos")
         self.geometry("1200x700")
         self.resizable(False, False)
+        self.protocol("WM_DELETE_WINDOW", self.__cerrar_ventana)
 
         imagen_fondo = PIL.Image.open("../img/Empleado.png")
         imagen_fondo = PIL.ImageTk.PhotoImage(imagen_fondo, master=self)
@@ -285,6 +286,9 @@ class CPr_Interface(Tk):
         else:
             self.__updateProductos()
 
+    def __cerrar_ventana(self):
+        self.__conection.close()
+        self.destroy()
 #gestorProducto = CrudProducto(conection)
 """""
 conection = mysql.connector.connect(

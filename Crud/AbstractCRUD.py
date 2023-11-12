@@ -3,8 +3,8 @@ from abc import ABC, abstractmethod
 class CRUD(ABC):
 
     def __init__(self, conection):
-        self.__conection = conection
-        self.__cursor = self.__conection.cursor()
+        self._conection = conection
+        self._cursor = self._conection.cursor()
 
 
     @abstractmethod

@@ -35,16 +35,16 @@ if __name__ != "__main__":
         def Read(self, id=None, condition=None):
             if id is None and condition is None:
                 script = f"SELECT * FROM rol"
-                self._CRUD__cursor.execute(script)
-                results = self._CRUD__cursor.fetchall()
+                self._cursor.execute(script)
+                results = self._cursor.fetchall()
                 roles = []
                 for result in results:
                     roles.append(Rol(id=result[0], nombre=result[1]))
                 return roles
             elif id is not None and condition is None:
                 script = f"SELECT * FROM rol WHERE id_rol={id}"
-                self._CRUD__cursor.execute(script)
-                results = self._CRUD__cursor.fetchone()
+                self._cursor.execute(script)
+                results = self._cursor.fetchone()
                 return Rol(results[0], results[1])
             elif id is None and condition is not None:
                 raise NotImplementedError()
@@ -54,8 +54,8 @@ if __name__ != "__main__":
         def Delete(self, id: int):
             if isinstance(id, int):
                 script = f"DELETE FROM rol WHERE id_rol={id}"
-                self._CRUD__cursor.execute(script)
-                self._CRUD__conection.commit()
+                self._cursor.execute(script)
+                self._conection.commit()
             else:
                 raise ValueError("id must be an Int")
 
@@ -63,8 +63,8 @@ if __name__ != "__main__":
             if isinstance(id, int):
                 if isinstance(object, Rol):
                     script = f"UPDATE rol SET nombre='{object.getNombre()}' WHERE id_rol={id}"
-                    self._CRUD__cursor.execute(script)
-                    self._CRUD__conection.commit()
+                    self._cursor.execute(script)
+                    self._conection.commit()
                 else:
                     raise ValueError("object was expected to be type: Rol")
             else:
@@ -73,5 +73,5 @@ if __name__ != "__main__":
         def Create(self, rol: Rol):
             script = ("INSERT INTO rol(nombre)"
                       f"VALUES('{rol.getNombre()}')")
-            self._CRUD__cursor.execute(script)
-            self._CRUD__conection.commit()
+            self._cursor.execute(script)
+            self._conection.commit()
