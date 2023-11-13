@@ -1,6 +1,5 @@
 # #pip install mysql-connector-python
 # Esa librería es necesaria para los CRUD
-import mysql.connector.errors
 
 from Crud.AbstractCRUD import CRUD
 from  Objects.Empleados import Empleado
@@ -28,7 +27,8 @@ if __name__ != "__main__":
 
             self._conection.commit()
 
-        def Read(self, id: int = None, condition: int = None) -> list[Empleado] | Empleado:
+        def Read(self, id: int = None, condition: str = None) -> list[Empleado] | Empleado:
+            self._conection.commit()
             if id is None and condition is None:
                 script = "SELECT empleado.*, rol.nombre FROM empleado LEFT JOIN rol ON empleado.id_rol = rol.id_rol;"
                 self._cursor.execute(script)
@@ -78,6 +78,7 @@ if __name__ != "__main__":
             self._conection.commit()
 
         def iniciarSesion(self, numeroTelefono, contraseña) -> (bool, bool):
+            self._conection.commit()
             SQLScript = f"SELECT pass, administrator FROM empleado WHERE celular = '{numeroTelefono}'"
             self._cursor.execute(SQLScript)
             result = self._cursor.fetchone()
@@ -90,6 +91,25 @@ if __name__ != "__main__":
                     return False, False
             else:
                 raise DataException("Usuario no encontrado en la base de datos")
+
+        def find_similar(self, substring: str):
+            self._conection.commit()
+            script = (f"SELECT empleado.*, rol.nombre FROM empleado LEFT JOIN rol ON empleado.id_rol = rol.id_rol"
+                      f" WHERE empleado.nombre LIKE '{substring}%';")
+            self._cursor.execute(script)
+            result = self._cursor.fetchall()
+            empleados = []
+            for empleado in result:
+                empleados.append(Empleado(nombre=empleado[1],
+                                          apellido_paterno=empleado[2],
+                                          apellido_materno=empleado[3],
+                                          celular=empleado[4],
+                                          sueldo=empleado[5],
+                                          id_rol=empleado[9],
+                                          contraseña=empleado[7],
+                                          administrator=empleado[8],
+                                          id=empleado[0]))
+            return empleados
 
 
 class DataException(Exception):

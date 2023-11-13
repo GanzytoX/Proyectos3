@@ -75,6 +75,9 @@ class CUInterface(twoSideWindow):
         self.__roles = []
         self.__empleadoActivo = None
 
+        # Configurar busqueda
+        self.get_boton_buscar().config(command=self.__search)
+
 
     # Esta funcion se manda a llamar cuando clickean algo de la lista y pone los datos del empleado
     def __showEmpleado(self, empleado):
@@ -211,6 +214,19 @@ class CUInterface(twoSideWindow):
         self.__conection.close()
         self.destroy()
 
+    def __search(self):
+        if len(self.get_navegation_bar().get()) > 0:
+            self.get_list_elements().clear()
+            empleados = self.__userManager.find_similar(self.get_navegation_bar().get())
+            for empleado in empleados:
+                newElement = NoImageFrame(self.get_list_elements(),
+                                          f"{empleado.getNombre()} {empleado.getApellido_paterno()} {empleado.getApellido_materno()}",
+                                          empleado)
+                newElement.addEvent("<Button-1>", self.__showEmpleado)
+                self.get_list_elements().add(newElement)
+            empleados.clear()
+        else:
+            self.__updateEmpleados()
 
 class RUInterface(Tk):
     def __init__(self):
