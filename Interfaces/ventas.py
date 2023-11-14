@@ -6,24 +6,22 @@ from PIL import Image, ImageTk
 import mysql.connector
 from Crud.CRUD_producto import CrudProducto
 
-
-
-
 carrito = []
 
 # Importo el Crud Usuario para poder hacer inicio de sesion y le paso un conection, o sea coneccion a la BD
 connection = mysql.connector.connect(
-    user="root",
-    host="localhost",
+    user="sql5660121",
+    host="sql5.freesqldatabase.com",
     port="3306",
-    #password="0123456789",
-    database="pollosexpress"
+    password="GWes4WXpXH",
+    database="sql5660121"
 )
 
 # utilidades
-crud_producto = CrudProducto(connection)
+#crud_producto = CrudProducto(connection)
 
 # Crea la ventana principal
+
 ventana = Tk()
 ventana.title("Ventas")
 ventana.geometry("1200x700")
@@ -90,7 +88,7 @@ botonquitar = tkinter.Button(ventana, text="-")
 
 ##otras funciones:
 def añadir_producto(producto):
-    producto = crud_producto.Read(producto_id)
+    #producto = crud_producto.Read(producto_id)
 
     carrito.append(producto)
     print(f"Producto '{producto.nombre}' añadido al carrito.")
