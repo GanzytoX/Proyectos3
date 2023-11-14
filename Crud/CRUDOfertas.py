@@ -16,14 +16,14 @@ class Promocion():
 class CRUDPromociones(CRUD):
     def __init__(self, conection):
         super().__init__(conection)
-        self.__conection = conection
-        self.__cursor = self.__conection.cursor()
+
 
     def Create(self, promocion):
-        script = "INSERT INTO promocion(id_producto, descripcion, fecha_de_inicio, fecha_de_finalizacion, id_tipo_promocion) VALUES (%s, %s, %s, %s,%s)"
+        script = ("INSERT INTO promocion(id_producto, descripcion, fecha_de_inicio, fecha_de_finalizacion, "
+                  "id_tipo_promocion) VALUES (%s, %s, %s, %s,%s)")
         datos_promocion = (promocion.id_producto, promocion.descripcion, promocion.fechainicio, promocion.fechafinal, promocion.id_tipopromocion)
-        self.__cursor.execute(script, datos_promocion)  # seria fetch si pidiera datos
-        self.__conection.commit()  # commit siempre que se modifique la tabla
+        self._cursor.execute(script, datos_promocion)  # seria fetch si pidiera datos
+        self._conection.commit()  # commit siempre que se modifique la tabla
 
     def Read(self, id=None, condition=None):
         con = mysql.connector.connect(
@@ -47,8 +47,8 @@ class CRUDPromociones(CRUD):
             return promociones
         elif isinstance(id, int):
             script = f"SELECT * from promocion WHERE id_promocion = {id}"
-            self.__cursor.execute(script)
-            resultado = self.__cursor.fetchone()
+            self._cursor.execute(script)
+            resultado = self._cursor.fetchone()
             promocion = Promocion( resultado[0],resultado[1], resultado[2], resultado[3], resultado[4],resultado[5])
             con.close()
             return promocion
@@ -59,8 +59,8 @@ class CRUDPromociones(CRUD):
         if isinstance(id, int):
             oferta = self.Read(id)
             script = f"DELETE FROM promocion WHERE id_promocion = {id}"
-            self.__cursor.execute(script)
-            self.__conection.commit()
+            self._cursor.execute(script)
+            self._conection.commit()
         else:
             raise ValueError("Id must be an integer")
 
@@ -70,6 +70,6 @@ class CRUDPromociones(CRUD):
                   "WHERE id_promocion = %s")
         datos_promocion = (promocion.id_producto, promocion.descripcion, promocion.fechainicio, promocion.fechafinal, promocion.id, id)
         promocion = self.Read(id)
-        self.__cursor.execute(script, datos_promocion)
-        self.__conection.commit()
+        self._cursor.execute(script, datos_promocion)
+        self._conection.commit()
 
