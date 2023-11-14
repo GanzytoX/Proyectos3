@@ -24,8 +24,6 @@ class AutomaticScrollableFrame(CTkScrollableFrame):
             item.destroy()
 
     def clear(self):
-        print("activado")
-        print(self.__items)
         for item in self.__items:
             item.destroy()
         self.__items.clear()
