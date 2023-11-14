@@ -40,10 +40,12 @@ class PromocionInterface(twoSideWindow):
         self.cuadrotePromociones.place(x=394,y=82)
         self.BotonCrear = Button(self.cuadrotePromociones, text="Crear Promocion", command=self.crearPromocion)
         self.BotonCrear.grid(column=1, row=6, pady=(50, 5))
-        self.BotonCrear = Button(self.cuadrotePromociones, text="Borrar Promocion", command=self.borrarPromocion)
-        self.BotonCrear.grid(column=0, row=6, pady=(50, 5))
-        self.BotonCrear = Button(self.cuadrotePromociones, text="Editar Promocion", command=self.actualizarPromocion)
-        self.BotonCrear.grid(column=0, row=7, pady=(10, 5))
+        self.BotonBorrar = Button(self.cuadrotePromociones, text="Borrar Promocion", command=self.borrarPromocion)
+        self.BotonBorrar.grid(column=0, row=6, pady=(50, 5))
+        self.BotonEditar = Button(self.cuadrotePromociones, text="Editar Promocion", command=self.actualizarPromocion)
+        self.BotonEditar.grid(column=0, row=7, pady=(10, 5))
+        self.BotonLimpiar = Button(self.cuadrotePromociones, text="Limpiar", command=self.limpiar)
+        self.BotonLimpiar.grid(column=0, row=8, pady=(10, 5))
         self.promociones = []
         #self.bind("<Button-1>", self.aaa)
 
@@ -64,6 +66,12 @@ class PromocionInterface(twoSideWindow):
             self.get_list_elements().add(frame)
         promociones.clear()
 
+    def limpiar(self):
+        self.cuadrotePromociones.listaProd.set("")
+        self.cuadrotePromociones.listaTipoPromocion.set("")
+        self.cuadrotePromociones.fechaInicio.delete(0, END)
+        self.cuadrotePromociones.fechaFinal.delete(0,END)
+        self.cuadrotePromociones.cuadroDescripcion.delete("1.0", END)
     def mostrarPromocion(self, promocion : Promocion):
         self.__conection = mysql.connector.connect(
             user="sql5660121",
