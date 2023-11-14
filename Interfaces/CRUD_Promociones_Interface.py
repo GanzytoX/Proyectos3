@@ -8,15 +8,17 @@ from Crud.CRUDOfertas import CRUDPromociones, Promocion
 from Utilities.AutomaticScrollableFrame import AutomaticScrollableFrame
 from Utilities.ListFramePromociones import ListFrame
 from Utilities.ListFramePromociones import CuadrotePromociones
+from Utilities.twoSideWindow import twoSideWindow
 
 
 # Esteticas:
 
 
 # Ventana:
-class PromocionInterface(Tk):
+class PromocionInterface(twoSideWindow):
     def __init__(self):
-        super().__init__()
+        super().__init__(window_name="Promociones", size="1200x700", resizable=False,
+                         background_image="../img/promociones.jpg")
         self.__conection = mysql.connector.connect(
             user="sql5660121",
             host="sql5.freesqldatabase.com",
@@ -25,31 +27,13 @@ class PromocionInterface(Tk):
             database="sql5660121"
 
         )
-        self.imagen_fondo = Image.open("../img/promociones.jpg")
-        self.imagen_fondo = self.imagen_fondo.resize((1200, 700), Image.LANCZOS)
-        self.imagen_fondo = ImageTk.PhotoImage(self.imagen_fondo)
-        self.label_imagen = Label(self, image=self.imagen_fondo)
-        self.label_imagen.grid(row=0, column=0, sticky="NWSE")
+
         self.crud = CRUDPromociones(conection=self.__conection)
-        self.title = "Promociones"
-        self.geometry("1200x700")
-        self.resizable(False, False)
 
-        # Pa que se acomode un cuadrito a la izquierda y uno grandote a la derecha
-        self.columnconfigure(0, weight=1)
-        self.columnconfigure(1, weight=5)
-
-        # El cuadrito de las promociones
-        self.cuadritoPromociones = Frame(self, width=350, height=500, bg="#442250")
-        self.cuadritoPromociones.grid(column=0, row=0, pady=50, padx=50, ipadx=20, sticky="W")
-
-        # la barra de búsqueda
-        self.busqueda = Entry(self.cuadritoPromociones, fg="red")
-        self.busqueda.pack(fill="x")  # fill x es pa que lo llene de los lados
-
-        # el cuadro donde se van a seleccionar las promociones
-        self.cuadroPromociones = AutomaticScrollableFrame(self.cuadritoPromociones, height=470)
-        self.cuadroPromociones.pack(fill="both", padx=30)
+        self.get_frame_left().config(background="#442250")
+        self.get_agregar_elemento_button().pack_forget()
+        self.get_list_elements().pack(pady=(0, 20))
+        self.update_idletasks()
 
         #Cuadrote promociones
         self.cuadrotePromociones = CuadrotePromociones()
@@ -67,7 +51,7 @@ class PromocionInterface(Tk):
 
     #  prueba para añadir las promociones a la lista
     def refresh(self):
-        self.cuadroPromociones.clear()
+        self.get_list_elements().clear()
         promociones= self.crud.Read()
         for promocion in promociones:
             if len(promocion.descripcion) > 40:
@@ -75,9 +59,9 @@ class PromocionInterface(Tk):
             else:
                 enseñar = promocion.descripcion
             self.promociones.append(promocion)
-            frame = ListFrame(self.cuadroPromociones, enseñar, promocion)
+            frame = ListFrame(self.get_list_elements(), enseñar, promocion)
             frame.addevento("<Button-1>", self.mostrarPromocion)
-            self.cuadroPromociones.add(frame)
+            self.get_list_elements().add(frame)
         promociones.clear()
 
     def mostrarPromocion(self, promocion : Promocion):
