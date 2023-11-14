@@ -4,9 +4,9 @@ from tkinter import *
 from tkinter import messagebox
 from PIL import Image, ImageTk
 import mysql.connector
+from Crud.CRUD_producto import CrudProducto
 
-# utilidades
-crud_producto = CrudProducto(conection)
+
 
 
 carrito = []
@@ -19,6 +19,9 @@ connection = mysql.connector.connect(
     #password="0123456789",
     database="pollosexpress"
 )
+
+# utilidades
+crud_producto = CrudProducto(connection)
 
 # Crea la ventana principal
 ventana = Tk()
@@ -87,7 +90,7 @@ botonquitar = tkinter.Button(ventana, text="-")
 
 ##otras funciones:
 def añadir_producto(producto):
- producto = crud_producto.Read(producto_id)
+    producto = crud_producto.Read(producto_id)
 
     carrito.append(producto)
     print(f"Producto '{producto.nombre}' añadido al carrito.")
