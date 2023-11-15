@@ -9,8 +9,7 @@ from Utilities.AutomaticScrollableFrame import AutomaticScrollableFrame
 from Utilities.ListFramePromociones import ListFrame
 from Utilities.ListFramePromociones import CuadrotePromociones
 from Utilities.twoSideWindow import twoSideWindow
-
-
+from tkinter.simpledialog import askstring
 # Esteticas:
 
 
@@ -36,6 +35,7 @@ class PromocionInterface(twoSideWindow):
         self.update_idletasks()
 
         #Cuadrote promociones
+
         self.cuadrotePromociones = CuadrotePromociones()
         self.cuadrotePromociones.place(x=394,y=82)
         self.BotonCrear = Button(self.cuadrotePromociones, text="Crear Promocion", command=self.crearPromocion)
@@ -45,13 +45,26 @@ class PromocionInterface(twoSideWindow):
         self.BotonEditar = Button(self.cuadrotePromociones, text="Editar Promocion", command=self.actualizarPromocion)
         self.BotonEditar.grid(column=0, row=7, pady=(10, 5))
         self.BotonLimpiar = Button(self.cuadrotePromociones, text="Limpiar", command=self.limpiar)
-        self.BotonLimpiar.grid(column=0, row=8, pady=(10, 5))
+        self.BotonLimpiar.grid(column=1, row=7, pady=(10, 5))
+        self.addTipoPromocionBoton = Button(self.cuadrotePromociones, text="Agregar tipo",
+                                            command=self.AgregarTipoPromocion)
+        self.addTipoPromocionBoton.grid(column=2, row=1)
         self.promociones = []
         #self.bind("<Button-1>", self.aaa)
 
         self.refresh()
 
-    #  prueba para añadir las promociones a la lista
+    def AgregarTipoPromocion(self):
+        nombre = askstring('Promocion', 'Tipo de promocion')
+        codigo = askstring('Promocion', 'Codigo de la promocion')
+        script = f"INSERT INTO tipo_de_promocion(nombre, codigo) VALUES (%s,%s)"
+        print(nombre)
+        print(codigo)
+        cursor = self.__conection.cursor()
+        cursor.execute(script, (nombre, codigo))
+        self.__conection.commit()
+        self.cuadrotePromociones.listaTipoPromocion.config(values=self.cuadrotePromociones.getPromociones()[1])
+
     def refresh(self):
         self.get_list_elements().clear()
         promociones= self.crud.Read()

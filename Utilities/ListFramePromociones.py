@@ -34,11 +34,11 @@ class CuadrotePromociones(tk.Frame):
     def __init__(self):
         super().__init__()
         self.connection = mysql.connector.connect(
-            user="sql5660121",
-            host="sql5.freesqldatabase.com",
+            user="u119126_pollos",
+            host="174.136.28.78",
             port="3306",
-            password="GWes4WXpXH",
-            database="sql5660121"
+            password="$BulletKin0805",
+            database="u119126_pollos"
 
         )
         self.columnconfigure(index=0, weight=1)
@@ -52,6 +52,7 @@ class CuadrotePromociones(tk.Frame):
         self.listaTipoPromocionTexto = tk.Label(self,text="Que tipo de promocion es:",padx=30,pady=10).grid(column=1,row=0)
         self.listaTipoPromocion = ttk.Combobox(self, state= "readonly", values=self.getPromociones()[1])
         self.listaTipoPromocion.grid(column=1,row=1)
+
         #descripcion
         self.cuadroDescripcionTexto = tk.Label(self,text="Descripcion: ",padx=30,pady=10).grid(column=0,row=2)
         self.cuadroDescripcion = tk.Text(self, height=10,width=20)
@@ -69,12 +70,6 @@ class CuadrotePromociones(tk.Frame):
         #elemento actual para editar
         self.current = -1
 
-
-
-
-
-
-
     def getProductos(self):
         script = "SELECT id_producto, nombre from producto"
         cursor = self.connection.cursor()
@@ -91,9 +86,16 @@ class CuadrotePromociones(tk.Frame):
         resultados.append(nombres)
         return resultados
     def getPromociones(self):
+        connection = mysql.connector.connect(
+            user="u119126_pollos",
+            host="174.136.28.78",
+            port="3306",
+            password="$BulletKin0805",
+            database="u119126_pollos"
 
+        )
         script = "SELECT id_tipo_promocion, nombre from tipo_de_promocion"
-        cursor = self.connection.cursor()
+        cursor = connection.cursor()
         cursor.execute(script)
         result = cursor.fetchall()
         ids = []
@@ -105,7 +107,9 @@ class CuadrotePromociones(tk.Frame):
             nombres.append(i[1])
         resultados.append(ids)
         resultados.append(nombres)
+        connection.close()
         return resultados
+
     def crearCalendario(self,event):
         self.calendario = tk.Tk()
         self.si = Calendar(self.calendario, day=10,month=11,year=2023)

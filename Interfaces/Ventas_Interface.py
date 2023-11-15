@@ -235,4 +235,3 @@ class ventaFrame(Frame):
         return self.__cantidad
 
 
-ventas = VentasInterFace(1)

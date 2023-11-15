@@ -27,11 +27,11 @@ class CRUDPromociones(CRUD):
 
     def Read(self, id=None, condition=None):
         con = mysql.connector.connect(
-            user="sql5660121",
-            host="sql5.freesqldatabase.com",
+            user="u119126_pollos",
+            host="174.136.28.78",
             port="3306",
-            password="GWes4WXpXH",
-            database="sql5660121"
+            password="$BulletKin0805",
+            database="u119126_pollos"
 
         )
         if id is None:

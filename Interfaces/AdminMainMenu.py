@@ -2,6 +2,7 @@ from tkinter import *
 from CRUD_User_Interfaces import *
 from CRUD_Prod_Interface import *
 from CRUD_Promociones_Interface import *
+from Ventas_Interface import *
 class AdminMainMenu(Tk):
     __titleLabel = Label
     __frameBotones = Frame
@@ -17,7 +18,7 @@ class AdminMainMenu(Tk):
         self.__titleLabel.pack()
         self.__frameBotones = Frame(self)
         self.__frameBotones.pack()
-
+        self.__userId = userId
         self.__frameBotones.columnconfigure(0, weight=3)
         self.__frameBotones.columnconfigure(1, weight=3)
         self.__frameBotones.columnconfigure(2, weight=3)
@@ -31,6 +32,9 @@ class AdminMainMenu(Tk):
         self.__openOfertasButton = Button(self.__frameBotones, text="Abrir ofertas", command=self.__openPromocion)
         self.__openOfertasButton.grid(column=2, row=0, padx=20)
 
+        self.__openVentasButton = Button(self.__frameBotones, text="Abrir ventas", command=self.__openVentas)
+        self.__openVentasButton.grid(column=0, row=1, padx=20)
+
 
     def __openEmpleados(self):
         newVentana = CUInterface()
@@ -42,4 +46,7 @@ class AdminMainMenu(Tk):
 
     def __openPromocion(self):
         newVentana = PromocionInterface()
+        newVentana.mainloop()
+    def __openVentas(self):
+        newVentana = VentasInterFace(self.__userId)
         newVentana.mainloop()
