@@ -8,6 +8,8 @@ class ScrollableFrame(CTkScrollableFrame):
         self.length = length
         self.x = 0
         self.y = 0
+        self.index = 0
+
 
     def add(self, element:any):
         if (self.x <= self.length):
@@ -26,3 +28,14 @@ class ScrollableFrame(CTkScrollableFrame):
             item.destroy()
         self.__items.clear()
         self.update()
+
+    def get_item(self, index: int):
+        return self.__items[index]
+
+    def get_lenght(self):
+        return len(self.__items)
+
+    def deleteAt(self, index):
+        self.__items[index].destroy()
+        self.__items.pop(index)
+        self.update_idletasks()

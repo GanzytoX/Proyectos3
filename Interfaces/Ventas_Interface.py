@@ -62,26 +62,43 @@ class VentasInterFace(Tk):
     def add_products_to_scroll(self):
         self.get_products()
         for item in self.productos:
-            self.scrollCuadro.add(siFrame(self.scrollCuadro, item.nombre,item.precio,self))
+            self.scrollCuadro.add(siFrame(self.scrollCuadro, item.nombre, item.precio, self))
 
     def add_venta_frame(self, nombre, cantidad, precio):
         cantidad = int(cantidad)
         precio = int(precio)
+        print("llamada")
         if cantidad > 0:
+            for i in range(self.scrollPreventa.get_lenght()):
+                if self.scrollPreventa.get_item(i).nombreLabel.cget("text") == nombre:
+                    print("Hay similar")
+                    self.scrollPreventa.get_item(i).cantidadLabel.config(text=cantidad)
+                    return
             self.scrollPreventa.add(ventaFrame(self.scrollPreventa,nombre,cantidad,precio))
-            self.preventa.append(precio*cantidad)
         else:
-            print("Intentaste meter 0 productos xd")
+            for i in range(self.scrollPreventa.get_lenght()):
+                if self.scrollPreventa.get_item(i).nombreLabel.cget("text") == nombre:
+                    self.scrollPreventa.deleteAt(i)
+                    break
     def calcularTotal(self):
         total = 0
-        for item in self.preventa:
-            total += item
+
+        for i in range(self.scrollPreventa.get_lenght()):
+            precio = self.scrollPreventa.get_item(i).precioLabel.cget("text").split("$")[1]
+            cantidad = self.scrollPreventa.get_item(i).cantidadLabel.cget("text")
+
+            total += float(precio) * float(cantidad)
         self.TotalLabelCant.config(text=f"${total}")
 
 class siFrame(Frame):
     def __init__(self, master:any, nombreProducto:str, precio:float, main:VentasInterFace):
-        super().__init__(master, width=240, height=260, bg="#f0f0f0",relief="groove",borderwidth=5)
+        super().__init__(master, width=240, height=260, bg="#f0f0f0",relief="groove", borderwidth=5)
         self.propagate(False)
+
+        #Parametros
+        self.nombreProducto = nombreProducto
+        self.preciofloat = precio
+        self.main = main
 
         #imagen
         self.unresized = Image.open(f"../userImages/product_{str(nombreProducto)}.png")
@@ -97,18 +114,30 @@ class siFrame(Frame):
         self.cantidadFrame.columnconfigure(index=0, weight=2)
         self.cantidadFrame.columnconfigure(index=1, weight=2)
         self.cantidadFrame.columnconfigure(index=2, weight=2)
-        self.botonMas = Button(self.cantidadFrame, text="+", command=lambda : (self.cantidadLabel.config(text=(str(int(self.cantidadLabel.cget("text")) + 1))) if int(self.cantidadLabel.cget("text")) < 25 else 25))
+        self.botonMas = Button(self.cantidadFrame, text="+", command=self.__add)
         self.botonMas.grid(column=2,row=0)
-        self.botonMenos = Button(self.cantidadFrame, text="-", command=lambda : self.cantidadLabel.config(text= str(int(self.cantidadLabel.cget("text")) - 1)) if (int(self.cantidadLabel.cget("text")) > 0) else 0)
+        self.botonMenos = Button(self.cantidadFrame, text="-", command=self.__subtract)
         self.botonMenos.grid(column= 0, row = 0)
         self.cantidadLabel = Label(self.cantidadFrame, text="0")
         self.cantidadLabel.grid(column=1, row=0)
         self.cantidadFrame.pack()
         self.precio = Label(self, text=f"${str(precio)} MXN")
         self.precio.pack()
-        self.botonAgregar = Button(self, text = "Agregar", command=lambda:(main.add_venta_frame(nombre=nombreProducto,cantidad=self.cantidadLabel.cget("text"),precio=precio),self.cantidadLabel.config(text="0"),main.calcularTotal()))
-        self.botonAgregar.pack()
 
+
+    def __add(self):
+        print(self.precio)
+        self.cantidadLabel.config(text=(str(int(self.cantidadLabel.cget("text")) + 1))) if int(self.cantidadLabel.cget("text")) < 25 else 25
+        self.main.add_venta_frame(nombre=self.nombreProducto, cantidad=self.cantidadLabel.cget("text"),
+                             precio=self.preciofloat)
+        self.main.calcularTotal()
+
+    def __subtract(self):
+        self.cantidadLabel.config(text=str(int(self.cantidadLabel.cget("text")) - 1)) if (
+                    int(self.cantidadLabel.cget("text")) > 0) else 0
+        self.main.add_venta_frame(nombre=self.nombreProducto, cantidad=self.cantidadLabel.cget("text"),
+                                  precio=self.preciofloat)
+        self.main.calcularTotal()
 
 class ventaFrame(Frame):
     def __init__(self, master:any, nombre,cantidad,precio):
@@ -121,10 +150,13 @@ class ventaFrame(Frame):
             aescribirNombre = nombre[0:11] + "..."
         else:
             aescribirNombre = nombre
-        self.precio = int(precio) * int(cantidad)
-        self.nombreLabel = Label(self, text=f"{aescribirNombre}",padx=10).grid(column=0, row=0)
-        self.cantidadLabel = Label(self, text=f"{cantidad}",padx=25).grid(column=2, row=0)
-        self.precioLabel = Label(self,text=f"${self.precio}",padx=20).grid(column=3, row=0)
+        self.precio = float(precio) * int(cantidad)
+        self.nombreLabel = Label(self, text=f"{aescribirNombre}",padx=10)
+        self.nombreLabel.grid(column=0, row=0)
+        self.cantidadLabel = Label(self, text=f"{cantidad}",padx=25)
+        self.cantidadLabel.grid(column=2, row=0)
+        self.precioLabel = Label(self,text=f"${self.precio}",padx=20)
+        self.precioLabel.grid(column=3, row=0)
 
 
 ventas = VentasInterFace()
