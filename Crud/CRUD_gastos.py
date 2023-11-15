@@ -3,10 +3,11 @@ import mysql.connector
 
 def conectar():  # -------------------------------------------
     conexion = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        port="3307",
-        database="pollosexpress")
+        user="u119126_pollos",
+        host="174.136.28.78",
+        port="3306",
+        password="$BulletKin0805",
+        database="u119126_pollos")
     if conexion.is_connected():
         print("Conexión +")
     return conexion
