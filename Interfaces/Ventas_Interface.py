@@ -40,9 +40,11 @@ class VentasInterFace(Tk):
                                                                                                row=1)
         self.scrollPreventa = ScrollableFrame(self.__cuadroProductos,height=350,width=200,length=1)
         self.scrollPreventa.grid(columnspan=3,column=0, row=2)
-
-        self.TotalLabel = Label(self.__cuadroProductos, text= "Total").grid(column=0, row = 3)
-        self.TotalLabel = Label(self.__cuadroProductos, text= "$0").grid(column=2, row = 3)
+        self.preventa = []
+        self.TotalLabel = Label(self.__cuadroProductos, text= "Total")
+        self.TotalLabel.grid(column=0, row = 3)
+        self.TotalLabelCant = Label(self.__cuadroProductos, text= "$0")
+        self.TotalLabelCant.grid(column=2, row = 3)
         self.botonPagar = Button(self.__cuadroProductos,text="Pagar", command=print("pagado"))
         self.botonPagar.grid(column=1,row=4)
         #Add products to scroll
@@ -67,8 +69,15 @@ class VentasInterFace(Tk):
         precio = int(precio)
         if cantidad > 0:
             self.scrollPreventa.add(ventaFrame(self.scrollPreventa,nombre,cantidad,precio))
+            self.preventa.append(precio*cantidad)
         else:
             print("Intentaste meter 0 productos xd")
+    def calcularTotal(self):
+        total = 0
+        for item in self.preventa:
+            total += item
+        self.TotalLabelCant.config(text=f"${total}")
+
 class siFrame(Frame):
     def __init__(self, master:any, nombreProducto:str, precio:float, main:VentasInterFace):
         super().__init__(master, width=240, height=260, bg="#f0f0f0",relief="groove",borderwidth=5)
@@ -97,7 +106,7 @@ class siFrame(Frame):
         self.cantidadFrame.pack()
         self.precio = Label(self, text=f"${str(precio)} MXN")
         self.precio.pack()
-        self.botonAgregar = Button(self, text = "Agregar", command=lambda:(main.add_venta_frame(nombre=nombreProducto,cantidad=self.cantidadLabel.cget("text"),precio=precio),self.cantidadLabel.config(text="0")))
+        self.botonAgregar = Button(self, text = "Agregar", command=lambda:(main.add_venta_frame(nombre=nombreProducto,cantidad=self.cantidadLabel.cget("text"),precio=precio),self.cantidadLabel.config(text="0"),main.calcularTotal()))
         self.botonAgregar.pack()
 
 
@@ -112,9 +121,10 @@ class ventaFrame(Frame):
             aescribirNombre = nombre[0:11] + "..."
         else:
             aescribirNombre = nombre
+        self.precio = int(precio) * int(cantidad)
         self.nombreLabel = Label(self, text=f"{aescribirNombre}",padx=10).grid(column=0, row=0)
         self.cantidadLabel = Label(self, text=f"{cantidad}",padx=25).grid(column=2, row=0)
-        self.precioLabel = Label(self,text=f"${cantidad*precio}",padx=20).grid(column=3, row=0)
+        self.precioLabel = Label(self,text=f"${self.precio}",padx=20).grid(column=3, row=0)
 
 
 ventas = VentasInterFace()
