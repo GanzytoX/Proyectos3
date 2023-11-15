@@ -42,11 +42,11 @@ class CPr_Interface(twoSideWindow):
     def __init__(self):
         super().__init__(window_name="Productos", size="1200x700", resizable=False, background_image="../img/Producto.png")
         self.__conection = mysql.connector.connect(
-            user="sql5660121",
-            host="sql5.freesqldatabase.com",
+            user="u119126_pollos",
+            host="174.136.28.78",
             port="3306",
-            password="GWes4WXpXH",
-            database="sql5660121"
+            password="$BulletKin0805",
+            database="u119126_pollos"
         )
         self.__productManager = CrudProducto(conection=self.__conection)
         self.protocol("WM_DELETE_WINDOW", self.__cerrar_ventana)
