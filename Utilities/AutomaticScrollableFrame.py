@@ -20,7 +20,7 @@ class AutomaticScrollableFrame(CTkScrollableFrame):
     def deleteAt(self, index):
         if len(self.__items) > index >= 0:
             item = self.__items[index]
-            self.__items[index].remove(index)
+            self.__items.pop(index)
             item.destroy()
 
     def clear(self):
