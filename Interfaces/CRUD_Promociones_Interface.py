@@ -113,11 +113,11 @@ class PromocionInterface(twoSideWindow):
         self.cuadrotePromociones.listaTipoPromocion.set(result[1])
     def actualizarPromocion(self):
         coonection = mysql.connector.connect(
-            user="sql5660121",
-            host="sql5.freesqldatabase.com",
+            user="u119126_pollos",
+            host="174.136.28.78",
             port="3306",
-            password="GWes4WXpXH",
-            database="sql5660121"
+            password="$BulletKin0805",
+            database="u119126_pollos"
 
         )
         aSubir = []
@@ -144,12 +144,11 @@ class PromocionInterface(twoSideWindow):
         self.refresh()
     def borrarPromocion(self):
         coonection = mysql.connector.connect(
-            user="sql5660121",
-            host="sql5.freesqldatabase.com",
+            user="u119126_pollos",
+            host="174.136.28.78",
             port="3306",
-            password="GWes4WXpXH",
-            database="sql5660121"
-
+            password="$BulletKin0805",
+            database="u119126_pollos"
         )
         script = "Delete from promocion where id_promocion = %s"
         cursor = coonection.cursor()
@@ -160,11 +159,11 @@ class PromocionInterface(twoSideWindow):
         coonection.close()
     def crearPromocion(self):
         coonection = mysql.connector.connect(
-            user="sql5660121",
-            host="sql5.freesqldatabase.com",
+            user="u119126_pollos",
+            host="174.136.28.78",
             port="3306",
-            password="GWes4WXpXH",
-            database="sql5660121"
+            password="$BulletKin0805",
+            database="u119126_pollos"
 
         )
         aSubir = []

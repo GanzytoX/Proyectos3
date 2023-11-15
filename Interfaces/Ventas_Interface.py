@@ -28,7 +28,7 @@ class VentasInterFace(Tk):
         #scroll como tal
         self.scrollCuadro = ScrollableFrame(self, width=500, height=500,length=3)
         self.scrollCuadro.grid(column=0, row=0, sticky="nsew", pady=20, padx=20)
-
+        self.scrollCuadroProductos = []
         #Cuadro ventas
         self.__cuadroProductos = Frame(self, width=200,relief="groove", borderwidth=2)
         self.__cuadroProductos.columnconfigure(index = 0, weight=2)
@@ -67,7 +67,9 @@ class VentasInterFace(Tk):
     def add_products_to_scroll(self):
         self.get_products()
         for item in self.productos:
-            self.scrollCuadro.add(siFrame(self.scrollCuadro, item.nombre, item.precio, self, item.id))
+            toAdd = siFrame(self.scrollCuadro, item.nombre, item.precio, self, item.id)
+            self.scrollCuadro.add(toAdd)
+            self.scrollCuadroProductos.append(toAdd)
 
     def add_venta_frame(self, nombre, cantidad, precio, id):
         cantidad = int(cantidad)
@@ -117,6 +119,14 @@ class VentasInterFace(Tk):
             values = (idelast[0], self.scrollPreventa.getItem(i).idP, self.scrollPreventa.getItem(i).get_cantidad())
             self.__conection.cursor().execute(scrip3, values)
             self.__conection.commit()
+
+        self.reset()
+
+    def reset(self):
+        self.scrollPreventa.clear()
+        self.TotalLabelCant.config(text="$0")
+        for item in self.scrollCuadroProductos:
+            item.cantidadLabel.config(text="0")
 
 
 
@@ -170,6 +180,8 @@ class siFrame(Frame):
         self.main.add_venta_frame(nombre=self.nombreProducto, cantidad=self.cantidadLabel.cget("text"),
                                   precio=float(self.preciofloat * float(self.cantidadLabel.cget("text"))), id=self.__id_product)
         self.main.calcularTotal()
+    def __reset(self):
+        self.cantidadLabel.config(text="0")
 
 class ventaFrame(Frame):
     def __init__(self, master:any, nombre,cantidad,precio, idP):
