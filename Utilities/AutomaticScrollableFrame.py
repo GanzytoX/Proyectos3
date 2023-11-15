@@ -22,6 +22,10 @@ class AutomaticScrollableFrame(CTkScrollableFrame):
             item = self.__items[index]
             self.__items.pop(index)
             item.destroy()
+            temporal = self.__items[:]
+            self.__items.clear()
+            for element in temporal:
+                self.add(element)
 
     def clear(self):
         for item in self.__items:

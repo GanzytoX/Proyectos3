@@ -69,6 +69,7 @@ class VentasInterFace(Tk):
     def add_venta_frame(self, nombre, cantidad, precio):
         cantidad = int(cantidad)
         precio = float(precio)
+        print(precio)
         print("llamada")
         if cantidad > 0:
             for i in range(self.scrollPreventa.countItems()):
@@ -129,7 +130,7 @@ class siFrame(Frame):
 
 
     def __add(self):
-        print(self.precio)
+
         self.cantidadLabel.config(text=(str(int(self.cantidadLabel.cget("text")) + 1))) if int(self.cantidadLabel.cget("text")) < 25 else 25
         self.main.add_venta_frame(nombre=self.nombreProducto, cantidad=self.cantidadLabel.cget("text"),
                              precio=self.preciofloat * float(self.cantidadLabel.cget("text")))
@@ -149,19 +150,19 @@ class ventaFrame(Frame):
         super().columnconfigure(index=1, weight=2)
         super().columnconfigure(index=2, weight=2)
         self.__nombre = nombre
-        self.__subtotal = float(cantidad)
-        self.__cantidad = float()
-        if len(nombre) > 10:
-            aescribirNombre = nombre[0:11] + "..."
+        self.__subtotal = float(precio)
+        self.__cantidad = float(cantidad)
+        if len(nombre) > 20:
+            aescribirNombre = nombre[0:20] + "..."
         else:
             aescribirNombre = nombre
         self.precio = float(precio) * int(cantidad)
         self.nombreLabel = Label(self, text=f"{aescribirNombre}",padx=10)
-        self.nombreLabel.grid(column=0, row=0)
+        self.nombreLabel.grid(column=0, row=0, sticky="w")
         self.cantidadLabel = Label(self, text=f"{cantidad}",padx=25)
-        self.cantidadLabel.grid(column=2, row=0)
+        self.cantidadLabel.grid(column=2, row=0, sticky="ew")
         self.precioLabel = Label(self,text=f"${self.precio}",padx=20)
-        self.precioLabel.grid(column=3, row=0)
+        self.precioLabel.grid(column=3, row=0, sticky="e")
 
     def get_nombre(self):
         return self.__nombre
@@ -179,7 +180,7 @@ class ventaFrame(Frame):
     def set_cantidad(self, value: float):
         if isinstance(value, float) or isinstance(value, int):
             if value >= 0:
-                self.__subtotal = value
+                self.__cantidad = value
                 self.cantidadLabel.config(text=f"{value}")
             else:
                 raise ValueError("La cantidad no puede ser negativo")
