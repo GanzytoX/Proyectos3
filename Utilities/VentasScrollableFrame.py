@@ -1,19 +1,19 @@
 from customtkinter import CTkScrollableFrame
 
 class ScrollableFrame(CTkScrollableFrame):
-    def __init__(self, master:any, height = None, width = None):
+    def __init__(self, master:any, height = None, width = None,length=1):
         if height is not None and width is not None:
             super().__init__(master, height=height, width=width)
         self.__items = []
-
+        self.length = length
         self.x = 0
         self.y = 0
 
     def add(self, element:any):
-        if (self.x <= 3):
+        if (self.x <= self.length):
             element.grid(column=self.x,row = self.y)
             self.x += 1
-        if (self.x > 3):
+        if (self.x > self.length):
             self.x = 0
             self.y += 1
             element.grid(column=self.x, row = self.y)
