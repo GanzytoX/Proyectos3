@@ -9,7 +9,7 @@ class AdminMainMenu(Tk):
     __openProductosButton = Button
     __openOfertasButton = Button
 
-    def __init__(self):
+    def __init__(self, userId):
         super().__init__()
         self.title("Main Menu")
         self.geometry("500x250")

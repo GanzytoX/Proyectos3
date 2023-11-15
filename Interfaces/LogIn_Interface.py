@@ -35,12 +35,12 @@ def iniciarSesion():
     if user != "" and password != "":
         try:
             userManager = CrudEmpleado(connection)
-            result, is_administrator = userManager.iniciarSesion(user, password)
+            result, is_administrator, idU = userManager.iniciarSesion(user, password)
 
             if result:
                 messagebox.showinfo("Mensaje de inicio de sesión", "Sesión iniciada con éxito")
                 if is_administrator == 1:
-                    adminWindow = AdminMainMenu()
+                    adminWindow = AdminMainMenu(idU)
                     ventana.destroy()
                     adminWindow.mainloop()
 

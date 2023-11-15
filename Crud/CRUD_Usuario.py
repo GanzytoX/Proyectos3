@@ -77,7 +77,7 @@ if __name__ != "__main__":
             self._cursor.execute(SQLScript, valores)
             self._conection.commit()
 
-        def iniciarSesion(self, numeroTelefono, contraseña) -> (bool, bool):
+        def iniciarSesion(self, numeroTelefono, contraseña) -> (bool, bool, int) :
             self._conection.commit()
             SQLScript = f"SELECT pass, administrator FROM empleado WHERE celular = '{numeroTelefono}'"
             self._cursor.execute(SQLScript)
@@ -85,10 +85,10 @@ if __name__ != "__main__":
 
             if result:
                 if result[0] == contraseña:
-                    return True, result[1]
+                    return True, result[1], result[0]
                 else:
                     print("Inicio de sesion fallido")
-                    return False, False
+                    return False, False, -1
             else:
                 raise DataException("Usuario no encontrado en la base de datos")
 

@@ -4,10 +4,13 @@ from Utilities.VentasScrollableFrame import ScrollableFrame
 from Utilities.AutomaticScrollableFrame import AutomaticScrollableFrame
 from Crud.CRUD_producto import *
 from PIL import Image,ImageTk
+import time
+from  tkinter import messagebox
 
 class VentasInterFace(Tk):
-    def __init__(self):
+    def __init__(self, idU):
         super().__init__()
+        self.idU = idU
         self.__conection = mysql.connector.connect(
             user="u119126_pollos",
             host="174.136.28.78",
@@ -46,7 +49,7 @@ class VentasInterFace(Tk):
         self.TotalLabel.grid(column=0, row = 3)
         self.TotalLabelCant = Label(self.__cuadroProductos, text= "$0")
         self.TotalLabelCant.grid(column=2, row = 3)
-        self.botonPagar = Button(self.__cuadroProductos,text="Pagar", command=print("pagado"))
+        self.botonPagar = Button(self.__cuadroProductos,text="Pagar", command=self.agregar_venta)
         self.botonPagar.grid(column=1,row=4)
         #Add products to scroll
         self.add_products_to_scroll()
@@ -64,9 +67,9 @@ class VentasInterFace(Tk):
     def add_products_to_scroll(self):
         self.get_products()
         for item in self.productos:
-            self.scrollCuadro.add(siFrame(self.scrollCuadro, item.nombre, item.precio, self))
+            self.scrollCuadro.add(siFrame(self.scrollCuadro, item.nombre, item.precio, self, item.id))
 
-    def add_venta_frame(self, nombre, cantidad, precio):
+    def add_venta_frame(self, nombre, cantidad, precio, id):
         cantidad = int(cantidad)
         precio = float(precio)
         print(precio)
@@ -79,21 +82,46 @@ class VentasInterFace(Tk):
                     self.scrollPreventa.getItem(i).set_subtotal(precio)
 
                     return
-            self.scrollPreventa.add(ventaFrame(self.scrollPreventa,nombre,cantidad,precio))
+            self.scrollPreventa.add(ventaFrame(self.scrollPreventa,nombre,cantidad,precio, id))
         else:
             for i in range(self.scrollPreventa.countItems()):
                 if self.scrollPreventa.getItem(i).get_nombre() == nombre:
                     print("Encontre uno similar")
                     self.scrollPreventa.deleteAt(i)
                     break
-    def calcularTotal(self):
+    def calcularTotal(self) -> float:
         total = 0
         for i in range(self.scrollPreventa.countItems()):
             total += self.scrollPreventa.getItem(i).get_subtotal()
         self.TotalLabelCant.config(text=f"${total}")
+        return total
+
+    def agregar_venta(self):
+        scrip = "INSERT INTO venta(fecha_De_Venta, total_De_Compra, id_pago, id_empleado) VALUES(%s, %s, %s, %s);"
+        actual_time = time.localtime()
+        timeFormatted = time.strftime("%Y/%m/%d", actual_time)
+
+        values = (timeFormatted, self.calcularTotal(), 1, self.idU)
+        self.__conection.cursor().execute(scrip, values)
+        self.__conection.commit()
+
+        messagebox.showinfo("Listo", "La venta ha sido agregada")
+
+        scrip2 = "SELECT MAX(id_Venta) FROM venta;"
+        cursor = self.__conection.cursor()
+        cursor.execute(scrip2)
+        idelast = cursor.fetchone()
+
+        scrip3 = "INSERT INTO venta_producto(id_venta, id_producto, cantidad) VALUES(%s, %s, %s);"
+        for i in range (self.scrollPreventa.countItems()):
+            values = (idelast[0], self.scrollPreventa.getItem(i).idP, self.scrollPreventa.getItem(i).get_cantidad())
+            self.__conection.cursor().execute(scrip3, values)
+            self.__conection.commit()
+
+
 
 class siFrame(Frame):
-    def __init__(self, master:any, nombreProducto:str, precio:float, main:VentasInterFace):
+    def __init__(self, master:any, nombreProducto:str, precio:float, main:VentasInterFace, id_product):
         super().__init__(master, width=240, height=260, bg="#f0f0f0",relief="groove", borderwidth=5)
         self.propagate(False)
 
@@ -101,6 +129,7 @@ class siFrame(Frame):
         self.nombreProducto = nombreProducto
         self.preciofloat = precio
         self.main = main
+        self.__id_product = id_product
 
         #imagen
         self.unresized = Image.open(f"../userImages/product_{str(nombreProducto)}.png")
@@ -128,23 +157,22 @@ class siFrame(Frame):
         self.precio = Label(self, text=f"${str(precio)} MXN")
         self.precio.pack()
 
-
     def __add(self):
 
         self.cantidadLabel.config(text=(str(int(self.cantidadLabel.cget("text")) + 1))) if int(self.cantidadLabel.cget("text")) < 25 else 25
         self.main.add_venta_frame(nombre=self.nombreProducto, cantidad=self.cantidadLabel.cget("text"),
-                             precio=self.preciofloat * float(self.cantidadLabel.cget("text")))
+                             precio=self.preciofloat * float(self.cantidadLabel.cget("text")), id=self.__id_product)
         self.main.calcularTotal()
 
     def __subtract(self):
         self.cantidadLabel.config(text=str(int(self.cantidadLabel.cget("text")) - 1)) if (
                     int(self.cantidadLabel.cget("text")) > 0) else 0
         self.main.add_venta_frame(nombre=self.nombreProducto, cantidad=self.cantidadLabel.cget("text"),
-                                  precio=float(self.preciofloat * float(self.cantidadLabel.cget("text"))))
+                                  precio=float(self.preciofloat * float(self.cantidadLabel.cget("text"))), id=self.__id_product)
         self.main.calcularTotal()
 
 class ventaFrame(Frame):
-    def __init__(self, master:any, nombre,cantidad,precio):
+    def __init__(self, master:any, nombre,cantidad,precio, idP):
         super().__init__(master, width=200, height=20, bg="#652341")
         super().columnconfigure(index=0, weight=2)
         super().columnconfigure(index=1, weight=2)
@@ -152,6 +180,7 @@ class ventaFrame(Frame):
         self.__nombre = nombre
         self.__subtotal = float(precio)
         self.__cantidad = float(cantidad)
+        self.idP = idP
         if len(nombre) > 20:
             aescribirNombre = nombre[0:20] + "..."
         else:
@@ -193,4 +222,5 @@ class ventaFrame(Frame):
     def get_cantidad(self):
         return self.__cantidad
 
-ventas = VentasInterFace()
+
+ventas = VentasInterFace(1)
