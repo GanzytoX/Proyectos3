@@ -104,5 +104,7 @@ CREATE TABLE promocion (
     FOREIGN KEY (id_tipo_promocion) REFERENCES tipo_de_promocion(id_tipo_promocion),
     CONSTRAINT fecha_valida CHECK (fecha_de_inicio <= fecha_de_finalizacion)
 );
-
+INSERT INTO rol(nombre) values ("de canela");
+INSERT INTO empleado(nombre,apellido_paterno,apellido_materno,celular,sueldo,id_rol,pass,administrator)
+values ("Victor", "Escalante", "Alpuche", "1",30000,1,"a",1)
 SHOW TABLES;
