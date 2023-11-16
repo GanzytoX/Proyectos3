@@ -78,7 +78,7 @@ if __name__ != "__main__":
             elif not isinstance(id, int):
                 raise ValueError("Id must be an integer")
 
-        def ReadSimplified(self, id= None):
+        def ReadSimplified(self, id= None) -> list[Producto]:
             self._conection.commit()
             if id is None:
                 script = "SELECT * from producto"

@@ -120,6 +120,37 @@ class CPr_Interface(twoSideWindow):
             self.update_idletasks()
         barraCarga.destroy()
 
+    def __update_productos(self):
+        productos = self.__productManager.ReadSimplified()
+        cantidad_productos = self.get_list_elements().countItems()
+        print(cantidad_productos)
+
+        for i in range(cantidad_productos-1, -1, -1):
+            print(f"{self.get_list_elements().getItem(i).object.id }")
+            if any(elemento.id == self.get_list_elements().getItem(i).object.id for elemento in productos):
+                productos = [elemento for elemento in productos if elemento.id != self.get_list_elements().getItem(i).object.id]
+            else:
+                self.get_list_elements().deleteAt(i)
+
+        cuenta = int
+        procesados = 0
+        barraCarga = BarraCarga(self, length=400, bg="white", fg="black", text="Cargando imágenes", variable=cuenta,
+                                maximun=len(productos))
+        barraCarga.place(x=600, y=350, anchor="center")
+        self.update_idletasks()
+
+        for producto in productos:
+            producto = self.__productManager.Read(producto.id)
+            newElement = ImageFrame(self.get_list_elements(),
+                                    f"{producto.nombre}",
+                                    producto, producto.imagen)
+            newElement.addEvent("<Button-1>", self.__showProduct)
+            self.get_list_elements().add(newElement)
+            procesados += 1
+            barraCarga.set(procesados)
+            self.update_idletasks()
+        barraCarga.destroy()
+
     def __displayProductoMenu(self):
         if not self.__singleActivated:
             self.__singleProduct.grid(column=1, row=0, padx=(20, 20), pady=50, ipadx=30, ipady=20, sticky="ewns")
@@ -186,7 +217,7 @@ class CPr_Interface(twoSideWindow):
         except:
             pass
         else:
-            self.__updateProductos()
+            self.__update_productos()
             self.__displayProductoMenu()
         finally:
             barraCarga.destroy()
@@ -212,7 +243,7 @@ class CPr_Interface(twoSideWindow):
         self.__productManager.Delete(self.__activeProduct.id)
         barraCarga.destroy()
         self.__activeProduct = None
-        self.__updateProductos()
+        self.__update_productos()
 
         if self.get_list_elements().countItems() > 0:
             self.__showProduct(self.get_list_elements().getItem(0).object)
