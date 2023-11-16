@@ -45,10 +45,10 @@ if __name__ != "__main__":
         def Delete(self, id):
             if isinstance(id, int):
                 producto = self.Read(id)
-                self.__driveConnection.deleteImage(producto._driveCode)
                 script = f"DELETE FROM producto WHERE id_producto = {id}"
                 self._cursor.execute(script)
                 self._conection.commit()
+                self.__driveConnection.deleteImage(producto._driveCode)
             else:
                 raise ValueError("Id must be an integer")
 
