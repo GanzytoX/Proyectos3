@@ -123,10 +123,7 @@ class CPr_Interface(twoSideWindow):
     def __update_productos(self):
         productos = self.__productManager.ReadSimplified()
         cantidad_productos = self.get_list_elements().countItems()
-        print(cantidad_productos)
-
         for i in range(cantidad_productos-1, -1, -1):
-            print(f"{self.get_list_elements().getItem(i).object.id }")
             if any(elemento.id == self.get_list_elements().getItem(i).object.id for elemento in productos):
                 productos = [elemento for elemento in productos if elemento.id != self.get_list_elements().getItem(i).object.id]
             else:
