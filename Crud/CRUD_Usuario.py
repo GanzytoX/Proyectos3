@@ -79,13 +79,13 @@ if __name__ != "__main__":
 
         def iniciarSesion(self, numeroTelefono, contraseña) -> (bool, bool, int) :
             self._conection.commit()
-            SQLScript = f"SELECT pass, administrator FROM empleado WHERE celular = '{numeroTelefono}'"
+            SQLScript = f"SELECT pass, administrator, id_empleado FROM empleado WHERE celular = '{numeroTelefono}'"
             self._cursor.execute(SQLScript)
             result = self._cursor.fetchone()
 
             if result:
                 if result[0] == contraseña:
-                    return True, result[1], result[0]
+                    return True, result[1], result[2]
                 else:
                     print("Inicio de sesion fallido")
                     return False, False, -1
