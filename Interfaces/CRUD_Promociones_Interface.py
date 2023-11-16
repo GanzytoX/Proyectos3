@@ -108,7 +108,7 @@ class PromocionInterface(twoSideWindow):
         self.cuadrotePromociones.fechaInicio.delete(0,END)
         self.cuadrotePromociones.fechaInicio.insert(0,promocion.fechainicio)
         self.cuadrotePromociones.fechaFinal.delete(0, END)
-        self.cuadrotePromociones.fechaFinal.insert(0, promocion.fechainicio)
+        self.cuadrotePromociones.fechaFinal.insert(0, promocion.fechafinal)
         self.cuadrotePromociones.current = promocion.id
         print(self.cuadrotePromociones.current)
         self.__conection.close()
@@ -201,5 +201,6 @@ class PromocionInterface(twoSideWindow):
         coonection.commit()
         coonection.close()
         self.refresh()
+        self.limpiar()
     def aaa(self,event):
         print(event.x, event.y)

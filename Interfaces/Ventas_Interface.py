@@ -6,7 +6,7 @@ from Crud.CRUD_producto import *
 from PIL import Image,ImageTk
 import time
 from  tkinter import messagebox
-
+from Utilities.ValidadorDeOfertas import validar
 class VentasInterFace(Tk):
     def __init__(self, idU):
         super().__init__()
@@ -17,7 +17,6 @@ class VentasInterFace(Tk):
             port="3306",
             password="$BulletKin0805",
             database="u119126_pollos"
-
         )
         self.resizable(False, False)
         self.columnconfigure(index=0, weight=4)
@@ -57,6 +56,7 @@ class VentasInterFace(Tk):
 
     def get_products(self):
         crud = CrudProducto(self.__conection)
+        #todo aqui
         results = crud.Read()
         self.productos = []
         for result in results:
@@ -168,7 +168,8 @@ class siFrame(Frame):
         self.precio.pack()
 
     def __add(self):
-
+        if int(self.cantidadLabel.cget("text")) == 0:
+            validar(self.__id_product)
         self.cantidadLabel.config(text=(str(int(self.cantidadLabel.cget("text")) + 1))) if int(self.cantidadLabel.cget("text")) < 25 else 25
         self.main.add_venta_frame(nombre=self.nombreProducto, cantidad=self.cantidadLabel.cget("text"),
                              precio=self.preciofloat * float(self.cantidadLabel.cget("text")), id=self.__id_product)
