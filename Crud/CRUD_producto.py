@@ -1,5 +1,6 @@
 from Crud.AbstractCRUD import CRUD
 from Drive.drive import DriveManager
+import threading
 
 
 if __name__ != "__main__":
@@ -64,6 +65,7 @@ if __name__ != "__main__":
                     producto = Producto(resultado[1], resultado[2], resultado[3], route, resultado[0], driveCode=resultado[4])
                     productos.append(producto)
                 return productos
+
             elif isinstance(id, int):
                 script = f"SELECT * from producto WHERE id_producto = {id}"
                 self._cursor.execute(script)
@@ -75,6 +77,33 @@ if __name__ != "__main__":
 
             elif not isinstance(id, int):
                 raise ValueError("Id must be an integer")
+
+        def ReadSimplified(self, id= None):
+            self._conection.commit()
+            if id is None:
+                script = "SELECT * from producto"
+                self._cursor.execute(script)
+                result = self._cursor.fetchall()
+                productos = []
+                for resultado in result:
+                    route = f"../userImages/product_{resultado[1]}.png"
+                    producto = Producto(resultado[1], resultado[2], resultado[3], route, resultado[0],
+                                        driveCode=resultado[4])
+                    productos.append(producto)
+                return productos
+
+            elif isinstance(id, int):
+                script = f"SELECT * from producto WHERE id_producto = {id}"
+                self._cursor.execute(script)
+                resultado = self._cursor.fetchone()
+                route = f"../userImages/product_{resultado[1]}.png"
+                producto = Producto(resultado[1], resultado[2], resultado[3], route, resultado[0],
+                                    driveCode=resultado[4])
+                return producto
+
+        def downloadImages(self, *elements):
+            for element in elements:
+                self.__driveConnection.downloadImage(element.driveCode, element.imagen)
 
         def UploadImage(self, url):
             id = self.__driveConnection.uploadImage(url)
