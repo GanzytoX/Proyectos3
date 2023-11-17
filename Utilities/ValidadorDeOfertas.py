@@ -22,7 +22,9 @@ def validar(idpro:int):
         actual_time = time.localtime()
         timeFormatted = time.strftime("%Y/%m/%d", actual_time)
         timeFormatted=timeFormatted.split("/")
-        if datetime.date(int(timeFormatted[0]),int(timeFormatted[1]),int(timeFormatted[2])) < results[5]:
+        print(datetime.date(int(timeFormatted[0]), int(timeFormatted[1]), int(timeFormatted[2])))
+        print(results[5])
+        if datetime.date(int(timeFormatted[0]),int(timeFormatted[1]),int(timeFormatted[2])) >= results[4] and datetime.date(int(timeFormatted[0]),int(timeFormatted[1]),int(timeFormatted[2])) <= results[5]:
             messagebox.askokcancel(title="Promocion!", message=f"Hay una promocion con este producto, es de tipo {results[7]}, inicio el {results[4]}, termina el {results[5]} y su codigo es {8}, ¿desea aplicarla?")
         else:
             print("No esta vigente por lo tanto no es valida :(")
