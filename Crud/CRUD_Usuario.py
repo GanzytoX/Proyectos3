@@ -12,29 +12,22 @@ if __name__ != "__main__":
             super().__init__(conexion)
 
         def Create(self, empleado: Empleado) -> None:
-            conection = mysql.connector.connect(
-                user="u119126_pollos2LaVengazaDelPollo",
-                host="174.136.28.78",
-                port="3306",
-                password="$ShotGunKin0805",
-                database="u119126_pollos2LaVengazaDelPollo"
-            )
-            cursor = conection.cursor()
+
             if empleado.getContraseña() is None:
                 SQLScript = ("INSERT INTO empleado(nombre,apellido_paterno, apellido_materno, celular, sueldo, id_rol, administrator) "
                              f"VALUES('{empleado.getNombre()}', '{empleado.getApellido_paterno()}', "
                              f"'{empleado.getApellido_materno()}', '{empleado.getCelular()}', {empleado.getSueldo()}, "
                              f"{empleado.getIdRol()}, {empleado.getAdministrador()})")
-                cursor.execute(SQLScript)
+                self._cursor.execute(SQLScript)
                 self._conection.commit()
             else:
                 SQLScript = ("INSERT INTO empleado(nombre, apellido_paterno, apellido_materno, celular, sueldo, id_rol, pass, administrator, activo)"
                              f"VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)")
                 subir = [empleado.getNombre(), empleado.getApellido_paterno(),empleado.getApellido_materno(), empleado.getCelular(), empleado.getSueldo(),empleado.getIdRol(),empleado.getContraseña(), empleado.getAdministrador(),'V']
-                cursor.execute(SQLScript, subir)
+                self._cursor.execute(SQLScript, subir)
                 print("se subio " + subir[0], subir[1], subir[2], subir[3], subir[4],subir[5], subir[6], subir[7], subir[8])
                 self._conection.commit()
-            conection.close()
+
 
         def Read(self, id: int = None, condition: str = None) -> list[Empleado] | Empleado:
             self._conection.commit()
@@ -106,7 +99,7 @@ if __name__ != "__main__":
         def find_similar(self, substring: str):
             self._conection.commit()
             script = (f"SELECT empleado.*, rol.nombre FROM empleado LEFT JOIN rol ON empleado.id_rol = rol.id_rol"
-                      f" WHERE empleado.nombre LIKE '{substring}%';")
+                      f" WHERE empleado.nombre LIKE '{substring}%' AND activo = 'V';")
             self._cursor.execute(script)
             result = self._cursor.fetchall()
             empleados = []
@@ -119,7 +112,8 @@ if __name__ != "__main__":
                                           id_rol=empleado[9],
                                           contraseña=empleado[7],
                                           administrator=empleado[8],
-                                          id=empleado[0]))
+                                          id=empleado[0],
+                                          active="V"))
             return empleados
 
 
