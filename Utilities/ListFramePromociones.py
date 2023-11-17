@@ -34,11 +34,11 @@ class CuadrotePromociones(tk.Frame):
     def __init__(self):
         super().__init__()
         self.connection = mysql.connector.connect(
-            user="u119126_pollos",
+            user="u119126_pollos2LaVengazaDelPollo",
             host="174.136.28.78",
             port="3306",
-            password="$BulletKin0805",
-            database="u119126_pollos"
+            password="$ShotGunKin0805",
+            database="u119126_pollos2LaVengazaDelPollo"
 
         )
         self.columnconfigure(index=0, weight=1)
@@ -71,7 +71,7 @@ class CuadrotePromociones(tk.Frame):
         self.current = -1
 
     def getProductos(self):
-        script = "SELECT id_producto, nombre from producto"
+        script = "SELECT id_producto, nombre from producto where activo = 'V'"
         cursor = self.connection.cursor()
         cursor.execute(script)
         result = cursor.fetchall()
@@ -87,11 +87,11 @@ class CuadrotePromociones(tk.Frame):
         return resultados
     def getPromociones(self):
         connection = mysql.connector.connect(
-            user="u119126_pollos",
+            user="u119126_pollos2LaVengazaDelPollo",
             host="174.136.28.78",
             port="3306",
-            password="$BulletKin0805",
-            database="u119126_pollos"
+            password="$ShotGunKin0805",
+            database="u119126_pollos2LaVengazaDelPollo"
 
         )
         script = "SELECT id_tipo_promocion, nombre from tipo_de_promocion"

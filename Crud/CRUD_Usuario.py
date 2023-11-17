@@ -63,7 +63,7 @@ if __name__ != "__main__":
                                 active=empleado[8])
 
         def Delete(self, id) -> None:
-            SQLScript = f"UPDATE empleado SET activo = "F" WHERE id_empleado = {id}"
+            SQLScript = f"UPDATE empleado SET activo = 'F' WHERE id_empleado = {id}"
             self._cursor.execute(SQLScript)
             self._conection.commit()
 

@@ -6,7 +6,7 @@ import threading
 if __name__ != "__main__":
 
     class Producto:
-        def __init__(self, nombre: str, descripcion: str, precio: float, imagen: str = None, id: int = None, driveCode: str = None):
+        def __init__(self, nombre: str, descripcion: str, precio: float, imagen: str = None, id: int = None, driveCode: str = None, activo = "V"):
             self.id = None
             if id is not None:
                 self.id = id
@@ -18,6 +18,7 @@ if __name__ != "__main__":
             self._driveCode = None
             if driveCode is not None:
                 self._driveCode = driveCode
+            self.activo = activo
 
 
     class CrudProducto(CRUD):
@@ -45,8 +46,8 @@ if __name__ != "__main__":
         def Delete(self, id):
             if isinstance(id, int):
                 producto = self.Read(id)
-                self.__driveConnection.deleteImage(producto._driveCode)
-                script = f"DELETE FROM producto WHERE id_producto = {id}"
+                #self.__driveConnection.deleteImage(producto._driveCode)
+                script = f"UPDATE producto SET activo = 'F' WHERE id_producto = {id}"
                 self._cursor.execute(script)
                 self._conection.commit()
             else:
@@ -55,14 +56,14 @@ if __name__ != "__main__":
         def Read(self, id=None, condition: str = None):
             self._conection.commit()
             if id is None and condition is None:
-                script = "SELECT * from producto"
+                script = "SELECT * from producto where activo = 'F' "
                 self._cursor.execute(script)
                 result = self._cursor.fetchall()
                 productos = []
                 for resultado in result:
                     route = f"../userImages/product_{resultado[1]}.png"
                     self.__driveConnection.downloadImage(resultado[4], route)
-                    producto = Producto(resultado[1], resultado[2], resultado[3], route, resultado[0], driveCode=resultado[4])
+                    producto = Producto(resultado[1], resultado[2], resultado[3], route, resultado[0], driveCode=resultado[4], activo=resultado[5])
                     productos.append(producto)
                 return productos
 
@@ -72,7 +73,7 @@ if __name__ != "__main__":
                 resultado = self._cursor.fetchone()
                 route = f"../userImages/product_{resultado[1]}.png"
                 self.__driveConnection.downloadImage(resultado[4], route)
-                producto = Producto(resultado[1], resultado[2], resultado[3], route, resultado[0], driveCode=resultado[4])
+                producto = Producto(resultado[1], resultado[2], resultado[3], route, resultado[0], driveCode=resultado[4], activo=resultado[5])
                 return producto
 
             elif not isinstance(id, int):
@@ -88,7 +89,7 @@ if __name__ != "__main__":
                 for resultado in result:
                     route = f"../userImages/product_{resultado[1]}.png"
                     producto = Producto(resultado[1], resultado[2], resultado[3], route, resultado[0],
-                                        driveCode=resultado[4])
+                                        driveCode=resultado[4], activo=resultado[5])
                     productos.append(producto)
                 return productos
 
@@ -131,6 +132,6 @@ if __name__ != "__main__":
                 route = f"../userImages/product_{resultado[1]}.png"
                 self.__driveConnection.downloadImage(resultado[4], route)
                 producto = Producto(resultado[1], resultado[2], resultado[3], route, resultado[0],
-                                    driveCode=resultado[4])
+                                    driveCode=resultado[4], activo=resultado[5])
                 productos.append(producto)
             return productos

@@ -27,15 +27,14 @@ class CRUDPromociones(CRUD):
 
     def Read(self, id=None, condition=None):
         con = mysql.connector.connect(
-            user="u119126_pollos",
+            user="u119126_pollos2LaVengazaDelPollo",
             host="174.136.28.78",
             port="3306",
-            password="$BulletKin0805",
-            database="u119126_pollos"
-
+            password="$ShotGunKin0805",
+            database="u119126_pollos2LaVengazaDelPollo"
         )
         if id is None:
-            script = "SELECT * from promocion"
+            script = "SELECT * from promocion where activo = 'V'"
             cursor = con.cursor()
             cursor.execute(script)
             result = cursor.fetchall()
@@ -58,7 +57,7 @@ class CRUDPromociones(CRUD):
     def Delete(self, id):
         if isinstance(id, int):
             oferta = self.Read(id)
-            script = f"DELETE FROM promocion WHERE id_promocion = {id}"
+            script = f"UPDATE promocion SET activo = 'F' WHERE id_promocion = {id}"
             self._cursor.execute(script)
             self._conection.commit()
         else:

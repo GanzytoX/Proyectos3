@@ -93,6 +93,7 @@ class CPr_Interface(twoSideWindow):
                                                command=self.__eliminarProducto)
 
     def __updateProductos(self):
+        self.__conection.reconnect()
         for file in os.listdir("../userImages"):
             f = os.path.join("../userImages", file)
             os.remove(f)
@@ -110,12 +111,13 @@ class CPr_Interface(twoSideWindow):
 
         for id in ids:
             producto = self.__productManager.Read(id[0])
-            newElement = ImageFrame(self.get_list_elements(),
-                                        f"{producto.nombre}",
-                                        producto, producto.imagen)
-            newElement.addEvent("<Button-1>", self.__showProduct)
-            self.get_list_elements().add(newElement)
-            procesados += 1
+            if producto.activo == "V":
+                newElement = ImageFrame(self.get_list_elements(),
+                                            f"{producto.nombre}",
+                                            producto, producto.imagen)
+                newElement.addEvent("<Button-1>", self.__showProduct)
+                self.get_list_elements().add(newElement)
+                procesados += 1
             barraCarga.set(procesados)
             self.update_idletasks()
         barraCarga.destroy()
@@ -138,12 +140,13 @@ class CPr_Interface(twoSideWindow):
 
         for producto in productos:
             producto = self.__productManager.Read(producto.id)
-            newElement = ImageFrame(self.get_list_elements(),
-                                    f"{producto.nombre}",
-                                    producto, producto.imagen)
-            newElement.addEvent("<Button-1>", self.__showProduct)
-            self.get_list_elements().add(newElement)
-            procesados += 1
+            if producto.activo == "V":
+                newElement = ImageFrame(self.get_list_elements(),
+                                        f"{producto.nombre}",
+                                        producto, producto.imagen)
+                newElement.addEvent("<Button-1>", self.__showProduct)
+                self.get_list_elements().add(newElement)
+                procesados += 1
             barraCarga.set(procesados)
             self.update_idletasks()
         barraCarga.destroy()
@@ -271,11 +274,12 @@ class CPr_Interface(twoSideWindow):
 
             productos = self.__productManager.findSimilar(self.__nav.get())
             for producto in productos:
-                newElement = ImageFrame(self.get_list_elements(),
-                                            f"{producto.nombre}",
-                                            producto, producto.imagen)
-                newElement.addEvent("<Button-1>", self.__showProduct)
-                self.get_list_elements().add(newElement)
+                if producto.activo == "V":
+                    newElement = ImageFrame(self.get_list_elements(),
+                                                f"{producto.nombre}",
+                                                producto, producto.imagen)
+                    newElement.addEvent("<Button-1>", self.__showProduct)
+                    self.get_list_elements().add(newElement)
                 self.update_idletasks()
             barraCarga.destroy()
         else:

@@ -69,6 +69,7 @@ class PromocionInterface(twoSideWindow):
         self.get_list_elements().clear()
         promociones= self.crud.Read()
         for promocion in promociones:
+
             if len(promocion.descripcion) > 40:
                 enseñar = promocion.descripcion[0:40] + "..."
             else:
@@ -163,7 +164,7 @@ class PromocionInterface(twoSideWindow):
             password="$ShotGunKin0805",
             database="u119126_pollos2LaVengazaDelPollo"
         )
-        script = "Delete from promocion where id_promocion = %s"
+        script = "UPDATE promocion SET activo = 'F' where id_promocion = %s"
         cursor = coonection.cursor()
         cursor.execute(script,[self.cuadrotePromociones.current])
         coonection.commit()
