@@ -144,8 +144,11 @@ class CUInterface(twoSideWindow):
                 str(self.__inputCel.get()),
                 float(self.__inputSueldo.get()),
                 int(self.__findRol(self.__inputRol.get())),
-                bool(self.__isAdmin.get())
+                bool(self.__isAdmin.get()),
+                'V'
             )
+            print("Empleado sin contraseña creado")
+
         else:
             empleado = Empleado(
                 str(self.__inputName.get()),
@@ -155,8 +158,11 @@ class CUInterface(twoSideWindow):
                 float(self.__inputSueldo.get()),
                 self.__findRol(self.__inputRol.get()),
                 bool(self.__isAdmin.get()),
+                'V',
                 str(self.__inputContraseña.get())
+
             )
+            print("Empleado con contraseña creado")
         return empleado
 
     def __agregarEmpleado(self):
@@ -181,7 +187,7 @@ class CUInterface(twoSideWindow):
         self.get_list_elements().clear()
         empleados = self.__userManager.Read()
         for empleado in empleados:
-            if empleado.getActivo():
+            if empleado.activo == 'V':
                 newElement = NoImageFrame(self.get_list_elements(),
                                           f"{empleado.getNombre()} {empleado.getApellido_paterno()} {empleado.getApellido_materno()}",
                                           empleado)
