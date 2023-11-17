@@ -56,11 +56,12 @@ if __name__ != "__main__":
         def Read(self, id=None, condition: str = None):
             self._conection.commit()
             if id is None and condition is None:
-                script = "SELECT * from producto where activo = 'F' "
+                script = "SELECT * from producto where activo = 'V' "
                 self._cursor.execute(script)
                 result = self._cursor.fetchall()
                 productos = []
                 for resultado in result:
+                    print(resultado)
                     route = f"../userImages/product_{resultado[1]}.png"
                     self.__driveConnection.downloadImage(resultado[4], route)
                     producto = Producto(resultado[1], resultado[2], resultado[3], route, resultado[0], driveCode=resultado[4], activo=resultado[5])
@@ -68,7 +69,7 @@ if __name__ != "__main__":
                 return productos
 
             elif isinstance(id, int):
-                script = f"SELECT * from producto WHERE id_producto = {id}"
+                script = f"SELECT * from producto WHERE id_producto = {id} AND activo = 'V'"
                 self._cursor.execute(script)
                 resultado = self._cursor.fetchone()
                 route = f"../userImages/product_{resultado[1]}.png"
@@ -82,7 +83,7 @@ if __name__ != "__main__":
         def ReadSimplified(self, id= None) -> list[Producto]:
             self._conection.commit()
             if id is None:
-                script = "SELECT * from producto"
+                script = "SELECT * from producto WHERE activo = 'V'"
                 self._cursor.execute(script)
                 result = self._cursor.fetchall()
                 productos = []
@@ -94,7 +95,7 @@ if __name__ != "__main__":
                 return productos
 
             elif isinstance(id, int):
-                script = f"SELECT * from producto WHERE id_producto = {id}"
+                script = f"SELECT * from producto WHERE id_producto = {id} AND activo = 'V'"
                 self._cursor.execute(script)
                 resultado = self._cursor.fetchone()
                 route = f"../userImages/product_{resultado[1]}.png"
@@ -111,19 +112,19 @@ if __name__ != "__main__":
             return id
 
         def countProducts(self):
-            script = "SELECT COUNT(*) from producto"
+            script = "SELECT COUNT(*) from producto WHERE activo = 'V'"
             self._cursor.execute(script)
             result = self._cursor.fetchone()
             return result
 
         def getIds(self):
-            script = "SELECT id_producto from producto"
+            script = "SELECT id_producto from producto WHERE activo = 'V'"
             self._cursor.execute(script)
             result = self._cursor.fetchall()
             return result
 
         def findSimilar(self, substring: str):
-            script = f"SELECT * from producto WHERE nombre LIKE '{substring}%'"
+            script = f"SELECT * from producto WHERE nombre LIKE '{substring}%' AND activo = 'V'"
             self._conection.commit()
             self._cursor.execute(script)
             result = self._cursor.fetchall()

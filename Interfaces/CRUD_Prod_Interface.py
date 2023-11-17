@@ -122,7 +122,8 @@ class CPr_Interface(twoSideWindow):
             self.update_idletasks()
         barraCarga.destroy()
 
-    def __update_productos(self):
+
+    def __update_productos_simplified(self):
         productos = self.__productManager.ReadSimplified()
         cantidad_productos = self.get_list_elements().countItems()
         for i in range(cantidad_productos-1, -1, -1):
@@ -217,7 +218,7 @@ class CPr_Interface(twoSideWindow):
         except:
             pass
         else:
-            self.__update_productos()
+            self.__update_productos_simplified()
             self.__displayProductoMenu()
         finally:
             barraCarga.destroy()
@@ -243,7 +244,7 @@ class CPr_Interface(twoSideWindow):
         self.__productManager.Delete(self.__activeProduct.id)
         barraCarga.destroy()
         self.__activeProduct = None
-        self.__update_productos()
+        self.__update_productos_simplified()
 
         if self.get_list_elements().countItems() > 0:
             self.__showProduct(self.get_list_elements().getItem(0).object)
@@ -264,7 +265,7 @@ class CPr_Interface(twoSideWindow):
         self.__setImage(ruta)
 
     def __search(self):
-        if len(self.__nav.get()) > 0:
+        if len(self.get_navegation_bar().get()) > 0:
             self.get_list_elements().clear()
 
             barraCarga = BarraCarga(self, length=400, bg="white", fg="black", text="Cargando imágenes",
@@ -272,7 +273,7 @@ class CPr_Interface(twoSideWindow):
             barraCarga.place(x=600, y=350, anchor="center")
             self.update_idletasks()
 
-            productos = self.__productManager.findSimilar(self.__nav.get())
+            productos = self.__productManager.findSimilar(self.get_navegation_bar().get())
             for producto in productos:
                 if producto.activo == "V":
                     newElement = ImageFrame(self.get_list_elements(),
