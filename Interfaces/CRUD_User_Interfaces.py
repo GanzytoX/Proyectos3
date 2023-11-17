@@ -14,11 +14,11 @@ class CUInterface(twoSideWindow):
         super().__init__(window_name="Empleados", size="1200x700", resizable=False,
                          background_image="../img/Empleado.png")
         self.__conection = mysql.connector.connect(
-            user="u119126_pollos",
+            user="u119126_pollos2LaVengazaDelPollo",
             host="174.136.28.78",
             port="3306",
-            password="$BulletKin0805",
-            database="u119126_pollos"
+            password="$ShotGunKin0805",
+            database="u119126_pollos2LaVengazaDelPollo"
         )
 
         self.__userManager = CrudEmpleado(self.__conection)
@@ -117,7 +117,6 @@ class CUInterface(twoSideWindow):
             self.__labelContraseña.grid(column=0, row=8)
             self.__inputContraseña.grid(column=0, row=9, columnspan=2, sticky="ew")
             self.__radioAdmin.grid(column=3, row=9, columnspan=4, sticky="ew")
-
         else:
             self.__inputName.delete(0, tk.END)
             self.__inputLastname1.delete(0, tk.END)
@@ -125,21 +124,16 @@ class CUInterface(twoSideWindow):
             self.__inputCel.delete(0, tk.END)
             self.__inputSueldo.delete(0, tk.END)
             self.__inputContraseña.delete(0, tk.END)
-
             self.__isAdmin.set(0)
-
         roles = self.__updateRoles()
         self.__inputRol["values"] = roles
         self.__inputRol.update()
         self.__singleActivated = True
-
     def __configureAgregarEmpleado(self):
         self.__displayMenu()
-
         self.__editEmpleadoButton.grid_forget()
         self.__deleteEmpleadoButton.grid_forget()
         self.__agregarEmpleadoButton.grid(column=0, row=10, pady=20, sticky="w")
-
 
     def __createEmpleadoObject(self) -> Empleado:
         if self.__inputContraseña == "":
@@ -187,11 +181,12 @@ class CUInterface(twoSideWindow):
         self.get_list_elements().clear()
         empleados = self.__userManager.Read()
         for empleado in empleados:
-            newElement = NoImageFrame(self.get_list_elements(),
-                                      f"{empleado.getNombre()} {empleado.getApellido_paterno()} {empleado.getApellido_materno()}",
-                                      empleado)
-            newElement.addEvent("<Button-1>", self.__showEmpleado)
-            self.get_list_elements().add(newElement)
+            if empleado.getActivo():
+                newElement = NoImageFrame(self.get_list_elements(),
+                                          f"{empleado.getNombre()} {empleado.getApellido_paterno()} {empleado.getApellido_materno()}",
+                                          empleado)
+                newElement.addEvent("<Button-1>", self.__showEmpleado)
+                self.get_list_elements().add(newElement)
         empleados.clear()
 
 
@@ -232,12 +227,11 @@ class RUInterface(Tk):
     def __init__(self):
         super().__init__()
         self.__conection = mysql.connector.connect(
-            user="root",
-            host="localhost",
-            port="3307",
-            #port="3306",
-            #password="0123456789",
-            database="pollosexpress"
+            user="u119126_pollos2LaVengazaDelPollo",
+            host="174.136.28.78",
+            port="3306",
+            password="$ShotGunKin0805",
+            database="u119126_pollos2LaVengazaDelPollo"
         )
         self.__userManager = CrudEmpleado(self.__conection)
         self.title("Empleados")

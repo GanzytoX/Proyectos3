@@ -12,11 +12,11 @@ class VentasInterFace(Tk):
         super().__init__()
         self.idU = idU
         self.__conection = mysql.connector.connect(
-            user="u119126_pollos",
+            user="u119126_pollos2LaVengazaDelPollo",
             host="174.136.28.78",
             port="3306",
-            password="$BulletKin0805",
-            database="u119126_pollos"
+            password="$ShotGunKin0805",
+            database="u119126_pollos2LaVengazaDelPollo"
         )
         self.resizable(False, False)
         self.columnconfigure(index=0, weight=4)

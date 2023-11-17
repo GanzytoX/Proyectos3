@@ -19,11 +19,11 @@ class PromocionInterface(twoSideWindow):
         super().__init__(window_name="Promociones", size="1200x700", resizable=False,
                          background_image="../img/promociones.jpg")
         self.__conection = mysql.connector.connect(
-            user="u119126_pollos",
+            user="u119126_pollos2LaVengazaDelPollo",
             host="174.136.28.78",
             port="3306",
-            password="$BulletKin0805",
-            database="u119126_pollos"
+            password="$ShotGunKin0805",
+            database="u119126_pollos2LaVengazaDelPollo"
 
         )
 
@@ -87,11 +87,11 @@ class PromocionInterface(twoSideWindow):
         self.cuadrotePromociones.cuadroDescripcion.delete("1.0", END)
     def mostrarPromocion(self, promocion : Promocion):
         self.__conection = mysql.connector.connect(
-            user="u119126_pollos",
+            user="u119126_pollos2LaVengazaDelPollo",
             host="174.136.28.78",
             port="3306",
-            password="$BulletKin0805",
-            database="u119126_pollos"
+            password="$ShotGunKin0805",
+            database="u119126_pollos2LaVengazaDelPollo"
 
         )
         script = (f'SELECT producto.id_producto, producto.nombre from producto inner join promocion on promocion.id_producto = producto.id_producto WHERE %s = promocion.descripcion')
@@ -126,11 +126,11 @@ class PromocionInterface(twoSideWindow):
         self.cuadrotePromociones.listaTipoPromocion.set(result[1])
     def actualizarPromocion(self):
         coonection = mysql.connector.connect(
-            user="u119126_pollos",
+            user="u119126_pollos2LaVengazaDelPollo",
             host="174.136.28.78",
             port="3306",
-            password="$BulletKin0805",
-            database="u119126_pollos"
+            password="$ShotGunKin0805",
+            database="u119126_pollos2LaVengazaDelPollo"
 
         )
         aSubir = []
@@ -157,11 +157,11 @@ class PromocionInterface(twoSideWindow):
         self.refresh()
     def borrarPromocion(self):
         coonection = mysql.connector.connect(
-            user="u119126_pollos",
+            user="u119126_pollos2LaVengazaDelPollo",
             host="174.136.28.78",
             port="3306",
-            password="$BulletKin0805",
-            database="u119126_pollos"
+            password="$ShotGunKin0805",
+            database="u119126_pollos2LaVengazaDelPollo"
         )
         script = "Delete from promocion where id_promocion = %s"
         cursor = coonection.cursor()
@@ -172,11 +172,11 @@ class PromocionInterface(twoSideWindow):
         coonection.close()
     def crearPromocion(self):
         coonection = mysql.connector.connect(
-            user="u119126_pollos",
+            user="u119126_pollos2LaVengazaDelPollo",
             host="174.136.28.78",
             port="3306",
-            password="$BulletKin0805",
-            database="u119126_pollos"
+            password="$ShotGunKin0805",
+            database="u119126_pollos2LaVengazaDelPollo"
 
         )
         aSubir = []

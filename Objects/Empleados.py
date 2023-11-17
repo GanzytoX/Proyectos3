@@ -10,7 +10,7 @@ class Empleado:
     __administrador = bool
 
     def __init__(self, nombre: str, apellido_paterno: str, apellido_materno: str, celular: str, sueldo: float,
-                 id_rol: int, administrator: bool, contraseña: str = None, id: int = None):
+                 id_rol: int, administrator: bool, active: str, contraseña: str = None, id: int = None):
         if id is not None:
             self._setId(id)
         if contraseña is not None:
@@ -22,7 +22,10 @@ class Empleado:
         self.setSueldo(sueldo)
         self.setIdRol(id_rol)
         self.setAdministrador(administrator)
+        self.activo = active
 
+    def getActivo(self):
+        return self.activo
     def getId(self):
         return self.__id
 

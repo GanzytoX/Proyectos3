@@ -19,11 +19,10 @@ if __name__ != "__main__":
                              f"{empleado.getIdRol()}, {empleado.getAdministrador()})")
                 self._cursor.execute(SQLScript)
             else:
-                SQLScript = ("INSERT INTO empleado(nombre, apellido_paterno, apellido_materno, celular, sueldo, id_rol, pass, administrator)"
-                             f"VALUES('{empleado.getNombre()}', '{empleado.getApellido_paterno()}', "
-                             f"'{empleado.getApellido_materno()}', '{empleado.getCelular()}', {empleado.getSueldo()}, "
-                             f"{empleado.getIdRol()}, '{empleado.getContraseña()}', {empleado.getAdministrador()})")
-                self._cursor.execute(SQLScript)
+                SQLScript = ("INSERT INTO empleado(nombre, apellido_paterno, apellido_materno, celular, sueldo, id_rol, pass, administrator, activo)"
+                             f"VALUES(%s, %s, %s, %s, %s, %s, %s, %s)")
+                subir = [empleado.getNombre(), empleado.getApellido_paterno(),empleado.getApellido_materno(), empleado.getCelular(), empleado.getSueldo(),empleado.getIdRol(),empleado.getContraseña(), empleado.getAdministrador(),empleado.getActivo()]
+                self._cursor.execute(SQLScript, [subir])
 
             self._conection.commit()
 
@@ -40,10 +39,12 @@ if __name__ != "__main__":
                                               apellido_materno=empleado[3],
                                               celular=empleado[4],
                                               sueldo=empleado[5],
-                                              id_rol=empleado[9],
+                                              id_rol=empleado[10],
                                               contraseña=empleado[7],
                                               administrator=empleado[8],
-                                              id=empleado[0]))
+                                              id=empleado[0],
+                                              active=empleado[8]))
+                print(result[0])
                 return empleados
             elif id is not None and condition is None:
                 script = (f"SELECT empleado.*, rol.nombre FROM empleado LEFT JOIN rol ON empleado.id_rol = rol.id_rol"
@@ -51,17 +52,18 @@ if __name__ != "__main__":
                 self._cursor.execute(script)
                 empleado = self._cursor.fetchone()
                 return Empleado(nombre=empleado[1],
-                                              apellido_paterno=empleado[2],
-                                              apellido_materno=empleado[3],
-                                              celular=empleado[4],
-                                              sueldo=empleado[5],
-                                              id_rol=empleado[9],
-                                              contraseña=empleado[7],
-                                              administrator=empleado[8],
-                                              id=empleado[0])
+                                apellido_paterno=empleado[2],
+                                apellido_materno=empleado[3],
+                                celular=empleado[4],
+                                sueldo=empleado[5],
+                                id_rol=empleado[11],
+                                contraseña=empleado[7],
+                                administrator=empleado[8],
+                                id=empleado[0],
+                                active=empleado[8])
 
         def Delete(self, id) -> None:
-            SQLScript = f"DELETE FROM empleado WHERE id_empleado = {id}"
+            SQLScript = f"UPDATE empleado SET activo = "F" WHERE id_empleado = {id}"
             self._cursor.execute(SQLScript)
             self._conection.commit()
 

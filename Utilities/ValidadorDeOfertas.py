@@ -2,11 +2,11 @@ import mysql.connector
 from tkinter import messagebox,ttk
 def validar(idpro:int):
     conection = mysql.connector.connect(
-            user="u119126_pollos",
-            host="174.136.28.78",
-            port="3306",
-            password="$BulletKin0805",
-            database="u119126_pollos"
+        user="u119126_pollos2LaVengazaDelPollo",
+        host="174.136.28.78",
+        port="3306",
+        password="$ShotGunKin0805",
+        database="u119126_pollos2LaVengazaDelPollo"
     )
     cursor = conection.cursor()
     script = "SELECT p.id_producto, p.nombre, pro.id_promocion, pro.descripcion, pro.fecha_de_inicio, pro.fecha_de_finalizacion, tipo.id_tipo_promocion, tipo.nombre, tipo.codigo FROM promocion as pro INNER JOIN producto as p ON p.id_producto = pro.id_producto INNER JOIN tipo_de_promocion tipo ON pro.id_tipo_promocion = tipo.id_tipo_promocion WHERE pro.id_producto = %s"

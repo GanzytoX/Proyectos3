@@ -20,11 +20,11 @@ c_azul_palido = "#AFEEEE"
 
 # Importo el Crud Usuario para poder hacer inicio de sesion y le paso un conection, o sea coneccion a la BD
 connection = mysql.connector.connect(
-    user="u119126_pollos",
+    user="u119126_pollos2LaVengazaDelPollo",
     host="174.136.28.78",
     port="3306",
-    password="$BulletKin0805",
-    database="u119126_pollos"
+    password="$ShotGunKin0805",
+    database="u119126_pollos2LaVengazaDelPollo"
     )
 
 # Función para iniciar sesión

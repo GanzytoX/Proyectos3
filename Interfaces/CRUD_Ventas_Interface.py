@@ -21,20 +21,21 @@ c_azul_palido = "#AFEEEE"
 
 # Importo el Crud Usuario para poder hacer inicio de sesion y le paso un conection, o sea coneccion a la BD
 connection = mysql.connector.connect(
-    user="root",
-    host="localhost",
+    user="u119126_pollos2LaVengazaDelPollo",
+    host="174.136.28.78",
     port="3306",
-    #password="0123456789",
-    database="pollosexpress"
+    password="$ShotGunKin0805",
+    database="u119126_pollos2LaVengazaDelPollo"
 )
 
 def mostrar_lista_productos():
     # Crear una conexión a la base de datos
     connection = mysql.connector.connect(
-        user="root",
-        host="localhost",
+        user="u119126_pollos2LaVengazaDelPollo",
+        host="174.136.28.78",
         port="3306",
-        database="pollosexpress"
+        password="$ShotGunKin0805",
+        database="u119126_pollos2LaVengazaDelPollo"
     )
 
 # Crear un cursor para ejecutar consultas SQL

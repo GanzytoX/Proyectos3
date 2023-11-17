@@ -1,19 +1,15 @@
+#Mostrar producto a la que referencia, datos de la promocion y tipo
 #CREATE DATABASE pollosexpress;
-USE pollosexpress;
-
 DROP TABLE IF EXISTS pago, rol, empleado, cliente, venta, producto, gasto, tipo_de_promocion, venta_producto, promocion;
-
 CREATE TABLE pago (
     id_pago INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     nombre NVARCHAR(50)
 );
-
 CREATE TABLE rol (
     id_rol INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     nombre NVARCHAR(50) NOT NULL,
     CONSTRAINT UNIQUE(nombre)
 );
-
 CREATE TABLE empleado (
     id_empleado INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
@@ -29,15 +25,8 @@ CREATE TABLE empleado (
 ALTER TABLE empleado
 ADD COLUMN administrator bool NOT NULL;
 
-DELETE FROM empleado WHERE nombre = 'Gon';
-INSERT INTO empleado (nombre, apellido_paterno, apellido_materno, celular, sueldo, pass, administrator) VALUES
-('Gon', 'Zar', 'Pado', '1111111111', 1000000.00, '1111', 1),
-('Vector', 'Ou','yea', '00000000000', 1, '0000', 0);
-SELECT * FROM empleado;
-
-SELECT * FROM empleado
-WHERE celular = '1111111111' AND
-pass = '1111';
+alter table empleado
+add column activo char(1) default "V";
 
 CREATE TABLE cliente (
     id_cliente INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -46,6 +35,9 @@ CREATE TABLE cliente (
     celular VARCHAR(10) NOT NULL,
     direccion VARCHAR(150) NOT NULL
 );
+
+alter table cliente
+add column activo char(1) default "V";
 
 CREATE TABLE venta (
     id_Venta INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -68,6 +60,9 @@ CREATE TABLE producto (
     imagen text NOT NULL
 );
 
+alter table producto
+add column activo char(1) default "V";
+
 CREATE TABLE gasto (
     id_gasto INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     descripcion VARCHAR(150) NOT NULL,
@@ -84,6 +79,8 @@ CREATE TABLE tipo_de_promocion (
     codigo VARCHAR(50) NOT NULL
 );
 
+
+
 CREATE TABLE venta_producto (
     id_venta_producto INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     id_venta INT,
@@ -92,6 +89,7 @@ CREATE TABLE venta_producto (
     FOREIGN KEY (id_venta) REFERENCES venta(id_venta),
     FOREIGN KEY (id_producto) REFERENCES producto(id_producto)
 );
+
 
 CREATE TABLE promocion (
     id_promocion INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -104,7 +102,9 @@ CREATE TABLE promocion (
     FOREIGN KEY (id_tipo_promocion) REFERENCES tipo_de_promocion(id_tipo_promocion),
     CONSTRAINT fecha_valida CHECK (fecha_de_inicio <= fecha_de_finalizacion)
 );
+
+alter table promocion
+add column activo char(1) default "V";
 INSERT INTO rol(nombre) values ("de canela");
 INSERT INTO empleado(nombre,apellido_paterno,apellido_materno,celular,sueldo,id_rol,pass,administrator)
 values ("Victor", "Escalante", "Alpuche", "1",30000,1,"a",1)
-SHOW TABLES;
