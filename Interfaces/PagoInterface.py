@@ -1,8 +1,10 @@
 import tkinter
 from tkinter import Tk, Frame, Button, Entry, Toplevel, Label
+from tkinter import messagebox
 from Utilities.AutomaticScrollableFrame import AutomaticScrollableFrame
 from Utilities.ListFrames import ventaFrame
-import copy
+import time
+import mysql.connector
 
 
 class Pagos(Toplevel):
@@ -10,8 +12,18 @@ class Pagos(Toplevel):
     __lista_compra = AutomaticScrollableFrame
     __TotalLabelCant = Label
 
-    def __init__(self, elementos):
+    def __init__(self, elementos, idU, master):
         super().__init__()
+        self.idU = idU
+        self.__master = master
+        self.__conection = mysql.connector.connect(
+            user="u119126_pollos2LaVengazaDelPollo",
+            host="174.136.28.78",
+            port="3306",
+            password="$ShotGunKin0805",
+            database="u119126_pollos2LaVengazaDelPollo"
+        )
+        self.__cursor = self.__conection.cursor()
         self.geometry("900x600")
         self.columnconfigure(0, weight=2)
         self.columnconfigure(1, weight=4)
@@ -39,7 +51,7 @@ class Pagos(Toplevel):
         # Poner el label del total
         self.__TotalLabelCant =Label(frameTotal)
         self.__TotalLabelCant.grid(column=1, row=0, padx=10)
-        total = self.__calcularTotal()
+        self.__total = self.__calcularTotal()
 
         # Button de cancelar venta (aunque simplemente se podría cerrar la ventana y queda)
         self.__button_cancelar = Button(self.__frame_izquierdo, text="Cancelar",
@@ -72,21 +84,27 @@ class Pagos(Toplevel):
         texto_total.pack(pady=5)
 
         entry_total = Entry(frame_efectivo)
-        entry_total.insert(0, str(total))
+        entry_total.insert(0, str(self.__total))
         entry_total.config(state="readonly")
         entry_total.pack()
 
         texto_recibido = Label(frame_efectivo, text="Recibido")
         texto_recibido.pack(pady=5)
 
-        entry_recibido = Entry(frame_efectivo)
-        entry_recibido.pack()
+        self.__entry_recibido = Entry(frame_efectivo)
+        self.__entry_recibido.pack()
+        self.__entry_recibido.bind("<KeyRelease>", self.__calcular_cambio)
 
         texto_cambio = Label(frame_efectivo, text="Cambio")
         texto_cambio.pack(pady=5)
 
-        entry_cambio = Entry(frame_efectivo, state="readonly")
-        entry_cambio.pack()
+        self.__entry_cambio = Entry(frame_efectivo, state="readonly")
+        self.__entry_cambio.pack()
+
+        # Boton para terminar la compra
+        self.__button_pagar = Button(frame_efectivo, text="Finalizar la compra", command=self.__pagar)
+        self.__button_pagar.pack()
+
 
     def __copy_elements(self, elementos_list):
         for element in elementos_list:
@@ -102,3 +120,55 @@ class Pagos(Toplevel):
         self.__TotalLabelCant.config(text=f"${total}")
         return total
 
+    def __calcular_cambio(self, event):
+        ingresado = event.widget.get()
+        if ingresado != "":
+            try:
+                ingresado = float(ingresado)
+            except ValueError as e:
+                messagebox.showerror("Error", "El monto ingresado es incorrecto")
+            else:
+                if ingresado >= self.__total:
+                    self.__entry_cambio.config(state="normal")
+                    self.__entry_cambio.delete(0, tkinter.END)
+                    self.__entry_cambio.insert(0, str(ingresado - self.__total))
+                    self.__entry_cambio.config(state="readonly")
+                    if self.__button_pagar.cget("state") != "normal":
+                        self.__button_pagar.config(state="normal")
+
+                else:
+                    self.__entry_cambio.config(state="normal")
+                    self.__entry_cambio.delete(0, tkinter.END)
+                    self.__entry_cambio.insert(0, "Faltan fondos")
+                    self.__entry_cambio.config(state="readonly")
+                    if self.__button_pagar.cget("state") != "disabled":
+                        self.__button_pagar.config(state="disabled")
+            finally:
+                self.focus()
+                self.__entry_recibido.focus()
+
+    def __pagar(self):
+        scrip = "INSERT INTO venta(fecha_De_Venta, total_De_Compra, id_pago, id_empleado) VALUES(%s, %s, %s, %s);"
+        actual_time = time.localtime()
+        timeFormatted = time.strftime("%Y/%m/%d", actual_time)
+
+        values = (timeFormatted, self.__calcularTotal(), 1, self.idU)
+        self.__conection.cursor().execute(scrip, values)
+        self.__conection.commit()
+
+        messagebox.showinfo("Listo", "La venta ha sido agregada")
+
+        scrip2 = "SELECT MAX(id_Venta) FROM venta;"
+        cursor = self.__conection.cursor()
+        cursor.execute(scrip2)
+        idelast = cursor.fetchone()
+
+        scrip3 = "INSERT INTO venta_producto(id_venta, id_producto, cantidad) VALUES(%s, %s, %s);"
+        for i in range(self.__lista_compra.countItems()):
+            values = (
+                idelast[0], self.__lista_compra.getItem(i).idP, self.__lista_compra.getItem(i).get_cantidad())
+            self.__conection.cursor().execute(scrip3, values)
+            self.__conection.commit()
+
+        self.__master.reset()
+        self.destroy()

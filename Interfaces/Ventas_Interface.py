@@ -28,11 +28,12 @@ class VentasInterFace(Tk):
         self.rowconfigure(0, weight=1)
         self.geometry("1200x700")
 
-        #scroll como tal
+        # scroll como tal
         self.scrollCuadro = ScrollableFrame(self, width=500, height=500,length=3)
         self.scrollCuadro.grid(column=0, row=0, sticky="nsew", pady=20, padx=20)
         self.scrollCuadroProductos = []
-        #Cuadro ventas
+
+        # Cuadro ventas
         self.__cuadroProductos = Frame(self, width=200,relief="groove", borderwidth=2)
         self.__cuadroProductos.columnconfigure(index = 0, weight=2)
         self.__cuadroProductos.columnconfigure(index = 1, weight=2)
@@ -44,17 +45,18 @@ class VentasInterFace(Tk):
         self.textoVenta = Label(self.__cuadroProductos, text="Producto  |  Cantidad  |  Subtotal", font=("Arial", 10))
         self.textoVenta.grid(columnspan=3, column=0,row=1)
 
-        #Cuadro de las preventas
+        # Cuadro de las preventas
         self.scrollPreventa = AutomaticScrollableFrame(self.__cuadroProductos,height=350,width=200)
         self.scrollPreventa.grid(columnspan=3,column=0, row=2, sticky="nsew", padx=10)
         self.preventa = []
         self.TotalLabel = Label(self.__cuadroProductos, text= "Total")
-        self.TotalLabel.grid(column=0, row = 3)
+        self.TotalLabel.grid(column=0, row=3)
         self.TotalLabelCant = Label(self.__cuadroProductos, text= "$0")
-        self.TotalLabelCant.grid(column=2, row = 3)
-        self.botonPagar = Button(self.__cuadroProductos,text="Pagar", command=self.__send_info)
-        self.botonPagar.grid(column=1,row=4)
-        #Add products to scroll
+        self.TotalLabelCant.grid(column=2, row=3)
+        self.botonPagar = Button(self.__cuadroProductos,text="Pagar", command=self.__send_info, state="disabled")
+        self.botonPagar.grid(column=1, row=4)
+
+        # Add products to scroll
         self.add_products_to_scroll()
         self.mainloop()
 
@@ -140,7 +142,7 @@ class VentasInterFace(Tk):
         for i in range(self.scrollPreventa.countItems()):
             item = self.scrollPreventa.getItem(i)
             lista.append((item.get_nombre(), item.get_cantidad(), item.get_subtotal(), item.idP))
-        ventanaPago = Pagos(lista)
+        ventanaPago = Pagos(lista, self.idU, self)
         ventanaPago.mainloop()
 
 
