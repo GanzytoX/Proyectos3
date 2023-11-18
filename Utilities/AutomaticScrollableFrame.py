@@ -40,3 +40,5 @@ class AutomaticScrollableFrame(CTkScrollableFrame):
 
     def countItems(self) -> int:
         return len(self.__items)
+
+

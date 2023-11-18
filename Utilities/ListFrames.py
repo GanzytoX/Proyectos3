@@ -24,6 +24,8 @@ class ListFrame(tk.Frame):
         self.__text.grid(column=1, row=0, sticky="W")
         self.object = objet
 
+        imagen_raw.close()
+
     def addEvent(
             self: tk.W,
             sequence: str | None = ...,
@@ -46,3 +48,54 @@ class NoImageFrame(ListFrame):
 class ImageFrame(ListFrame):
     def __init__(self, master: AutomaticScrollableFrame, text: str, objet, imageroute: str):
         super().__init__(master, text, objet, imageroute, (60, 60))
+
+
+class ventaFrame(tk.Frame):
+    def __init__(self, master:any, nombre,cantidad,precio, idP):
+        super().__init__(master, width=200, height=20, bg="#652341")
+        super().columnconfigure(index=0, weight=2)
+        super().columnconfigure(index=1, weight=2)
+        super().columnconfigure(index=2, weight=2)
+        self.__nombre = nombre
+        self.__subtotal = float(precio)
+        self.__cantidad = float(cantidad)
+        self.idP = idP
+        if len(nombre) > 20:
+            aescribirNombre = nombre[0:20] + "..."
+        else:
+            aescribirNombre = nombre
+        self.nombreLabel = tk.Label(self, text=f"{aescribirNombre}",padx=10)
+        self.nombreLabel.grid(column=0, row=0, sticky="w")
+        self.cantidadLabel = tk.Label(self, text=f"{cantidad}",padx=25)
+        self.cantidadLabel.grid(column=2, row=0, sticky="ew")
+        self.precioLabel = tk.Label(self,text=f"${self.__subtotal}",padx=20)
+        self.precioLabel.grid(column=3, row=0, sticky="e")
+
+    def get_nombre(self):
+        return self.__nombre
+
+    def set_subtotal(self, value: float):
+        if isinstance(value, float):
+            if value >= 0:
+                self.__subtotal = value
+                self.precioLabel.config(text=f"${value}")
+            else:
+                raise ValueError("El subtotal no puede ser negativo")
+        else:
+            raise ValueError("El subtotal debe ser un numero")
+
+    def set_cantidad(self, value: float):
+        if isinstance(value, float) or isinstance(value, int):
+            if value >= 0:
+                self.__cantidad = value
+                self.cantidadLabel.config(text=f"{value}")
+            else:
+                raise ValueError("La cantidad no puede ser negativo")
+        else:
+            raise ValueError("La cantidad debe ser un numero")
+
+    def get_subtotal(self) -> float:
+        return self.__subtotal
+
+    def get_cantidad(self):
+        return self.__cantidad

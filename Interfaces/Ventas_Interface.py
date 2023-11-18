@@ -2,11 +2,15 @@ from tkinter import *
 import mysql.connector
 from Utilities.VentasScrollableFrame import ScrollableFrame
 from Utilities.AutomaticScrollableFrame import AutomaticScrollableFrame
+from Utilities.ListFrames import ventaFrame
 from Crud.CRUD_producto import *
 from PIL import Image,ImageTk
 import time
-from  tkinter import messagebox
+from tkinter import messagebox
 from Utilities.ValidadorDeOfertas import validar
+from Interfaces.PagoInterface import Pagos
+
+
 class VentasInterFace(Tk):
     def __init__(self, idU):
         super().__init__()
@@ -48,7 +52,7 @@ class VentasInterFace(Tk):
         self.TotalLabel.grid(column=0, row = 3)
         self.TotalLabelCant = Label(self.__cuadroProductos, text= "$0")
         self.TotalLabelCant.grid(column=2, row = 3)
-        self.botonPagar = Button(self.__cuadroProductos,text="Pagar", command=self.agregar_venta)
+        self.botonPagar = Button(self.__cuadroProductos,text="Pagar", command=self.__send_info)
         self.botonPagar.grid(column=1,row=4)
         #Add products to scroll
         self.add_products_to_scroll()
@@ -79,7 +83,7 @@ class VentasInterFace(Tk):
         if cantidad > 0:
             for i in range(self.scrollPreventa.countItems()):
                 if self.scrollPreventa.getItem(i).get_nombre() == nombre:
-                    print("Hay similar")
+                    print(precio)
                     self.scrollPreventa.getItem(i).set_cantidad(cantidad)
                     self.scrollPreventa.getItem(i).set_subtotal(precio)
 
@@ -91,6 +95,7 @@ class VentasInterFace(Tk):
                     print("Encontre uno similar")
                     self.scrollPreventa.deleteAt(i)
                     break
+
     def calcularTotal(self) -> float:
         total = 0
         for i in range(self.scrollPreventa.countItems()):
@@ -122,11 +127,21 @@ class VentasInterFace(Tk):
 
         self.reset()
 
+    # Resetea la venta al regresar
     def reset(self):
         self.scrollPreventa.clear()
         self.TotalLabelCant.config(text="$0")
         for item in self.scrollCuadroProductos:
             item.cantidadLabel.config(text="0")
+
+    # Recolecta todos los elementos para mandarlos a la interfaz de venta
+    def __send_info(self):
+        lista = []
+        for i in range(self.scrollPreventa.countItems()):
+            item = self.scrollPreventa.getItem(i)
+            lista.append((item.get_nombre(), item.get_cantidad(), item.get_subtotal(), item.idP))
+        ventanaPago = Pagos(lista)
+        ventanaPago.mainloop()
 
 
 
@@ -184,55 +199,6 @@ class siFrame(Frame):
     def __reset(self):
         self.cantidadLabel.config(text="0")
 
-class ventaFrame(Frame):
-    def __init__(self, master:any, nombre,cantidad,precio, idP):
-        super().__init__(master, width=200, height=20, bg="#652341")
-        super().columnconfigure(index=0, weight=2)
-        super().columnconfigure(index=1, weight=2)
-        super().columnconfigure(index=2, weight=2)
-        self.__nombre = nombre
-        self.__subtotal = float(precio)
-        self.__cantidad = float(cantidad)
-        self.idP = idP
-        if len(nombre) > 20:
-            aescribirNombre = nombre[0:20] + "..."
-        else:
-            aescribirNombre = nombre
-        self.precio = float(precio) * int(cantidad)
-        self.nombreLabel = Label(self, text=f"{aescribirNombre}",padx=10)
-        self.nombreLabel.grid(column=0, row=0, sticky="w")
-        self.cantidadLabel = Label(self, text=f"{cantidad}",padx=25)
-        self.cantidadLabel.grid(column=2, row=0, sticky="ew")
-        self.precioLabel = Label(self,text=f"${self.precio}",padx=20)
-        self.precioLabel.grid(column=3, row=0, sticky="e")
 
-    def get_nombre(self):
-        return self.__nombre
-
-    def set_subtotal(self, value: float):
-        if isinstance(value, float):
-            if value >= 0:
-                self.__subtotal = value
-                self.precioLabel.config(text=f"${value}")
-            else:
-                raise ValueError("El subtotal no puede ser negativo")
-        else:
-            raise ValueError("El subtotal debe ser un numero")
-
-    def set_cantidad(self, value: float):
-        if isinstance(value, float) or isinstance(value, int):
-            if value >= 0:
-                self.__cantidad = value
-                self.cantidadLabel.config(text=f"{value}")
-            else:
-                raise ValueError("La cantidad no puede ser negativo")
-        else:
-            raise ValueError("La cantidad debe ser un numero")
-
-    def get_subtotal(self) -> float:
-        return self.__subtotal
-
-    def get_cantidad(self):
-        return self.__cantidad
 
 
