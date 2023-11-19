@@ -65,6 +65,9 @@ class GastoRapido(Tk):
             messagebox.showinfo("Listo", "El gasto se ha agregado")
         finally:
             conection.close()
+            self.__title_entry.delete(0, END)
+            self.__descripcion_entry.delete("1.0", END)
+            self.__monto_entry.delete(0, END)
             return
 
 
