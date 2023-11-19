@@ -52,7 +52,7 @@ class ImageFrame(ListFrame):
 
 class ventaFrame(tk.Frame):
     def __init__(self, master:any, nombre,cantidad,precio, idP):
-        super().__init__(master, width=200, height=20, bg="#652341")
+        super().__init__(master, width=200, height=20, bg="#f0f0f0")
         super().columnconfigure(index=0, weight=2)
         super().columnconfigure(index=1, weight=2)
         super().columnconfigure(index=2, weight=2)
