@@ -1,8 +1,9 @@
-from tkinter import *
 from CRUD_User_Interfaces import *
 from CRUD_Prod_Interface import *
 from CRUD_Promociones_Interface import *
 from Ventas_Interface import *
+
+
 class AdminMainMenu(Tk):
     __titleLabel = Label
     __frameBotones = Frame
@@ -50,3 +51,10 @@ class AdminMainMenu(Tk):
     def __openVentas(self):
         newVentana = VentasInterFace(self.__userId)
         newVentana.mainloop()
+
+
+class EmpleadoMainMenu(Tk):
+    __titleLabel = Label
+    __frameBotones = Frame
+    __open_ventas = Button
+    __open_gasto = Button
