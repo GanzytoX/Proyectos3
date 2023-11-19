@@ -105,29 +105,6 @@ class VentasInterFace(Tk):
         self.TotalLabelCant.config(text=f"${total}")
         return total
 
-    def agregar_venta(self):
-        scrip = "INSERT INTO venta(fecha_De_Venta, total_De_Compra, id_pago, id_empleado) VALUES(%s, %s, %s, %s);"
-        actual_time = time.localtime()
-        timeFormatted = time.strftime("%Y/%m/%d", actual_time)
-
-        values = (timeFormatted, self.calcularTotal(), 1, self.idU)
-        self.__conection.cursor().execute(scrip, values)
-        self.__conection.commit()
-
-        messagebox.showinfo("Listo", "La venta ha sido agregada")
-
-        scrip2 = "SELECT MAX(id_Venta) FROM venta;"
-        cursor = self.__conection.cursor()
-        cursor.execute(scrip2)
-        idelast = cursor.fetchone()
-
-        scrip3 = "INSERT INTO venta_producto(id_venta, id_producto, cantidad) VALUES(%s, %s, %s);"
-        for i in range (self.scrollPreventa.countItems()):
-            values = (idelast[0], self.scrollPreventa.getItem(i).idP, self.scrollPreventa.getItem(i).get_cantidad())
-            self.__conection.cursor().execute(scrip3, values)
-            self.__conection.commit()
-
-        self.reset()
 
     # Resetea la venta al regresar
     def reset(self):

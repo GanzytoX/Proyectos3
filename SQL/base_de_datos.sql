@@ -65,9 +65,10 @@ add column activo char(1) default "V";
 
 CREATE TABLE gasto (
     id_gasto INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    descripcion VARCHAR(150) NOT NULL,
-    monto DOUBLE NOT NULL,
-    fecha DATE NOT NULL,
+    titulo NVARCHAR(50) NOT NULL,
+    descripcion NVARCHAR(150) NOT NULL,
+    monto DECIMAL NOT NULL,
+    fecha DATETIME NOT NULL,
     id_empleado INT,
     FOREIGN KEY (id_empleado) REFERENCES empleado(id_empleado)
 );
