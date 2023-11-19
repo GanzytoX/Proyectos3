@@ -53,7 +53,7 @@ class VentasInterFace(Tk):
         self.TotalLabel.grid(column=0, row=3)
         self.TotalLabelCant = Label(self.__cuadroProductos, text= "$0")
         self.TotalLabelCant.grid(column=2, row=3)
-        self.botonPagar = Button(self.__cuadroProductos,text="Pagar", command=self.__send_info, state="disabled")
+        self.botonPagar = Button(self.__cuadroProductos,text="Pagar", command=self.__send_info)
         self.botonPagar.grid(column=1, row=4)
 
         # Add products to scroll

@@ -102,7 +102,7 @@ class Pagos(Toplevel):
         self.__entry_cambio.pack()
 
         # Boton para terminar la compra
-        self.__button_pagar = Button(frame_efectivo, text="Finalizar la compra", command=self.__pagar)
+        self.__button_pagar = Button(frame_efectivo, text="Finalizar la compra", command=self.__pagar, state="disabled")
         self.__button_pagar.pack()
 
 
