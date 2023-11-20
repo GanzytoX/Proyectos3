@@ -3,6 +3,7 @@ from tkinter import *
 from tkinter import messagebox
 import mysql.connector
 
+
 class GastoRapido(Tk):
 
     def __init__(self, idU):

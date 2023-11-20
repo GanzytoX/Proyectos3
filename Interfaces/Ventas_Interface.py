@@ -5,8 +5,6 @@ from Utilities.AutomaticScrollableFrame import AutomaticScrollableFrame
 from Utilities.ListFrames import ventaFrame
 from Crud.CRUD_producto import *
 from PIL import Image,ImageTk
-import time
-from tkinter import messagebox
 from Utilities.ValidadorDeOfertas import validar
 from Interfaces.PagoInterface import Pagos
 
