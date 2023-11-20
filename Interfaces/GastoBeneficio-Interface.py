@@ -20,9 +20,12 @@ class GastoBeneficioInterface(Tk):
         self.ganancia = float
         self.gastoLabel = Label(self, text="Aqui va el gasto cuando le des al boton")
         self.gastoLabel.pack()
+        self.gananciaLabel = Label(self, text="Aqui va la ganancia cuando le des al boton")
+        self.gananciaLabel.pack()
         self.choose = ttk.Combobox(self, state="readonly", values=["Diario", "Mensual"])
         self.choose.pack()
-        self.si = Button(self, text="si", command=lambda:self.calcularGastosDiarios(self.choose.get()))
+        self.putamadre = Label(self, text="ESTO NO ESTARIA PASANDO SI TUVIERA EQUIPO").place(x=600,y=300)
+        self.si = Button(self, text="si", command=lambda:(self.calcularGastosDiarios(self.choose.get()), self.calcularGanacia(self.choose.get())))
         self.si.pack()
         self.mainloop()
 
@@ -54,9 +57,25 @@ class GastoBeneficioInterface(Tk):
             self.sueldoEmpleadoMensual = int(self.sueldoEmpleadoDiario)*int(Fecha.dia)
             self.gastoLabel.config(text=f"Total de gasto mensual: {result[0]+self.sueldoEmpleadoMensual}")
 
-    def calcularGanacia(self):
+    def calcularGanacia(self, estado):
         self.conection.reconnect()
+        Fecha = fecha()
+        if estado == "Diario":
+            self.script = f"SELECT SUM(total_De_Compra) FROM venta WHERE fecha_De_Venta BETWEEN '{Fecha.año}-{Fecha.mes}-{Fecha.dia} 00:00:00' AND '{Fecha.año}-{Fecha.mes}-{Fecha.dia} 23:59:59'"
+            self.cursor.execute(self.script)
+            result = self.cursor.fetchone()
+            if result[0] == None:
+                result = [0,0]
+            self.gananciaLabel.config(text=f"Total ganancia diaria: {result[0]}")
+
+        if estado == "Mensual":
+            self.script = f"SELECT SUM(total_De_Compra) FROM venta WHERE fecha_De_Venta BETWEEN '{Fecha.año}-{Fecha.mes}-01' AND '{Fecha.año}-{Fecha.mes}-{Fecha.dias}'"
+            self.cursor.execute(self.script)
+            result = self.cursor.fetchone()
+            if result[0] == None:
+                result = [0, 0]
+            self.gananciaLabel.config(text=f"Total ganancia mensual: {result[0]}")
+
 
 gastobeneficio = GastoBeneficioInterface()
-gastobeneficio.calcularGastosDiarios()
 print(gastobeneficio.sueldoEmpleadoDiario)
