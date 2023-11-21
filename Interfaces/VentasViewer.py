@@ -1,4 +1,4 @@
-from tkinter import Tk, Label, Button
+from tkinter import Tk, Label, Button, Scrollbar, Frame
 from tkinter.ttk import Treeview
 import tkinter.messagebox
 import mysql.connector
@@ -23,10 +23,15 @@ class VentasViewer(Tk):
         title = Label(self, text="Ventas", font="16")
         title.pack()
 
-        # Tabla
-        self.__tablaVentas = Treeview(self, columns=("FechaVenta", "TotalCompra", "TipoPago", "Empleado_Nombre",
-                                              "Empleado_Apellido_P", "Empleado_Apellido_M", "TipoVenta"), show="headings")
+        # Frame
+        frameTable = Frame(self)
+        frameTable.pack()
 
+        # Tabla
+        self.__tablaVentas = Treeview(frameTable, columns=("id", "FechaVenta", "TotalCompra", "TipoPago", "Empleado_Nombre",
+                                              "Empleado_Apellido_P", "Empleado_Apellido_M", "TipoVenta"), show="headings", height=20)
+
+        self.__tablaVentas.heading("id", text="Id_venta")
         self.__tablaVentas.heading("FechaVenta", text="Fecha de venta")
         self.__tablaVentas.heading("TotalCompra", text="Total de la compra")
         self.__tablaVentas.heading("TipoPago", text="Tipo de pago")
@@ -35,6 +40,7 @@ class VentasViewer(Tk):
         self.__tablaVentas.heading("Empleado_Apellido_M", text="Apellido Materno")
         self.__tablaVentas.heading("TipoVenta", text="Tipo de venta")
 
+        self.__tablaVentas.column("id", anchor="center", width=5)
         self.__tablaVentas.column("FechaVenta", anchor="center")
         self.__tablaVentas.column("TotalCompra", anchor="center")
         self.__tablaVentas.column("TipoPago", anchor="center")
@@ -43,35 +49,44 @@ class VentasViewer(Tk):
         self.__tablaVentas.column("Empleado_Apellido_P", anchor="center")
         self.__tablaVentas.column("Empleado_Apellido_M", anchor="center")
 
+
+
         #Que haya rayas de diferentes colores
         self.__tablaVentas.tag_configure("par", background="white")
         self.__tablaVentas.tag_configure("impar", background="#d3eaf2")
 
-        self.__tablaVentas.pack()
+        self.__tablaVentas.pack(side="left", padx=10, pady=15)
 
-        self.__tablaVentas.insert(parent="", index=0, values=("262545", "$23", "SI", "Rasputin", "Efectivo"))
+        # ScrollBar
+        self.__scroll = Scrollbar(frameTable, command=self.__tablaVentas.yview)
+        self.__scroll.pack(fill="both", side="right")
+        self.__tablaVentas.config(yscrollcommand=self.__scroll.set)
 
         self.__insert_values()
 
-    def __insert_values(self, maximum: int = 10, offset: int = 0):
+
+    def __insert_values(self, maximum: int = 15, offset: int = 0):
         self.__conection.commit()
-        sql = (f"SELECT v.fecha_De_Venta, v.total_De_Compra, p.nombre, e.nombre, e.apellido_paterno,"
+        sql = (f"SELECT v.id_venta, v.fecha_De_Venta, v.total_De_Compra, p.nombre, e.nombre, e.apellido_paterno,"
                f"e.apellido_materno, v.id_cliente FROM venta as v INNER JOIN pago as p ON p.id_pago = v.id_pago "
-               f"INNER JOIN empleado as e ON e.id_empleado = v.id_empleado ORDER BY v.fecha_De_Venta DESC "
+               f"INNER JOIN empleado as e ON e.id_empleado = v.id_empleado ORDER BY v.fecha_De_Venta DESC, id_venta DESC "
                f"LIMIT {maximum} OFFSET {offset}")
         self.__cursor.execute(sql)
         ventas = self.__cursor.fetchall()
         i = 1
+
         for venta in ventas:
             if venta[6] is None:
-                agregar = (venta[0], f"${venta[1]}", venta[2], venta[3], venta[4], venta[5], "En caja")
+                agregar = (venta[0], venta[1], f"${venta[2]}", venta[3], venta[4], venta[5], venta[6], "En caja")
             else:
-                agregar = (venta[0], f"${venta[1]}", venta[2], venta[3], venta[4], venta[5], "A domicilio")
-
+                agregar = (venta[0], venta[1], f"${venta[2]}", venta[3], venta[4], venta[5], venta[6], "A domicilio")
             if i % 2 == 0:
                 self.__tablaVentas.insert(parent="", values=agregar, index=tkinter.END, tags="par")
             else:
                 self.__tablaVentas.insert(parent="", values=agregar, index=tkinter.END, tags="impar")
             i += 1
 
+
+newVentana = VentasViewer()
+newVentana.mainloop()
 
