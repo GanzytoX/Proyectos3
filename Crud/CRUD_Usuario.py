@@ -86,7 +86,7 @@ if __name__ != "__main__":
             SQLScript = f"SELECT pass, administrator, id_empleado FROM empleado WHERE celular = '{numeroTelefono}'"
             self._cursor.execute(SQLScript)
             result = self._cursor.fetchone()
-
+            print(result)
             if result:
                 if result[0] == contraseña:
                     return True, result[1], result[2]

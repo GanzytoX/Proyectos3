@@ -25,8 +25,9 @@ class GastoBeneficioInterface(Tk):
         self.choose = ttk.Combobox(self, state="readonly", values=["Diario", "Semanal", "Mensual"])
         self.choose.pack()
         self.putamadre = Label(self, text="ESTO NO ESTARIA PASANDO SI TUVIERA EQUIPO").place(x=600,y=300)
-        self.si = Button(self, text="si", command=lambda:(self.calcularGastosDiarios(self.choose.get()), self.calcularGanacia(self.choose.get())))
+        self.si = Button(self, text="si", command=lambda: (self.calcularGastosDiarios(self.choose.get()), self.calcularGanacia(self.choose.get())))
         self.si.pack()
+
 
     def calcularGastosDiarios(self,estado):
         """"Empleados"""

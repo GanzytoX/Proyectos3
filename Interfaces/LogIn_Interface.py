@@ -59,7 +59,11 @@ def iniciarSesion():
 def limitar_caracteres(entry, max_chars):
     if len(entry.get()) > max_chars:
         entry.delete(max_chars, tk.END)
-
+def focusContraseña(event):
+    password_entry.focus()
+    print(event)
+def iniciarSesion2(event):
+    iniciarSesion()
 # Crear una ventana de inicio de sesión
 ventana = Tk()
 ventana.title("Inicio de sesión")
@@ -128,6 +132,8 @@ separador2.pack()
 # Botón para iniciar sesión
 log_in_button = tk.Button(frame, text="Iniciar Sesión", bg=c_azul, fg=c_blanco, command=iniciarSesion)
 log_in_button.pack(pady=10)
-
+user_entry.focus()
+user_entry.bind('<Return>', focusContraseña)
+password_entry.bind("<Return>", iniciarSesion2)
 # Ejecutar la ventana
 ventana.mainloop()
