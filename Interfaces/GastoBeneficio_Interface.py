@@ -27,7 +27,6 @@ class GastoBeneficioInterface(Tk):
         self.putamadre = Label(self, text="ESTO NO ESTARIA PASANDO SI TUVIERA EQUIPO").place(x=600,y=300)
         self.si = Button(self, text="si", command=lambda:(self.calcularGastosDiarios(self.choose.get()), self.calcularGanacia(self.choose.get())))
         self.si.pack()
-        self.mainloop()
 
     def calcularGastosDiarios(self,estado):
         """"Empleados"""
@@ -89,6 +88,3 @@ class GastoBeneficioInterface(Tk):
                 result = [0, 0]
             self.gananciaLabel.config(text=f"Total ganancia mensual: {result[0]}")
 
-
-gastobeneficio = GastoBeneficioInterface()
-print(gastobeneficio.sueldoEmpleadoDiario)

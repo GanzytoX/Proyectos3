@@ -75,5 +75,3 @@ class VentasViewer(Tk):
             i += 1
 
 
-ventana = VentasViewer()
-ventana.mainloop()

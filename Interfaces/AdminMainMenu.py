@@ -2,8 +2,8 @@ from CRUD_User_Interfaces import *
 from CRUD_Prod_Interface import *
 from CRUD_Promociones_Interface import *
 from Ventas_Interface import *
-
-
+from VentasViewer import *
+from GastoBeneficio_Interface import *
 class AdminMainMenu(Tk):
     __titleLabel = Label
     __frameBotones = Frame
@@ -36,6 +36,12 @@ class AdminMainMenu(Tk):
         self.__openVentasButton = Button(self.__frameBotones, text="Abrir ventas", command=self.__openVentas)
         self.__openVentasButton.grid(column=0, row=1, padx=20)
 
+        self.__openVentasVisualizadorButton = Button(self.__frameBotones, text="Ver detalle ventas", command=self.__openVentasVis)
+        self.__openVentasVisualizadorButton.grid(column=1, row=1, padx=20)
+
+        self.__openGastoBeneficioButton = Button(self.__frameBotones, text="Ver Gasto-Beneficio", command=self.__openGastoBeneficio)
+        self.__openGastoBeneficioButton.grid(column=2, row=1, padx=20)
+
 
     def __openEmpleados(self):
         newVentana = CUInterface()
@@ -51,7 +57,13 @@ class AdminMainMenu(Tk):
     def __openVentas(self):
         newVentana = VentasInterFace(self.__userId)
         newVentana.mainloop()
+    def __openVentasVis(self):
+        newVentana = VentasViewer()
+        newVentana.mainloop()
 
+    def __openGastoBeneficio(self):
+        newVentana = GastoBeneficioInterface()
+        newVentana.mainloop()
 
 class EmpleadoMainMenu(Tk):
     __titleLabel = Label
