@@ -22,7 +22,7 @@ class GastoBeneficioInterface(Tk):
         self.gastoLabel.pack()
         self.gananciaLabel = Label(self, text="Aqui va la ganancia cuando le des al boton")
         self.gananciaLabel.pack()
-        self.choose = ttk.Combobox(self, state="readonly", values=["Diario", "Mensual"])
+        self.choose = ttk.Combobox(self, state="readonly", values=["Diario", "Semanal", "Mensual"])
         self.choose.pack()
         self.putamadre = Label(self, text="ESTO NO ESTARIA PASANDO SI TUVIERA EQUIPO").place(x=600,y=300)
         self.si = Button(self, text="si", command=lambda:(self.calcularGastosDiarios(self.choose.get()), self.calcularGanacia(self.choose.get())))
@@ -47,6 +47,13 @@ class GastoBeneficioInterface(Tk):
             if result[0] == None:
                 result = [0,0]
             self.gastoLabel.config(text = f"Total de gasto diario: {result[0]+self.sueldoEmpleadoDiario}")
+        if estado == "Semanal":
+            self.script = f"SELECT SUM(monto) FROM gasto WHERE WEEK(fecha) = {Fecha.semana}"
+            self.cursor.execute(self.script)
+            result = self.cursor.fetchone()
+            if result[0] == None:
+                result = [0,0]
+            self.gastoLabel.config(text=f"Total de gasto Semanal: {float(result[0]) + self.sueldoEmpleadoSemanal[0]}")
         #Agarrando el mes completo
         if estado == "Mensual":
             self.script = f"SELECT SUM(monto) FROM gasto WHERE fecha BETWEEN '{Fecha.año}-{Fecha.mes}-01' AND '{Fecha.año}-{Fecha.mes}-{Fecha.dias}'"
@@ -67,7 +74,13 @@ class GastoBeneficioInterface(Tk):
             if result[0] == None:
                 result = [0,0]
             self.gananciaLabel.config(text=f"Total ganancia diaria: {result[0]}")
-
+        if estado == "Semanal":
+            self.script = f"SELECT SUM(total_De_Compra) FROM venta WHERE WEEK(fecha_De_Venta) = {Fecha.semana}"
+            self.cursor.execute(self.script)
+            result = self.cursor.fetchone()
+            if result[0] == None:
+                result = [0,0]
+            self.gananciaLabel.config(text=f"Total ganancia Semanal: {result[0]}")
         if estado == "Mensual":
             self.script = f"SELECT SUM(total_De_Compra) FROM venta WHERE fecha_De_Venta BETWEEN '{Fecha.año}-{Fecha.mes}-01' AND '{Fecha.año}-{Fecha.mes}-{Fecha.dias}'"
             self.cursor.execute(self.script)
