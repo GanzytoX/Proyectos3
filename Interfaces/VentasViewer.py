@@ -18,7 +18,6 @@ class VentasViewer(Tk):
 
         self.title("Ventas")
 
-
         # Titulo
         title = Label(self, text="Ventas", font="16")
         title.pack()
@@ -49,8 +48,6 @@ class VentasViewer(Tk):
         self.__tablaVentas.column("Empleado_Apellido_P", anchor="center")
         self.__tablaVentas.column("Empleado_Apellido_M", anchor="center")
 
-
-
         #Que haya rayas de diferentes colores
         self.__tablaVentas.tag_configure("par", background="white")
         self.__tablaVentas.tag_configure("impar", background="#d3eaf2")
@@ -64,6 +61,28 @@ class VentasViewer(Tk):
 
         self.__insert_values()
 
+        # Index de la paginación
+        self.__pagina = 0
+        self.__cantidad_elementos = 15
+
+        # Frame de la paginación
+        frame_paginacion = Frame(self)
+        frame_paginacion.pack()
+
+        # Botones de la paginación
+        self.__buton_atras = Button(frame_paginacion, text="No", background="#d3eaf2", state="disabled")
+        self.__buton_adelante = Button(frame_paginacion, text="Si", background="#d3eaf2", command=self.__next)
+
+        self.__buton_atras.pack(side="left", padx=50)
+        self.__buton_adelante.pack(side="right", padx=50)
+
+        # Ver si va a haber siguiente pagina
+        sql = "SELECT COUNT(*) FROM venta"
+        self.__conection.commit()
+        self.__cursor.execute(sql)
+        cuenta = self.__cursor.fetchone()
+        if cuenta[0] < self.__cantidad_elementos:
+            self.__buton_adelante.config(state="disabled")
 
     def __insert_values(self, maximum: int = 15, offset: int = 0):
         self.__conection.commit()
@@ -85,6 +104,23 @@ class VentasViewer(Tk):
             else:
                 self.__tablaVentas.insert(parent="", values=agregar, index=tkinter.END, tags="impar")
             i += 1
+
+    def __limpiar_datos(self):
+        # Eliminar todas las filas de la tabla
+        for i in self.__tablaVentas.get_children():
+            self.__tablaVentas.delete(i)
+
+    def __next(self):
+        self.__pagina += 1
+        self.__limpiar_datos()
+        self.__insert_values(maximum=self.__cantidad_elementos, offset=self.__pagina * self.__cantidad_elementos)
+        # Ver si va a haber siguiente pagina
+        sql = "SELECT COUNT(*) FROM venta"
+        self.__conection.commit()
+        self.__cursor.execute(sql)
+        cuenta = self.__cursor.fetchone()
+        if cuenta[0] < self.__cantidad_elementos * self.__pagina:
+            self.__buton_adelante.config(state="disabled")
 
 
 newVentana = VentasViewer()
