@@ -2,6 +2,7 @@ from tkinter import Tk, Label, Button, Scrollbar, Frame
 from tkinter.ttk import Treeview
 import tkinter.messagebox
 import mysql.connector
+import math
 
 
 class VentasViewer(Tk):
@@ -70,18 +71,16 @@ class VentasViewer(Tk):
         frame_paginacion.pack()
 
         # Botones de la paginación
-        self.__buton_atras = Button(frame_paginacion, text="No", background="#d3eaf2", state="disabled")
+        self.__buton_atras = Button(frame_paginacion, text="No", background="#d3eaf2", state="disabled",
+                                    command=self.__previous)
         self.__buton_adelante = Button(frame_paginacion, text="Si", background="#d3eaf2", command=self.__next)
 
         self.__buton_atras.pack(side="left", padx=50)
         self.__buton_adelante.pack(side="right", padx=50)
 
         # Ver si va a haber siguiente pagina
-        sql = "SELECT COUNT(*) FROM venta"
-        self.__conection.commit()
-        self.__cursor.execute(sql)
-        cuenta = self.__cursor.fetchone()
-        if cuenta[0] < self.__cantidad_elementos:
+        cuenta = self.__count_ventas()
+        if cuenta < self.__cantidad_elementos:
             self.__buton_adelante.config(state="disabled")
 
     def __insert_values(self, maximum: int = 15, offset: int = 0):
@@ -95,7 +94,7 @@ class VentasViewer(Tk):
         i = 1
 
         for venta in ventas:
-            if venta[6] is None:
+            if venta[7] is None:
                 agregar = (venta[0], venta[1], f"${venta[2]}", venta[3], venta[4], venta[5], venta[6], "En caja")
             else:
                 agregar = (venta[0], venta[1], f"${venta[2]}", venta[3], venta[4], venta[5], venta[6], "A domicilio")
@@ -114,13 +113,29 @@ class VentasViewer(Tk):
         self.__pagina += 1
         self.__limpiar_datos()
         self.__insert_values(maximum=self.__cantidad_elementos, offset=self.__pagina * self.__cantidad_elementos)
+
         # Ver si va a haber siguiente pagina
+        cuenta = self.__count_ventas()
+        if cuenta < self.__cantidad_elementos * (self.__pagina+1):
+            self.__buton_adelante.config(state="disabled")
+        self.__buton_atras.config(state="normal")
+
+    def __previous(self):
+        self.__pagina -= 1
+        self.__limpiar_datos()
+        self.__insert_values(maximum=self.__cantidad_elementos, offset=self.__pagina * self.__cantidad_elementos)
+
+        if self.__pagina == 0:
+            self.__buton_atras.config(state="disabled")
+        self.__buton_adelante.config(state="normal")
+
+
+    def __count_ventas(self) -> int:
         sql = "SELECT COUNT(*) FROM venta"
         self.__conection.commit()
         self.__cursor.execute(sql)
         cuenta = self.__cursor.fetchone()
-        if cuenta[0] < self.__cantidad_elementos * self.__pagina:
-            self.__buton_adelante.config(state="disabled")
+        return cuenta[0]
 
 
 newVentana = VentasViewer()
