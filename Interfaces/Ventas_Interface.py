@@ -88,14 +88,15 @@ class VentasInterFace(Tk):
 
                     return
             self.scrollPreventa.add(ventaFrame(self.scrollPreventa,nombre,cantidad,precio, id))
+        elif promocion:
+            self.scrollPreventa.add(ventaFrame(self.scrollPreventa, nombre, cantidad, precio, id))
         else:
             for i in range(self.scrollPreventa.countItems()):
                 if self.scrollPreventa.getItem(i).get_nombre() == nombre:
                     print("Encontre uno similar")
                     self.scrollPreventa.deleteAt(i)
                     break
-        if promocion:
-            self.scrollPreventa.add(ventaFrame(self.scrollPreventa,nombre,cantidad,precio, id))
+
 
     def calcularTotal(self) -> float:
         total = 0
@@ -159,15 +160,15 @@ class siFrame(Frame):
         self.cantidadFrame.pack()
         self.precio = Label(self, text=f"${str(precio)} MXN")
         self.precio.pack()
-
+        self.countPromocionesAplicadas = 2
     def __add(self):
         self.cantidad = 1
-        if int(self.cantidadLabel.cget("text")) == 0:
-            validar(self.main, self, self.__id_product)
+
         self.cantidadLabel.config(text=(str(int(self.cantidadLabel.cget("text")) + self.cantidad))) if int(self.cantidadLabel.cget("text")) < 25 else 25
         self.main.add_venta_frame(nombre=self.nombreProducto, cantidad=self.cantidadLabel.cget("text"),
                              precio=self.preciofloat * float(self.cantidadLabel.cget("text")), id=self.__id_product)
         self.main.calcularTotal()
+        validar(self.main, self, self.__id_product, self.countPromocionesAplicadas)
 
     def __subtract(self):
         self.cantidadLabel.config(text=str(int(self.cantidadLabel.cget("text")) - 1)) if (
