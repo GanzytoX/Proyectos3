@@ -5,7 +5,7 @@ from Utilities.AutomaticScrollableFrame import AutomaticScrollableFrame
 from Utilities.ListFrames import ventaFrame
 from Crud.CRUD_producto import *
 from PIL import Image,ImageTk
-from Utilities.ValidadorDeOfertas import validar
+from Utilities.ValidadorDeOfertas import *
 from Interfaces.PagoInterface import Pagos
 
 
@@ -75,7 +75,7 @@ class VentasInterFace(Tk):
             self.scrollCuadro.add(toAdd)
             self.scrollCuadroProductos.append(toAdd)
 
-    def add_venta_frame(self, nombre, cantidad, precio, id):
+    def add_venta_frame(self, nombre, cantidad, precio, id, promocion = False):
         cantidad = int(cantidad)
         precio = float(precio)
         print(precio)
@@ -83,7 +83,6 @@ class VentasInterFace(Tk):
         if cantidad > 0:
             for i in range(self.scrollPreventa.countItems()):
                 if self.scrollPreventa.getItem(i).get_nombre() == nombre:
-                    print(precio)
                     self.scrollPreventa.getItem(i).set_cantidad(cantidad)
                     self.scrollPreventa.getItem(i).set_subtotal(precio)
 
@@ -95,6 +94,8 @@ class VentasInterFace(Tk):
                     print("Encontre uno similar")
                     self.scrollPreventa.deleteAt(i)
                     break
+        if promocion:
+            self.scrollPreventa.add(ventaFrame(self.scrollPreventa,nombre,cantidad,precio, id))
 
     def calcularTotal(self) -> float:
         total = 0
@@ -160,9 +161,10 @@ class siFrame(Frame):
         self.precio.pack()
 
     def __add(self):
+        self.cantidad = 1
         if int(self.cantidadLabel.cget("text")) == 0:
-            validar(self.__id_product)
-        self.cantidadLabel.config(text=(str(int(self.cantidadLabel.cget("text")) + 1))) if int(self.cantidadLabel.cget("text")) < 25 else 25
+            validar(self.main, self, self.__id_product)
+        self.cantidadLabel.config(text=(str(int(self.cantidadLabel.cget("text")) + self.cantidad))) if int(self.cantidadLabel.cget("text")) < 25 else 25
         self.main.add_venta_frame(nombre=self.nombreProducto, cantidad=self.cantidadLabel.cget("text"),
                              precio=self.preciofloat * float(self.cantidadLabel.cget("text")), id=self.__id_product)
         self.main.calcularTotal()
