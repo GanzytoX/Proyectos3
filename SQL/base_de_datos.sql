@@ -117,6 +117,8 @@ alter table promocion-dia
 add column dias varchar(50);
 alter table promocion-dia
 add foreign key (id_promocion) references promocion(id_promocion)
+ALTER TABLE promocion_dia ADD CONSTRAINT UQ_Promocion_Dia UNIQUE (id_promocion, dias);
+
 INSERT INTO rol(nombre) values ("de canela");
 INSERT INTO empleado(nombre,apellido_paterno,apellido_materno,celular,sueldo,id_rol,pass,administrator)
 values ("Victor", "Escalante", "Alpuche", "1",30000,1,"a",1)

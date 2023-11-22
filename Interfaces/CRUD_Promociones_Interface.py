@@ -71,12 +71,23 @@ class PromocionInterface(twoSideWindow):
         dia.replace("é", "e")
         diasSemana = ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"]
         if dia in diasSemana:
-            script = "INSERT INTO promocion_dia(id_promocion, dias) values (%s, %s)"
+            script = "Select dias from promocion_dia where id_promocion = %s"
             cursor = si.cursor()
-            cursor.execute(script, (self.cuadrotePromociones.current, dia))
-            si.commit()
+            cursor.execute(script, [self.cuadrotePromociones.current])
+            results = cursor.fetchall()
+            resultados = []
+            for item in results:
+                resultados.append(item[0])
+            if not dia in resultados:
+                script = "INSERT INTO promocion_dia(id_promocion, dias) values (%s, %s)"
+                cursor = si.cursor()
+                cursor.execute(script, (self.cuadrotePromociones.current, dia))
+                si.commit()
+            else:
+                messagebox.showerror("Dia ya agregado", "El dia que pusiste ya esta agregado")
         else:
             messagebox.showerror("Dia No Valido",f"{dia} no es un dia valido")
+        si.close()
 
     def refresh(self):
         self.get_list_elements().clear()
