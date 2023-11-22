@@ -1,8 +1,9 @@
-from tkinter import Tk, Label, Button, Scrollbar, Frame
-from tkinter.ttk import Treeview
+from tkinter import Tk, Label, Button, Scrollbar, Frame, Toplevel
+from tkinter.ttk import Treeview, Style
 import tkinter.messagebox
 import mysql.connector
-import math
+from Utilities.AutomaticScrollableFrame import AutomaticScrollableFrame
+from Ventas_Interface import ventaFrame
 
 
 class VentasViewer(Tk):
@@ -27,9 +28,13 @@ class VentasViewer(Tk):
         frameTable = Frame(self)
         frameTable.pack()
 
+        # Index de la paginación
+        self.__pagina = 0
+        self.__cantidad_elementos = 15
+
         # Tabla
         self.__tablaVentas = Treeview(frameTable, columns=("id", "FechaVenta", "TotalCompra", "TipoPago", "Empleado_Nombre",
-                                              "Empleado_Apellido_P", "Empleado_Apellido_M", "TipoVenta"), show="headings", height=20)
+                                              "Empleado_Apellido_P", "Empleado_Apellido_M", "TipoVenta"), show="headings", height=self.__cantidad_elementos)
 
         self.__tablaVentas.heading("id", text="Id_venta")
         self.__tablaVentas.heading("FechaVenta", text="Fecha de venta")
@@ -52,6 +57,8 @@ class VentasViewer(Tk):
         #Que haya rayas de diferentes colores
         self.__tablaVentas.tag_configure("par", background="white")
         self.__tablaVentas.tag_configure("impar", background="#d3eaf2")
+        s =Style()
+        s.configure('Treeview', rowheight=40)
 
         self.__tablaVentas.pack(side="left", padx=10, pady=15)
 
@@ -61,10 +68,6 @@ class VentasViewer(Tk):
         self.__tablaVentas.config(yscrollcommand=self.__scroll.set)
 
         self.__insert_values()
-
-        # Index de la paginación
-        self.__pagina = 0
-        self.__cantidad_elementos = 15
 
         # Frame de la paginación
         frame_paginacion = Frame(self)
@@ -82,6 +85,14 @@ class VentasViewer(Tk):
         cuenta = self.__count_ventas()
         if cuenta < self.__cantidad_elementos:
             self.__buton_adelante.config(state="disabled")
+
+        # Evento por si selecciona algo de la tabla
+        self.bind("<Button-3>", self.__clear_table)
+        self.__tablaVentas.bind("<<TreeviewSelect>>", self.__dar_detalles)
+
+
+        # Pop up de cuando abres una venta
+        self.__pop_window = None
 
     def __insert_values(self, maximum: int = 15, offset: int = 0):
         self.__conection.commit()
@@ -137,3 +148,22 @@ class VentasViewer(Tk):
         cuenta = self.__cursor.fetchone()
         return cuenta[0]
 
+    def __dar_detalles(self, event):
+        if self.__pop_window is not None:
+            self.__pop_window.destroy()
+
+        element = self.__tablaVentas.item(self.__tablaVentas.selection()[0])["values"][0]
+
+        self.__pop_window = Toplevel(self)
+        detalles = AutomaticScrollableFrame(self.__pop_window, width=20)
+
+        sql = ("SELECT p.nombre FROM venta_producto AS vp INNER JOIN producto AS p ON p.id_producto = vp.id_producto"
+               f"WHERE vp.id_venta = {element}")
+
+    def __clear_table(self, event=None):
+        for item in self.__tablaVentas.selection():
+            self.__tablaVentas.selection_remove(item)
+
+
+ventana = VentasViewer()
+ventana.mainloop()
