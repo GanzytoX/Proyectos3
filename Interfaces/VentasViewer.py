@@ -152,13 +152,32 @@ class VentasViewer(Tk):
         if self.__pop_window is not None:
             self.__pop_window.destroy()
 
-        element = self.__tablaVentas.item(self.__tablaVentas.selection()[0])["values"][0]
+        id_element = self.__tablaVentas.item(self.__tablaVentas.selection()[0])["values"][0]
 
+        # Configurar la ventana pop up del desglose
         self.__pop_window = Toplevel(self)
-        detalles = AutomaticScrollableFrame(self.__pop_window, width=20)
+        self.__pop_window.resizable(False, False)
 
-        sql = ("SELECT p.nombre FROM venta_producto AS vp INNER JOIN producto AS p ON p.id_producto = vp.id_producto"
-               f"WHERE vp.id_venta = {element}")
+        texto_titulo = f"Desglose de la venta {id_element}"
+
+        # Titulo de la pagina
+        label_titulo = Label(self.__pop_window, text=texto_titulo, font="20")
+        label_titulo.pack(pady=10)
+
+        # Colocar los elementos de la BD en la tabla de desglose
+        detalles = AutomaticScrollableFrame(self.__pop_window, width=350)
+
+        self.__conection.commit()
+        sql = ("SELECT p.nombre, vp.cantidad , vp.subtotal, vp.id_producto FROM venta_producto AS vp "
+               f"INNER JOIN producto AS p ON p.id_producto = vp.id_producto WHERE vp.id_venta = {id_element}")
+
+        self.__cursor.execute(sql)
+        productos = self.__cursor.fetchall()
+
+        for producto in productos:
+            detalles.add(ventaFrame(detalles, producto[0], producto[1], 0.0, producto[3]))
+
+        detalles.pack(padx=5, pady=(0, 10))
 
     def __clear_table(self, event=None):
         for item in self.__tablaVentas.selection():
