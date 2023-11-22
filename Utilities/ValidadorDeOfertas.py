@@ -29,15 +29,18 @@ def validar(main:VentasInterFace, producto:siFrame, idpro: int,count=1):
             if ask:
                 if results[7] == "2X1":
                     flag = False
+                    index = -1
                     for i in range(producto.main.scrollPreventa.countItems()):
                         if producto.main.scrollPreventa.getItem(i).get_nombre() == producto.nombreProducto + " 2X1":
                             print(f"Encontre un producto con nombre {producto.nombreProducto}")
                             flag = True
-                        if flag:
-                            producto.main.scrollPreventa.getItem(i).set_cantidad(count)
-                            producto.countPromocionesAplicadas += 1
-                        else:
-                            producto.main.add_venta_frame(nombre=producto.nombreProducto + " " + results[7], cantidad=1, precio=0, id=idpro, promocion=True)
+                            index = i
+                    if flag and index >= 0:
+                        producto.main.scrollPreventa.getItem(index).set_cantidad(count)
+                        producto.countPromocionesAplicadas += 1
+                    else:
+                        producto.main.add_venta_frame(nombre=producto.nombreProducto + " " + results[7], cantidad=1, precio=0, id=idpro, promocion=True)
+
 
 
 

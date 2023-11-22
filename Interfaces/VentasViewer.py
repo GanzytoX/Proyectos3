@@ -184,5 +184,3 @@ class VentasViewer(Tk):
             self.__tablaVentas.selection_remove(item)
 
 
-ventana = VentasViewer()
-ventana.mainloop()
