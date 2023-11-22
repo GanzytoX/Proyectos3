@@ -1,10 +1,9 @@
 import datetime
-
-
+from Interfaces.Ventas_Interface import *
 import mysql.connector
-from tkinter import messagebox,ttk
+from tkinter import messagebox
 import time
-def validar(idpro:int):
+def validar(main:VentasInterFace, producto:siFrame, idpro: int):
     conection = mysql.connector.connect(
         user="u119126_pollos2LaVengazaDelPollo",
         host="174.136.28.78",
@@ -25,12 +24,19 @@ def validar(idpro:int):
         timeFormatted=timeFormatted.split("/")
         print(datetime.date(int(timeFormatted[0]), int(timeFormatted[1]), int(timeFormatted[2])))
         print(results[5])
-        if datetime.date(int(timeFormatted[0]),int(timeFormatted[1]),int(timeFormatted[2])) >= results[4] and datetime.date(int(timeFormatted[0]),int(timeFormatted[1]),int(timeFormatted[2])) <= results[5]:
-            messagebox.askokcancel(title="Promocion!", message=f"Hay una promocion con este producto, es de tipo {results[7]}, inicio el {results[4]}, termina el {results[5]} y su codigo es {8}, ¿desea aplicarla?")
+        if results[4] <= datetime.date(int(timeFormatted[0]), int(timeFormatted[1]), int(timeFormatted[2])) <= results[5]:
+            ask = messagebox.askokcancel(title="Promocion!", message=f"Hay una promocion con este producto, es de tipo {results[7]}, inicio el {results[4]}, termina el {results[5]} y su codigo es {8}, ¿desea aplicarla?")
+            if ask:
+                if results[7] == "2X1":
+                    print("2x1")
+                    producto.main.add_venta_frame(nombre=producto.nombreProducto, cantidad=1, precio=0, id=idpro, promocion=True)
+
+
         else:
-            print("No esta vigente por lo tanto no es valida :(")
+            print("Tiene promocion pero no esta vigente por lo tanto no es valida :(")
     else:
         print("No tiene promocion")
+
 
 
 
