@@ -137,7 +137,3 @@ class VentasViewer(Tk):
         cuenta = self.__cursor.fetchone()
         return cuenta[0]
 
-
-newVentana = VentasViewer()
-newVentana.mainloop()
-
