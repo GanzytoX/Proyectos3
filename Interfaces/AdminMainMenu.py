@@ -4,6 +4,7 @@ from CRUD_Promociones_Interface import *
 from Ventas_Interface import *
 from VentasViewer import *
 from GastoBeneficio_Interface import *
+from prueba_inventario import *
 class AdminMainMenu(Tk):
     __titleLabel = Label
     __frameBotones = Frame
@@ -42,6 +43,10 @@ class AdminMainMenu(Tk):
         self.__openGastoBeneficioButton = Button(self.__frameBotones, text="Ver Gasto-Beneficio", command=self.__openGastoBeneficio)
         self.__openGastoBeneficioButton.grid(column=2, row=1, padx=20)
 
+        self.__openGastoBeneficioButton = Button(self.__frameBotones, text="Ver Inventario",
+                                                 command=self.__openInventario)
+        self.__openGastoBeneficioButton.grid(column=0, row=2, pady=20)
+
 
     def __openEmpleados(self):
         newVentana = CUInterface()
@@ -63,6 +68,9 @@ class AdminMainMenu(Tk):
 
     def __openGastoBeneficio(self):
         newVentana = GastoBeneficioInterface()
+        newVentana.mainloop()
+    def __openInventario(self):
+        newVentana = InventarioApp(Tk())
         newVentana.mainloop()
 
 class EmpleadoMainMenu(Tk):
