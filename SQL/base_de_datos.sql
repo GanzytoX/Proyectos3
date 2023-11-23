@@ -107,6 +107,19 @@ CREATE TABLE promocion (
 
 alter table promocion
 add column activo char(1) default "V";
+
+CREATE TABLE promocion-dia(
+    id_promocion_dia int not null auto_increment
+    primary key (id_promocion_dia)
+);
+alter table promocion-dia
+add column id_promocion;
+alter table promocion-dia
+add column dias varchar(50);
+alter table promocion-dia
+add foreign key (id_promocion) references promocion(id_promocion)
+ALTER TABLE promocion_dia ADD CONSTRAINT UQ_Promocion_Dia UNIQUE (id_promocion, dias);
+
 INSERT INTO rol(nombre) values ("de canela");
 INSERT INTO empleado(nombre,apellido_paterno,apellido_materno,celular,sueldo,id_rol,pass,administrator)
 values ("Victor", "Escalante", "Alpuche", "1",30000,1,"a",1);

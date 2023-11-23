@@ -1,5 +1,7 @@
 import time
 import datetime
+
+
 class fecha:
     def __init__(self):
         self.actual_time = time.localtime()
@@ -9,6 +11,7 @@ class fecha:
         self.año = int(self.timeFormatted[0])
         self.dias = int
         self.dia = int(self.timeFormatted[2])
+        self.diaDeLaSemana = datetime.datetime.today().weekday()
         self.calcularDias()
         self.biciesto = False
         self.semana = datetime.date(self.año, self.mes, self.dia).isocalendar().week
