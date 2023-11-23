@@ -135,5 +135,6 @@ log_in_button.pack(pady=10)
 user_entry.focus()
 user_entry.bind('<Return>', focusContraseña)
 password_entry.bind("<Return>", iniciarSesion2)
+
 # Ejecutar la ventana
 ventana.mainloop()
