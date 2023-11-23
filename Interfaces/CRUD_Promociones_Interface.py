@@ -46,24 +46,48 @@ class PromocionInterface(twoSideWindow):
         self.BotonEditar.grid(column=0, row=7, pady=(10, 5))
         self.BotonLimpiar = Button(self.cuadrotePromociones, text="Limpiar", command=self.limpiar)
         self.BotonLimpiar.grid(column=1, row=7, pady=(10, 5))
-        self.addTipoPromocionBoton = Button(self.cuadrotePromociones, text="Agregar tipo",
-                                            command=self.AgregarTipoPromocion)
+        self.addTipoPromocionBoton = Button(self.cuadrotePromociones, text="Agregar Dias",
+                                            command=self.AgregarDiasPromocion)
         self.addTipoPromocionBoton.grid(column=2, row=1)
         self.promociones = []
         #self.bind("<Button-1>", self.aaa)
 
         self.refresh()
 
-    def AgregarTipoPromocion(self):
-        nombre = askstring('Promocion', 'Tipo de promocion')
-        codigo = askstring('Promocion', 'Codigo de la promocion')
-        script = f"INSERT INTO tipo_de_promocion(nombre, codigo) VALUES (%s,%s)"
-        print(nombre)
-        print(codigo)
-        cursor = self.__conection.cursor()
-        cursor.execute(script, (nombre, codigo))
-        self.__conection.commit()
-        self.cuadrotePromociones.listaTipoPromocion.config(values=self.cuadrotePromociones.getPromociones()[1])
+    def AgregarDiasPromocion(self):
+        si = mysql.connector.connect(
+            user="u119126_pollos2LaVengazaDelPollo",
+            host="174.136.28.78",
+            port="3306",
+            password="$ShotGunKin0805",
+            database="u119126_pollos2LaVengazaDelPollo"
+
+        )
+        dia = askstring('Dia Promocion', 'Que dia se aplica? (Lunes, Jueves, etc) *Solo 1 por agregar')
+        dia.lower()
+        dia.capitalize()
+        dia.replace(" ", "")
+        dia.replace("á", "a")
+        dia.replace("é", "e")
+        diasSemana = ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"]
+        if dia in diasSemana:
+            script = "Select dias from promocion_dia where id_promocion = %s"
+            cursor = si.cursor()
+            cursor.execute(script, [self.cuadrotePromociones.current])
+            results = cursor.fetchall()
+            resultados = []
+            for item in results:
+                resultados.append(item[0])
+            if not dia in resultados:
+                script = "INSERT INTO promocion_dia(id_promocion, dias) values (%s, %s)"
+                cursor = si.cursor()
+                cursor.execute(script, (self.cuadrotePromociones.current, dia))
+                si.commit()
+            else:
+                messagebox.showerror("Dia ya agregado", "El dia que pusiste ya esta agregado")
+        else:
+            messagebox.showerror("Dia No Valido",f"{dia} no es un dia valido")
+        si.close()
 
     def refresh(self):
         self.get_list_elements().clear()
