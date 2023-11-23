@@ -1,6 +1,7 @@
 #Mostrar producto a la que referencia, datos de la promocion y tipo
 #CREATE DATABASE pollosexpress;
-DROP TABLE IF EXISTS pago, rol, empleado, cliente, venta, producto, gasto, tipo_de_promocion, venta_producto, promocion;
+USE pollosexpress;
+#DROP TABLE IF EXISTS pago, rol, empleado, cliente, venta, producto, gasto, tipo_de_promocion, venta_producto, promocion, inventario_producto;
 CREATE TABLE pago (
     id_pago INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     nombre NVARCHAR(50)
@@ -108,4 +109,15 @@ alter table promocion
 add column activo char(1) default "V";
 INSERT INTO rol(nombre) values ("de canela");
 INSERT INTO empleado(nombre,apellido_paterno,apellido_materno,celular,sueldo,id_rol,pass,administrator)
-values ("Victor", "Escalante", "Alpuche", "1",30000,1,"a",1)
+values ("Victor", "Escalante", "Alpuche", "1",30000,1,"a",1);
+
+CREATE TABLE inventario_producto (
+	id_producto INT NOT NULL AUTO_INCREMENT,
+    entrada INT NOT NULL,
+    salida INT NOT NULL,
+    en_existencias INT,
+    reponer BOOL,
+    PRIMARY KEY(id_producto)
+);
+
+INSERT INTO inventario_producto(entrada, salida) VALUES (100,11);
