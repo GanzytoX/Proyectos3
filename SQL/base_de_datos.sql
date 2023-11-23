@@ -124,11 +124,12 @@ INSERT INTO rol(nombre) values ("de canela");
 INSERT INTO empleado(nombre,apellido_paterno,apellido_materno,celular,sueldo,id_rol,pass,administrator)
 values ("Victor", "Escalante", "Alpuche", "1",30000,1,"a",1);
 
+DROP TABLE IF EXISTS inventario;
 
 CREATE TABLE inventario(
 	id_producto INT NOT NULL AUTO_INCREMENT,
-    entrada INT NOT NULL,
-    salida INT NOT NULL,
+    entrada INT,
+    salida INT,
     en_existencias INT,
     reponer BOOL,
     PRIMARY KEY(id_producto)
