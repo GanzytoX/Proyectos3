@@ -110,7 +110,3 @@ class InventarioApp:
     def actualizar_datos(self):
         self.obtener_datos_de_bd()
 
-if __name__ == "__main__":
-    root = tk.Tk()
-    app = InventarioApp(root)
-    root.mainloop()
