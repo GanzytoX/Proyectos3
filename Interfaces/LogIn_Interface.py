@@ -38,12 +38,13 @@ def iniciarSesion():
             result, is_administrator, idU = userManager.iniciarSesion(user, password)
 
             if result:
-                messagebox.showinfo("Mensaje de inicio de sesión", "Sesión iniciada con éxito")
+                messagebox.showinfo("Mensaje de inicio de sesión", f"Sesión iniciada con éxito, bienvenido {user}")
                 if is_administrator == 1:
+                    print("Entrando en modo administrador...")
+                    messagebox.showinfo("Mensaje de inicio de sesión", "Entrando en modo administrador")
                     adminWindow = AdminMainMenu(idU)
                     ventana.destroy()
                     adminWindow.mainloop()
-
 
                 return
             else:

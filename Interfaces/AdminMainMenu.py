@@ -1,10 +1,11 @@
 from CRUD_User_Interfaces import *
 from CRUD_Prod_Interface import *
 from CRUD_Promociones_Interface import *
+from Interfaces.Inventario_Interface import InventarioApp
 from Ventas_Interface import *
 from VentasViewer import *
 from GastoBeneficio_Interface import *
-from prueba_inventario import *
+
 class AdminMainMenu(Tk):
     __titleLabel = Label
     __frameBotones = Frame

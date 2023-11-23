@@ -45,7 +45,7 @@ class InventarioApp:
 
         # Marco para contener los botones de actualizar, buscar y editar
         button_frame = tk.Frame(self.root)
-        button_frame.place(relx=0.5, rely=0.05, anchor=tk.N)  # Ubicar en la parte superior centrada
+        button_frame.place(relx=0.5, rely=0.05, anchor=tk.N)
 
         # Botón de actualización
         self.actualizar_button = tk.Button(button_frame, text="Actualizar Datos", bg=c_azul, fg=c_blanco, command=self.actualizar_datos)
@@ -53,7 +53,7 @@ class InventarioApp:
 
         # Botón de búsqueda
         self.buscar_button = tk.Button(button_frame, text="Buscar", bg=c_azul, fg=c_blanco, command=self.buscar_producto)
-        self.buscar_button.pack(side=tk.LEFT, padx=(5))  # Agregar un espacio de 5 píxeles a la derecha
+        self.buscar_button.pack(side=tk.LEFT, padx=5)
 
         # Botón de agregar producto
         self.agregar_button = tk.Button(button_frame, text="Agregar Producto", bg=c_azul, fg=c_blanco, command=self.agregar_producto)
@@ -69,7 +69,7 @@ class InventarioApp:
 
         # Crear Treeview con scrollbar
         self.tree = ttk.Treeview(self.root, columns=('Código', 'ID Producto', 'Nombre Producto', 'Unidad', 'Cantidad'), height=20)
-        self.tree.place(relx=0.5, rely=0.4, anchor=tk.CENTER)  # Ubicar debajo de los botones y centrada verticalmente
+        self.tree.place(relx=0.5, rely=0.4, anchor=tk.CENTER, relwidth=0.95)
 
         # Configuración de las columnas
         self.tree.column('#0', anchor=tk.CENTER, width=0)
