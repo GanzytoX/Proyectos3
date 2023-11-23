@@ -1,9 +1,7 @@
 import tkinter as tk
-from tkinter import ttk
-from tkinter import simpledialog  # Importar para el cuadro de diálogo
 from PIL import Image, ImageTk
 import mysql.connector
-
+from tkinter import ttk, simpledialog
 
 class InventarioApp:
     def __init__(self, root):
@@ -13,46 +11,6 @@ class InventarioApp:
         self.root.resizable(False, False)
         self.root.iconbitmap("../img/logo.ico")
 
-        # Cargar la imagen de fondo
-        background_image = Image.open("../img/imagen_inventario.png")
-        background_image = ImageTk.PhotoImage(background_image, master=self.root)
-
-        # Crear un widget Label para mostrar la imagen de fondo
-        bgImage_label = tk.Label(self.root, image=background_image)
-        bgImage_label.place(relwidth=1, relheight=1)
-
-        # Marco para contener los botones de actualizar y editar
-        button_frame = tk.Frame(self.root)
-        button_frame.pack(pady=10)
-
-        # Botón de actualización
-        self.actualizar_button = tk.Button(button_frame, text="Actualizar Datos", command=self.actualizar_datos)
-        self.actualizar_button.pack(side=tk.LEFT)
-
-        # Botón de edición
-        self.editar_button = tk.Button(button_frame, text="Editar Cantidad", command=self.editar_cantidad_seleccionada)
-        self.editar_button.pack(side=tk.LEFT, padx=5)  # Ajuste para colocar el botón a la derecha del botón de actualizar
-
-        # Crear Treeview con scrollbar
-        self.tree = ttk.Treeview(self.root, columns=('Código', 'ID Producto', 'Nombre Producto', 'Unidad', 'Cantidad'))
-
-        # Asignar identificadores a las columnas
-        self.tree.column('#0', anchor=tk.CENTER, width=0)
-        self.tree.column('#1', anchor=tk.CENTER, width=100)  # Código
-        self.tree.column('#2', anchor=tk.CENTER, width=100)  # ID Producto
-        self.tree.column('#3', anchor=tk.CENTER, width=100)  # Nombre Producto
-        self.tree.column('#4', anchor=tk.W, width=100)  # Unidad
-        self.tree.column('#5', anchor=tk.CENTER, width=100)  # Cantidad
-
-        self.tree.heading('#0', text='*')
-        self.tree.heading('#1', text='Código')
-        self.tree.heading('#2', text='ID Producto')
-        self.tree.heading('#3', text='Nombre Producto')
-        self.tree.heading('#4', text='Unidad')
-        self.tree.heading('#5', text='Cantidad')
-
-        self.tree.pack(padx=10, pady=10, side=tk.LEFT, fill=tk.BOTH, expand=True)
-
         # Conectar a la base de datos
         self.connection = mysql.connector.connect(
             user="u119126_pollos2LaVengazaDelPollo",
@@ -61,6 +19,51 @@ class InventarioApp:
             password="$ShotGunKin0805",
             database="u119126_pollos2LaVengazaDelPollo"
         )
+
+        # Cargar la imagen de fondo
+        try:
+            background_image = Image.open("../img/imagen_inventario.png")
+            background_image = ImageTk.PhotoImage(background_image, master=self.root)
+
+            # Crear un widget Label para mostrar la imagen de fondo
+            bgImage_label = tk.Label(self.root, image=background_image)
+            bgImage_label.image = background_image
+            bgImage_label.place(x=0, y=0, relwidth=1, relheight=1)
+
+        except Exception as e:
+            print(f"Error al cargar la imagen: {e}")
+
+        # Marco para contener los botones de actualizar y editar
+        button_frame = tk.Frame(self.root)
+        button_frame.place(relx=0.5, rely=0.05, anchor=tk.N)  # Ubicar en la parte superior centrada
+
+        # Botón de actualización
+        self.actualizar_button = tk.Button(button_frame, text="Actualizar Datos", command=self.actualizar_datos)
+        self.actualizar_button.pack(side=tk.LEFT)
+
+        # Botón de edición
+        self.editar_button = tk.Button(button_frame, text="Editar Cantidad", command=self.editar_cantidad_seleccionada)
+        self.editar_button.pack(side=tk.LEFT, padx=5)
+
+        # Crear Treeview con scrollbar
+        self.tree = ttk.Treeview(self.root, columns=('Código', 'ID Producto', 'Nombre Producto', 'Unidad', 'Cantidad'), height=20)
+        self.tree.place(relx=0.5, rely=0.4, anchor=tk.CENTER)  # Ubicar debajo de los botones y centrada verticalmente
+
+        # Configuración de las columnas
+        self.tree.column('#0', anchor=tk.CENTER, width=0)
+        self.tree.column('#1', anchor=tk.CENTER, width=100)  # Código
+        self.tree.column('#2', anchor=tk.CENTER, width=100)  # ID Producto
+        self.tree.column('#3', anchor=tk.CENTER, width=100)  # Nombre Producto
+        self.tree.column('#4', anchor=tk.W, width=100)  # Unidad
+        self.tree.column('#5', anchor=tk.CENTER, width=100)  # Cantidad
+
+        # Encabezados de las columnas
+        self.tree.heading('#0', text='*')
+        self.tree.heading('#1', text='Código')
+        self.tree.heading('#2', text='ID Producto')
+        self.tree.heading('#3', text='Nombre Producto')
+        self.tree.heading('#4', text='Unidad')
+        self.tree.heading('#5', text='Cantidad')
 
         # Obtener datos de la base de datos y mostrar en la tabla
         self.obtener_datos_de_bd()
@@ -106,7 +109,6 @@ class InventarioApp:
 
     def actualizar_datos(self):
         self.obtener_datos_de_bd()
-
 
 if __name__ == "__main__":
     root = tk.Tk()
