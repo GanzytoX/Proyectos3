@@ -1,11 +1,12 @@
 
+from tkinter import messagebox
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from Crud.CRUD_Usuario import CrudEmpleado
-from Interfaces.AdminMainMenu import AdminMainMenu
 import mysql.connector
 
 class Ui_MainWindow(object):
+
         def setupUi(self, MainWindow):
                 MainWindow.setObjectName("MainWindow")
                 MainWindow.resize(956, 674)
@@ -171,6 +172,9 @@ class Ui_MainWindow(object):
                 self.retranslateUi(MainWindow)
                 QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
+            # Hacerle bind al boton de iniciar sesion
+                self.pushButton.clicked.connect(self.__iniciar_sesion)
+
         def retranslateUi(self, MainWindow):
                 _translate = QtCore.QCoreApplication.translate
                 MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
@@ -181,13 +185,46 @@ class Ui_MainWindow(object):
                 self.pushButton.setText(_translate("MainWindow", "Iniciar sesión"))
 
         def __iniciar_sesion(self):
-                connection = mysql.connector.connect(
-                        user="u119126_pollos2LaVengazaDelPollo",
-                        host="174.136.28.78",
-                        port="3306",
-                        password="$ShotGunKin0805",
-                        database="u119126_pollos2LaVengazaDelPollo"
-                )
+            connection = mysql.connector.connect(
+                user="u119126_pollos2LaVengazaDelPollo",
+                host="174.136.28.78",
+                port="3306",
+                password="$ShotGunKin0805",
+                database="u119126_pollos2LaVengazaDelPollo"
+            )
+            telefono = self.lineEdit.text()
+            password = self.lineEdit_2.text()
+            if telefono != "" and password != "":
+                    try:
+                            userManager = CrudEmpleado(connection)
+                            result, is_administrator, idU = userManager.iniciarSesion(telefono, password)
+
+                            if result:
+                                    messagebox.showinfo("Mensaje de inicio de sesión",
+                                                        f"Sesión iniciada con éxito, bienvenido {telefono}")
+                                    if is_administrator == 1:
+                                            print("Entrando en modo administrador...")
+                                            messagebox.showinfo("Mensaje de inicio de sesión",
+                                                                "Entrando en modo administrador")
+                                            #adminWindow = AdminMainMenu(idU)
+                                            #ventana.destroy()
+                                            #adminWindow.mainloop()
+
+                                    return
+                            else:
+                                    messagebox.showerror("Error de inicio de sesión",
+                                                         "Usuario o contraseña incorrecto(s)")
+                                    return
+
+                    except Exception as e:
+                            messagebox.showerror("Error de inicio de sesión", "ERROR: " + str(e))
+                            return
+
+            messagebox.showerror("Error", "Debe rellenar todos los campos")
+
+
+
+
 
 
 

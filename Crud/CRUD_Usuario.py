@@ -14,16 +14,16 @@ if __name__ != "__main__":
         def Create(self, empleado: Empleado) -> None:
 
             if empleado.getContraseña() is None:
-                SQLScript = ("INSERT INTO empleado(nombre,apellido_paterno, apellido_materno, celular, sueldo, id_rol, administrator) "
+                SQLScript = ("INSERT INTO empleado(nombre,apellido_paterno, apellido_materno, sueldo, id_rol) "
                              f"VALUES('{empleado.getNombre()}', '{empleado.getApellido_paterno()}', "
-                             f"'{empleado.getApellido_materno()}', '{empleado.getCelular()}', {empleado.getSueldo()}, "
-                             f"{empleado.getIdRol()}, {empleado.getAdministrador()})")
+                             f"'{empleado.getApellido_materno()}', {empleado.getSueldo()}, "
+                             f"{empleado.getIdRol()})")
                 self._cursor.execute(SQLScript)
                 self._conection.commit()
             else:
-                SQLScript = ("INSERT INTO empleado(nombre, apellido_paterno, apellido_materno, celular, sueldo, id_rol, pass, administrator, activo)"
+                SQLScript = ("INSERT INTO empleado(nombre, apellido_paterno, apellido_materno, sueldo, id_rol, activo)"
                              f"VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)")
-                subir = [empleado.getNombre(), empleado.getApellido_paterno(),empleado.getApellido_materno(), empleado.getCelular(), empleado.getSueldo(),empleado.getIdRol(),empleado.getContraseña(), empleado.getAdministrador(),'V']
+                subir = [empleado.getNombre(), empleado.getApellido_paterno(),empleado.getApellido_materno(), empleado.getSueldo(),empleado.getIdRol(),'V']
                 self._cursor.execute(SQLScript, subir)
                 print("se subio " + subir[0], subir[1], subir[2], subir[3], subir[4],subir[5], subir[6], subir[7], subir[8])
                 self._conection.commit()
@@ -40,29 +40,23 @@ if __name__ != "__main__":
                     empleados.append(Empleado(nombre=empleado[1],
                                               apellido_paterno=empleado[2],
                                               apellido_materno=empleado[3],
-                                              celular=empleado[4],
-                                              sueldo=empleado[5],
-                                              id_rol=empleado[10],
-                                              contraseña=empleado[7],
-                                              administrator=empleado[8],
+                                              sueldo=empleado[4],
+                                              id_rol=empleado[5],
                                               id=empleado[0],
-                                              active=empleado[9]))
+                                              active=empleado[6]))
                 return empleados
             elif id is not None and condition is None:
                 script = (f"SELECT empleado.*, rol.nombre FROM empleado LEFT JOIN rol ON empleado.id_rol = rol.id_rol"
                           f" WHERE id_empleado = {id};")
                 self._cursor.execute(script)
                 empleado = self._cursor.fetchone()
-                return Empleado(nombre=empleado[1],
-                                apellido_paterno=empleado[2],
-                                apellido_materno=empleado[3],
-                                celular=empleado[4],
-                                sueldo=empleado[5],
-                                id_rol=empleado[11],
-                                contraseña=empleado[7],
-                                administrator=empleado[8],
-                                id=empleado[0],
-                                active=empleado[8])
+                return Empleado(Empleado(nombre=empleado[1],
+                                         apellido_paterno=empleado[2],
+                                         apellido_materno=empleado[3],
+                                         sueldo=empleado[4],
+                                         id_rol=empleado[5],
+                                         id=empleado[0],
+                                         active=empleado[6]))
 
         def Delete(self, id) -> None:
             SQLScript = f"UPDATE empleado SET activo = 'F' WHERE id_empleado = {id}"
@@ -72,18 +66,17 @@ if __name__ != "__main__":
         def Update(self, id, empleado: Empleado) -> None:
 
             SQLScript = (f"UPDATE empleado SET nombre = %s, apellido_paterno = %s, apellido_materno = %s, "
-                             f"celular = %s, sueldo = %s, id_rol = %s, pass = %s, administrator = %s "
+                             f"sueldo = %s, id_rol = %s"
                              f"WHERE id_Empleado = {id}")
             valores = (empleado.getNombre(), empleado.getApellido_paterno(), empleado.getApellido_materno(),
-                       empleado.getCelular(), empleado.getSueldo(), empleado.getIdRol(), empleado.getContraseña(),
-                       empleado.getAdministrador())
+                       empleado.getSueldo(), empleado.getIdRol())
 
             self._cursor.execute(SQLScript, valores)
             self._conection.commit()
 
         def iniciarSesion(self, numeroTelefono, contraseña) -> (bool, bool, int) :
             self._conection.commit()
-            SQLScript = f"SELECT pass, administrator, id_empleado FROM empleado WHERE celular = '{numeroTelefono}'"
+            SQLScript = f"SELECT pass, administrator, id_empleado FROM usuario WHERE celular = '{numeroTelefono}'"
             self._cursor.execute(SQLScript)
             result = self._cursor.fetchone()
             print(result)
