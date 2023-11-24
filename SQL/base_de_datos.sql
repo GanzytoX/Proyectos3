@@ -1,7 +1,6 @@
 #Mostrar producto a la que referencia, datos de la promocion y tipo
 #CREATE DATABASE pollosexpress;
-USE pollosexpress;
-#DROP TABLE IF EXISTS pago, rol, empleado, cliente, venta, producto, gasto, tipo_de_promocion, venta_producto, promocion, inventario;
+DROP TABLE IF EXISTS pago, rol, empleado, cliente, venta, producto, gasto, tipo_de_promocion, venta_producto, promocion;
 CREATE TABLE pago (
     id_pago INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     nombre NVARCHAR(50)
@@ -16,17 +15,39 @@ CREATE TABLE empleado (
     nombre VARCHAR(100) NOT NULL,
 	apellido_paterno NVARCHAR(50) NOT NULL,
     apellido_materno NVARCHAR(50) NOT NULL,
-    celular VARCHAR(11) NOT NULL,
     sueldo DOUBLE NOT NULL,
     id_rol INT,
-    pass NVARCHAR(30),
+    
     FOREIGN KEY (id_rol) REFERENCES rol(id_Rol),
     CONSTRAINT UQcelular UNIQUE(celular)
 );
-ALTER TABLE empleado
-ADD COLUMN administrator bool NOT NULL;
 
 alter table empleado
+add column activo char(1) default "V";
+
+
+# Tabla usuario 
+CREATE TABLE usuario(
+	id_usuario INT NOT NULL AUTO_INCREMENT,
+    PRIMARY KEY(id_usuario)
+);
+ALTER TABLE usuario
+ADD COLUMN celular VARCHAR(11) NOT NULL;
+
+ALTER TABLE usuario
+ADD COLUMN pass NVARCHAR(30) NOT NULL;
+
+ALTER TABLE usuario
+ADD COLUMN administrator bool NOT NULL;
+
+ALTER TABLE usuario
+ADD COLUMN id_empleado INT;
+
+ALTER TABLE usuario
+ADD KEY FK_EMPLEADO(id_empleado),
+ADD CONSTRAINT FK_EMPLEADO FOREIGN KEY(id_empleado) REFERENCES empleado(id_empleado);
+
+alter table usuario
 add column activo char(1) default "V";
 
 CREATE TABLE cliente (
@@ -92,6 +113,9 @@ CREATE TABLE venta_producto (
     FOREIGN KEY (id_producto) REFERENCES producto(id_producto)
 );
 
+ALTER TABLE venta_producto
+ADD COLUMN subtotal DECIMAL;
+
 
 CREATE TABLE promocion (
     id_promocion INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -107,30 +131,6 @@ CREATE TABLE promocion (
 
 alter table promocion
 add column activo char(1) default "V";
-
-CREATE TABLE promocion-dia(
-    id_promocion_dia int not null auto_increment
-    primary key (id_promocion_dia)
-);
-alter table promocion-dia
-add column id_promocion;
-alter table promocion-dia
-add column dias varchar(50);
-alter table promocion-dia
-add foreign key (id_promocion) references promocion(id_promocion)
-ALTER TABLE promocion_dia ADD CONSTRAINT UQ_Promocion_Dia UNIQUE (id_promocion, dias);
-
 INSERT INTO rol(nombre) values ("de canela");
 INSERT INTO empleado(nombre,apellido_paterno,apellido_materno,celular,sueldo,id_rol,pass,administrator)
-values ("Victor", "Escalante", "Alpuche", "1",30000,1,"a",1);
-
-DROP TABLE IF EXISTS inventario;
-
-CREATE TABLE inventario(
-	id_producto INT NOT NULL AUTO_INCREMENT,
-    entrada INT,
-    salida INT,
-    en_existencias INT,
-    reponer BOOL,
-    PRIMARY KEY(id_producto)
-);
+values ("Victor", "Escalante", "Alpuche", "1",30000,1,"a",1)
