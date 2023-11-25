@@ -64,19 +64,21 @@ class Pagos(Toplevel):
         self.__frameDerecho.columnconfigure(0, weight=3)
         self.__frameDerecho.columnconfigure(1, weight=5)
 
+        """""
         # Frame de botones para pagar con efectivo o tarjeta
         frame_formas = Frame(self.__frameDerecho, background="white")
         frame_formas.grid(column=0, row=0, sticky="EW", padx=10)
-
+        
         # Boton para efectivo
         self.__buton_efectivo = Button(frame_formas, background="#185791", text="Efectivo", foreground="white")
         self.__buton_efectivo.pack(padx=5)
-
+            """""
         # Frame para para efectivo
         frame_efectivo = Frame(self.__frameDerecho, background="white")
-        frame_efectivo.grid(column=1, row=0, sticky="EW", padx=5)
+        frame_efectivo.grid(column=1, row=0, sticky="EW", padx=15, pady=15)
 
         # Elementos del frame de efectivo
+
         texto_efectivo = Label(frame_efectivo, text="Efectivo")
         texto_efectivo.pack(pady=5)
 
@@ -163,10 +165,11 @@ class Pagos(Toplevel):
         cursor.execute(scrip2)
         idelast = cursor.fetchone()
 
-        scrip3 = "INSERT INTO venta_producto(id_venta, id_producto, cantidad) VALUES(%s, %s, %s);"
+        scrip3 = "INSERT INTO venta_producto(id_venta, id_producto, cantidad, subtotal) VALUES(%s, %s, %s, %s);"
         for i in range(self.__lista_compra.countItems()):
             values = (
-                idelast[0], self.__lista_compra.getItem(i).idP, self.__lista_compra.getItem(i).get_cantidad())
+                idelast[0], self.__lista_compra.getItem(i).idP, self.__lista_compra.getItem(i).get_cantidad(),
+                self.__lista_compra.getItem(i).get_subtotal())
             self.__conection.cursor().execute(scrip3, values)
             self.__conection.commit()
 

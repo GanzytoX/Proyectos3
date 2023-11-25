@@ -175,7 +175,7 @@ class VentasViewer(Tk):
         productos = self.__cursor.fetchall()
 
         for producto in productos:
-            detalles.add(ventaFrame(detalles, producto[0], producto[1], 0.0, producto[3]))
+            detalles.add(ventaFrame(detalles, producto[0], producto[1], producto[2], producto[3]))
 
         detalles.pack(padx=5, pady=(0, 10))
 
