@@ -52,7 +52,7 @@ class InventarioApp:
         self.actualizar_button.pack(side=tk.LEFT, padx=5)
 
         # Botón de búsqueda
-        self.buscar_button = tk.Button(button_frame, text="Buscar", bg=c_azul, fg=c_blanco, command=self.buscar_producto)
+        self.buscar_button = tk.Button(button_frame, text="Búsqueda por ID", bg=c_azul, fg=c_blanco, command=self.buscar_producto_por_id)
         self.buscar_button.pack(side=tk.LEFT, padx=5)
 
         # Botón de agregar producto
@@ -115,14 +115,16 @@ class InventarioApp:
         cantidad_registros = cursor.fetchone()[0]
         return cantidad_registros > 0
 
-    def buscar_producto(self):
-        # Mostrar un cuadro de diálogo para ingresar el código del producto
-        codigo_producto = simpledialog.askstring("Buscar Producto", "Ingrese el código del producto:")
+    def buscar_producto_por_id(self):
+        # Mostrar un cuadro de diálogo para ingresar el ID del producto
+        id_producto = simpledialog.askstring("Buscar Producto", "Ingrese el ID del producto:")
 
-        if codigo_producto:
-            # Aquí implementa la lógica para buscar el producto en tu base de datos
+        if id_producto:
+            # Aquí implementa la lógica para buscar el producto en tu base de datos por ID
             cursor = self.connection.cursor()
-            cursor.execute("SELECT codigo, id_producto, nombre_producto, unidad, cantidad FROM inventario WHERE codigo = %s", (codigo_producto,))
+            cursor.execute(
+                "SELECT codigo, id_producto, nombre_producto, unidad, cantidad FROM inventario WHERE id_producto = %s",
+                (id_producto,))
 
             # Limpiar datos actuales en la tabla antes de actualizar
             for item in self.tree.get_children():
