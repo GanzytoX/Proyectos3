@@ -71,6 +71,12 @@ class InventarioApp:
         self.tree = ttk.Treeview(self.root, columns=('Código', 'ID Producto', 'Nombre Producto', 'Unidad', 'Cantidad'), height=20)
         self.tree.place(relx=0.5, rely=0.4, anchor=tk.CENTER, relwidth=0.95)
 
+        # Botón de candado
+        self.candado_button = tk.Button(button_frame, text="🔒", bg=c_gris, fg=c_blanco, command=self.bloquear_botones)
+        self.candado_button.pack(side=tk.LEFT, padx=5)
+        # Lista de botones a bloquear/desbloquear
+        self.botones_a_bloquear = [self.actualizar_button, self.buscar_button, self.agregar_button, self.eliminar_button, self.editar_button]
+
         # Configuración de las columnas
         self.tree.column('#0', anchor=tk.CENTER, width=0)
         self.tree.column('#1', anchor=tk.CENTER, width=100)  # Código
@@ -216,3 +222,13 @@ class InventarioApp:
 
     def actualizar_datos(self):
         self.obtener_datos_de_bd()
+
+
+    # Función para bloquear/desbloquear botones
+    def bloquear_botones(self):
+        for boton in self.botones_a_bloquear:
+            estado_actual = str(boton["state"])
+            if estado_actual == "normal":
+                boton["state"] = "disable"
+            else:
+                boton["state"] = "normal"
