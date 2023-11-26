@@ -88,6 +88,7 @@ CREATE TABLE venta_producto (
     id_venta INT,
     id_producto INT,
     cantidad INT NOT NULL,
+    subtotal DECIMAL,
     FOREIGN KEY (id_venta) REFERENCES venta(id_venta),
     FOREIGN KEY (id_producto) REFERENCES producto(id_producto)
 );
@@ -125,6 +126,7 @@ ALTER TABLE promocion_dia ADD CONSTRAINT UQ_Promocion_Dia UNIQUE (id_promocion, 
 INSERT INTO rol(nombre) values ("de canela");
 INSERT INTO empleado(nombre,apellido_paterno,apellido_materno,celular,sueldo,id_rol,pass,administrator)
 values ("Victor", "Escalante", "Alpuche", "1",30000,1,"a",1);
+INSERT INTO pago(nombre) VALUES("Efectivo");
 
 DROP TABLE IF EXISTS inventario;
 
