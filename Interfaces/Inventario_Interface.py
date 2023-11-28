@@ -67,31 +67,29 @@ class InventarioApp:
         self.editar_button = tk.Button(button_frame, text="Editar Cantidad", bg=c_azul, fg=c_blanco, command=self.editar_cantidad_seleccionada)
         self.editar_button.pack(side=tk.LEFT, padx=5)
 
-        # Crear Treeview con scrollbar
-        self.tree = ttk.Treeview(self.root, columns=('Código', 'ID Producto', 'Nombre Producto', 'Unidad', 'Cantidad'), height=20)
-        self.tree.place(relx=0.5, rely=0.4, anchor=tk.CENTER, relwidth=0.95)
-
         # Botón de candado
         self.candado_button = tk.Button(button_frame, text="🔒", bg=c_gris, fg=c_blanco, command=self.bloquear_botones)
         self.candado_button.pack(side=tk.LEFT, padx=5)
         # Lista de botones a bloquear/desbloquear
         self.botones_a_bloquear = [self.actualizar_button, self.buscar_button, self.agregar_button, self.eliminar_button, self.editar_button]
 
+        # Crear Treeview con scrollbar
+        self.tree = ttk.Treeview(self.root, columns=('ID Producto', 'Nombre Producto', 'Unidad', 'Cantidad'), height=16)
+        self.tree.place(relx=0.5, rely=0.4, anchor=tk.CENTER, relwidth=0.95)
+
         # Configuración de las columnas
         self.tree.column('#0', anchor=tk.CENTER, width=0)
-        self.tree.column('#1', anchor=tk.CENTER, width=100)  # Código
-        self.tree.column('#2', anchor=tk.CENTER, width=100)  # ID Producto
-        self.tree.column('#3', anchor=tk.CENTER, width=125)  # Nombre Producto
-        self.tree.column('#4', anchor=tk.CENTER, width=100)  # Unidad
-        self.tree.column('#5', anchor=tk.CENTER, width=100)  # Cantidad
+        self.tree.column('#1', anchor=tk.CENTER, width=100)  # ID Producto
+        self.tree.column('#2', anchor=tk.CENTER, width=125)  # Nombre Producto
+        self.tree.column('#3', anchor=tk.CENTER, width=100)  # Unidad
+        self.tree.column('#4', anchor=tk.CENTER, width=100)  # Cantidad
 
         # Encabezados de las columnas
-        self.tree.heading('#0', text='*')
-        self.tree.heading('#1', text='Código')
-        self.tree.heading('#2', text='ID Producto')
-        self.tree.heading('#3', text='Nombre Producto')
-        self.tree.heading('#4', text='Unidad')
-        self.tree.heading('#5', text='Cantidad')
+        self.tree.heading('#0', text='*') 
+        self.tree.heading('#1', text='ID Producto')
+        self.tree.heading('#2', text='Nombre Producto')
+        self.tree.heading('#3', text='Unidad')
+        self.tree.heading('#4', text='Cantidad')
 
         # Verificar si hay registros al iniciar
         if not self.hay_registros_en_inventario():
@@ -102,7 +100,7 @@ class InventarioApp:
 
     def obtener_datos_de_bd(self):
         cursor = self.connection.cursor()
-        cursor.execute("SELECT codigo, id_producto, nombre_producto, unidad, cantidad FROM inventario")
+        cursor.execute("SELECT id_producto, nombre_producto, unidad, cantidad FROM inventario")
 
         # Limpiar datos actuales en la tabla antes de actualizar
         for item in self.tree.get_children():
@@ -110,9 +108,9 @@ class InventarioApp:
 
         # Insertar nuevos datos en la tabla
         for row in cursor.fetchall():
-            codigo, id_producto, nombre_producto, unidad, cantidad = row
-            self.tree.insert('', 'end', iid=codigo,
-                             values=(codigo, id_producto, nombre_producto, unidad, cantidad))
+            id_producto, nombre_producto, unidad, cantidad = row
+            self.tree.insert('', 'end', iid=id_producto,
+                             values=(id_producto, nombre_producto, unidad, cantidad))
 
     def hay_registros_en_inventario(self):
         # Verificar si hay registros en la tabla de inventario
@@ -129,43 +127,41 @@ class InventarioApp:
             # Aquí implementa la lógica para buscar el producto en tu base de datos por ID
             cursor = self.connection.cursor()
             cursor.execute(
-                "SELECT codigo, id_producto, nombre_producto, unidad, cantidad FROM inventario WHERE id_producto = %s",
+                "SELECT id_producto, nombre_producto, unidad, cantidad FROM inventario WHERE id_producto = %s",
                 (id_producto,))
 
             # Limpiar datos actuales en la tabla antes de actualizar
             for item in self.tree.get_children():
                 self.tree.delete(item)
 
-            # Insertar nuevos datos en la tabla
-            for row in cursor.fetchall():
-                codigo, id_producto, nombre_producto, unidad, cantidad = row
-                self.tree.insert('', 'end', iid=codigo, values=(codigo, id_producto, nombre_producto, unidad, cantidad))
+            # Verificar si se encontraron productos con el ID ingresado
+            rows = cursor.fetchall()
+            if not rows:
+                tk.messagebox.showinfo("Información", f"No existe un registro con el ID {id_producto}.")
+            else:
+                # Insertar nuevos datos en la tabla
+                for row in rows:
+                    id_producto, nombre_producto, unidad, cantidad = row
+                    self.tree.insert('', 'end', iid=id_producto, values=(id_producto, nombre_producto, unidad, cantidad))
 
     def agregar_producto(self):
-        nuevo_codigo = simpledialog.askstring("Agregar Producto", "Ingrese el nuevo código del producto:")
         nuevo_id_producto = simpledialog.askstring("Agregar Producto", "Ingrese el nuevo ID del producto:")
         nuevo_nombre_producto = simpledialog.askstring("Agregar Producto", "Ingrese el nombre del nuevo producto:")
         nueva_unidad = simpledialog.askstring("Agregar Producto", "Ingrese la nueva unidad del producto:")
         nueva_cantidad = simpledialog.askinteger("Agregar Producto", "Ingrese la cantidad inicial del producto:")
 
-        if nuevo_codigo and nuevo_id_producto and nuevo_nombre_producto and nueva_unidad and nueva_cantidad is not None:
-            # Verificar si el código del producto ya existe en la base de datos
-            cursor = self.connection.cursor()
-            cursor.execute("SELECT codigo FROM inventario WHERE codigo = %s", (nuevo_codigo,))
-            existing_code = cursor.fetchone()
-
+        if nuevo_id_producto and nuevo_nombre_producto and nueva_unidad and nueva_cantidad is not None:
             # Verificar si el ID del producto ya existe en la base de datos
+            cursor = self.connection.cursor()
             cursor.execute("SELECT id_producto FROM inventario WHERE id_producto = %s", (nuevo_id_producto,))
             existing_id = cursor.fetchone()
 
-            if existing_code:
-                tk.messagebox.showerror("Error", f"El código {nuevo_codigo} ya existe en la base de datos.")
-            elif existing_id:
+            if existing_id:
                 tk.messagebox.showerror("Error", f"El ID {nuevo_id_producto} ya existe en la base de datos.")
             else:
                 # Insertar el nuevo producto en la base de datos
-                cursor.execute("INSERT INTO inventario (codigo, id_producto, nombre_producto, unidad, cantidad) VALUES (%s, %s, %s, %s, %s)",
-                            (nuevo_codigo, nuevo_id_producto, nuevo_nombre_producto, nueva_unidad, nueva_cantidad))
+                cursor.execute("INSERT INTO inventario (id_producto, nombre_producto, unidad, cantidad) VALUES (%s, %s, %s, %s)",
+                            (nuevo_id_producto, nuevo_nombre_producto, nueva_unidad, nueva_cantidad))
                 self.connection.commit()
 
                 self.obtener_datos_de_bd()
@@ -177,7 +173,7 @@ class InventarioApp:
             return  # No hay ninguna fila seleccionada
 
         # Obtener el ID del producto seleccionado
-        id_producto = self.tree.item(selected_item, 'values')[1]
+        id_producto = self.tree.item(selected_item, 'values')[0]
 
         # Mostrar un cuadro de diálogo de confirmación antes de eliminar
         confirmacion = tk.messagebox.askyesno("Confirmar Eliminación", f"¿Estás seguro de eliminar el producto con ID {id_producto}?")
@@ -198,8 +194,8 @@ class InventarioApp:
             return  # No hay ninguna fila seleccionada
 
         # Obtener el nombre del producto y la cantidad actual
-        nombre_producto = self.tree.item(selected_item, 'values')[2]
-        cantidad_actual = self.tree.item(selected_item, 'values')[4]
+        nombre_producto = self.tree.item(selected_item, 'values')[1]
+        cantidad_actual = self.tree.item(selected_item, 'values')[3]
 
         # Mostrar un cuadro de diálogo para que el usuario ingrese la nueva cantidad
         nueva_cantidad = simpledialog.askinteger("Editar Cantidad",
@@ -222,7 +218,6 @@ class InventarioApp:
 
     def actualizar_datos(self):
         self.obtener_datos_de_bd()
-
 
     # Función para bloquear/desbloquear botones
     def bloquear_botones(self):
