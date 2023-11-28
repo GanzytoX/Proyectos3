@@ -71,8 +71,8 @@ class AdminMainMenu(Tk):
         newVentana = GastoBeneficioInterface()
         newVentana.mainloop()
     def __openInventario(self):
-        newVentana = InventarioApp(Tk())
-        newVentana.mainloop()
+        InventarioApp(Tk())
+
 
 class EmpleadoMainMenu(Tk):
     __titleLabel = Label
