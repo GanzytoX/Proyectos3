@@ -214,7 +214,7 @@ class InventarioApp:
                 self.connection.commit()
 
                 # Actualizar la cantidad en la tabla
-                self.tree.set(selected_item, '#5', nueva_cantidad)
+                self.tree.set(selected_item, '#4', nueva_cantidad)
 
     def actualizar_datos(self):
         self.obtener_datos_de_bd()
