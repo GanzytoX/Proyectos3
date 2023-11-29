@@ -71,7 +71,8 @@ class CPr_Interface(twoSideWindow):
         self.__imageChangeButton = Button(self.__singleProduct, text="Cambiar imagen", command=self.__changeImagen)
         self.__labelDescripcion = Label(self.__singleProduct, text="Descripcion")
         self.__entryDescripcion = Text(self.__singleProduct, height=3)
-
+        self.__CantidadLabel = Label(self.__singleProduct, text="Cantidad")
+        self.__CantidadEntry = Entry(self.__singleProduct)
 
         # Saber si el panel individual ya se activo:
         self.__singleActivated = False
@@ -166,7 +167,8 @@ class CPr_Interface(twoSideWindow):
             self.__labelDescripcion.grid(column=0, row=6, sticky="nw", pady=15, padx=20)
             self.__entryDescripcion.grid(column=0, row=7, columnspan=2, ipady=15, sticky="we", padx=(20, 20))
             self.__setImage("../img/noImage.jpg")
-
+            self.__CantidadLabel.grid(column=1,row=4)
+            self.__CantidadEntry.grid(column=1, row = 5)
             self.__singleActivated = True
         else:
             self.__entryNombre.delete(0, END)
@@ -213,8 +215,11 @@ class CPr_Interface(twoSideWindow):
         barraCarga.place(x=600, y=350, anchor="center")
         barraCarga.start()
         self.update_idletasks()
+        self.uwu = self.__entryNombre.get()
         try:
             self.__productManager.Create(self.__crearObjetoProducto())
+
+
         except:
             pass
         else:
@@ -222,6 +227,20 @@ class CPr_Interface(twoSideWindow):
             self.__displayProductoMenu()
         finally:
             barraCarga.destroy()
+            cursor = self.__conection.cursor()
+            script = "INSERT INTO inventario(id_producto, nombre_producto, unidad, cantidad) VALUES (%s, %s, %s, %s)"
+            if self.__activeProduct != None:
+                paramss = [self.__activeProduct.id, self.__entryNombre.get(), "--", int(self.__CantidadEntry.get())]
+            else:
+                self.__conection.reconnect()
+                script2 = "SELECT MAX(id_producto) FROM producto"
+                cursor = self.__conection.cursor()
+                cursor.execute(script2)
+                result = cursor.fetchone()
+                paramss = [result[0], self.uwu, "--", int(self.__CantidadEntry.get())]
+            cursor.execute(script, paramss)
+            self.__conection.commit()
+            self.__CantidadEntry.delete(0,END)
 
     def __editarProducto(self):
 

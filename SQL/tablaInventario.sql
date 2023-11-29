@@ -13,10 +13,6 @@ CREATE TABLE inventario (
     PRIMARY KEY(id_producto),
     FOREIGN KEY(id_producto) REFERENCES producto(id_producto)
 );
-
-INSERT INTO inventario(id_producto, nombre_producto, unidad, cantidad) VALUES 
-(1, "Pollo asado", "kg", 5),
-(2, "Spaguetti", "kg", 10);
-#(3, "deez nuts", "Kg", 69);
+ALTER TABLE u119126_pollos2LaVengazaDelPollo.inventario MODIFY COLUMN cantidad INT NOT NULL;
 
 SELECT * FROM inventario;
