@@ -54,14 +54,10 @@ class InventarioApp:
         # Botón de búsqueda
         self.buscar_button = tk.Button(button_frame, text="Búsqueda por ID", bg=c_azul, fg=c_blanco, command=self.buscar_producto_por_id)
         self.buscar_button.pack(side=tk.LEFT, padx=5)
-
-        # Botón de agregar producto
-        #self.agregar_button = tk.Button(button_frame, text="Agregar Producto", bg=c_azul, fg=c_blanco, command=self.agregar_producto)
-        #self.agregar_button.pack(side=tk.LEFT, padx=5)
-
-        # Botón de eliminar producto
-        #self.eliminar_button = tk.Button(button_frame, text="Eliminar Producto", bg=c_rojo, fg=c_blanco, command=self.eliminar_producto)
-        #self.eliminar_button.pack(side=tk.LEFT, padx=5)
+        
+        # Botón para modificar la unidad
+        self.modificar_unidad_button = tk.Button(button_frame, text="Modificar Unidad", bg=c_azul, fg=c_blanco, command=self.editar_unidad_seleccionada)
+        self.modificar_unidad_button.pack(side=tk.LEFT, padx=5)
 
         # Botón de edición
         self.editar_button = tk.Button(button_frame, text="Editar Cantidad", bg=c_azul, fg=c_blanco, command=self.editar_cantidad_seleccionada)
@@ -71,7 +67,7 @@ class InventarioApp:
         self.candado_button = tk.Button(button_frame, text="🔒", bg=c_gris, fg=c_blanco, command=self.bloquear_botones)
         self.candado_button.pack(side=tk.LEFT, padx=5)
         # Lista de botones a bloquear/desbloquear
-        self.botones_a_bloquear = [self.actualizar_button, self.buscar_button, """self.agregar_button, self.eliminar_button,""" ]
+        self.botones_a_bloquear = [self.actualizar_button, self.buscar_button, self.editar_button, self.modificar_unidad_button]
 
         # Crear Treeview con scrollbar
         self.tree = ttk.Treeview(self.root, columns=('ID Producto', 'Nombre Producto', 'Unidad', 'Cantidad'), height=16)
@@ -144,49 +140,6 @@ class InventarioApp:
                     id_producto, nombre_producto, unidad, cantidad = row
                     self.tree.insert('', 'end', iid=id_producto, values=(id_producto, nombre_producto, unidad, cantidad))
 
-   #def agregar_producto(self):
-   #    nuevo_id_producto = simpledialog.askstring("Agregar Producto", "Ingrese el nuevo ID del producto:")
-   #    nuevo_nombre_producto = simpledialog.askstring("Agregar Producto", "Ingrese el nombre del nuevo producto:")
-   #    nueva_unidad = simpledialog.askstring("Agregar Producto", "Ingrese la nueva unidad del producto:")
-   #    nueva_cantidad = simpledialog.askinteger("Agregar Producto", "Ingrese la cantidad inicial del producto:")
-
-   #    if nuevo_id_producto and nuevo_nombre_producto and nueva_unidad and nueva_cantidad is not None:
-   #        # Verificar si el ID del producto ya existe en la base de datos
-   #        cursor = self.connection.cursor()
-   #        cursor.execute("SELECT id_producto FROM inventario WHERE id_producto = %s", (nuevo_id_producto,))
-   #        existing_id = cursor.fetchone()
-
-   #        if existing_id:
-   #            tk.messagebox.showerror("Error", f"El ID {nuevo_id_producto} ya existe en la base de datos.")
-   #        else:
-   #            # Insertar el nuevo producto en la base de datos
-   #            cursor.execute("INSERT INTO inventario (id_producto, nombre_producto, unidad, cantidad) VALUES (%s, %s, %s, %s)",
-   #                        (nuevo_id_producto, nuevo_nombre_producto, nueva_unidad, nueva_cantidad))
-   #            self.connection.commit()
-
-   #            self.obtener_datos_de_bd()
-
-    #def eliminar_producto(self):
-    #    # Obtener la fila seleccionada
-    #    selected_item = self.tree.selection()
-    #    if not selected_item:
-    #        return  # No hay ninguna fila seleccionada
-#
-    #    # Obtener el ID del producto seleccionado
-    #    id_producto = self.tree.item(selected_item, 'values')[0]
-#
-    #    # Mostrar un cuadro de diálogo de confirmación antes de eliminar
-    #    confirmacion = tk.messagebox.askyesno("Confirmar Eliminación", f"¿Estás seguro de eliminar el producto con ID {id_producto}?")
-#
-    #    if confirmacion:
-    #        # Eliminar el producto de la base de datos
-    #        cursor = self.connection.cursor()
-    #        cursor.execute("DELETE FROM inventario WHERE id_producto = %s", (id_producto,))
-    #        self.connection.commit()
-#
-    #        # Eliminar la fila de la tabla en la interfaz gráfica
-    #        self.tree.delete(selected_item)
-
     def editar_cantidad_seleccionada(self):
         # Obtener la fila seleccionada
         selected_item = self.tree.selection()
@@ -216,8 +169,37 @@ class InventarioApp:
                 # Actualizar la cantidad en la tabla
                 self.tree.set(selected_item, '#4', nueva_cantidad)
 
-    def actualizar_datos(self):
-        self.obtener_datos_de_bd()
+    def editar_unidad_seleccionada(self):
+        # Obtener la fila seleccionada
+        selected_item = self.tree.selection()
+        if not selected_item:
+            return  # No hay ninguna fila seleccionada
+
+        # Obtener el nombre del producto y la unidad actual
+        nombre_producto = self.tree.item(selected_item, 'values')[1]
+        unidad_actual = self.tree.item(selected_item, 'values')[2]
+
+        # Mostrar un cuadro de diálogo para que el usuario ingrese la nueva unidad
+        nueva_unidad = simpledialog.askstring("Modificar Unidad",
+                                            f"Modificar unidad para el producto '{nombre_producto}':",
+                                            initialvalue=unidad_actual)
+
+        # Verificar si la nueva unidad no es un string vacío
+        if nueva_unidad is not None and nueva_unidad.strip() != "":
+            # Convertir la nueva unidad a mayúsculas (si se desea)
+            nueva_unidad = nueva_unidad.upper()
+
+            # Actualizar la unidad en la base de datos
+            cursor = self.connection.cursor()
+            cursor.execute("UPDATE inventario SET unidad = %s WHERE nombre_producto = %s",
+                        (nueva_unidad, nombre_producto))
+            self.connection.commit()
+
+            # Actualizar la unidad en la tabla
+            self.tree.set(selected_item, '#3', nueva_unidad)  # Suponiendo que la columna de unidad es la cuarta (#3)
+
+            # Cerrar el cursor
+            cursor.close()
 
     # Función para bloquear/desbloquear botones
     def bloquear_botones(self):
@@ -227,3 +209,6 @@ class InventarioApp:
                 boton["state"] = "disable"
             else:
                 boton["state"] = "normal"
+                
+    def actualizar_datos(self):
+        self.obtener_datos_de_bd()
