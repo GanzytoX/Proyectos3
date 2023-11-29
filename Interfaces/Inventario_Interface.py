@@ -2,7 +2,7 @@ import tkinter as tk
 from PIL import Image, ImageTk
 import mysql.connector
 from tkinter import ttk, simpledialog
-
+from tkinter import messagebox
 # Paleta de colores
 c_blanco = "#ffffff"
 c_gris = "#b8bab9"
@@ -187,7 +187,7 @@ class InventarioApp:
         # Verificar si la nueva unidad no es un string vacío
         if nueva_unidad is not None and nueva_unidad.strip() != "":
             # Convertir la nueva unidad a mayúsculas (si se desea)
-            nueva_unidad = nueva_unidad.upper()
+            nueva_unidad = nueva_unidad.capitalize()
 
             # Actualizar la unidad en la base de datos
             cursor = self.connection.cursor()

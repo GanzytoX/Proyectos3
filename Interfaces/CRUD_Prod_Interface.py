@@ -171,6 +171,7 @@ class CPr_Interface(twoSideWindow):
             self.__CantidadEntry.grid(column=1, row = 5)
             self.__singleActivated = True
         else:
+            self.__CantidadEntry.delete(0,END)
             self.__entryNombre.delete(0, END)
             self.__entryDescripcion.delete("0.0", END)
             self.__entryPrecio.delete(0, END)
@@ -178,6 +179,7 @@ class CPr_Interface(twoSideWindow):
 
     # Pone en la interfaz el producto activo
     def __showProduct(self, producto: Producto):
+        self.__CantidadEntry.delete(0,END)
         self.__agregarProducto.grid_forget()
         self.__displayProductoMenu()
         self.__entryNombre.insert(0, producto.nombre)
@@ -187,6 +189,11 @@ class CPr_Interface(twoSideWindow):
         self.__editarProductoButton.grid(column=0, row=8, sticky="w", pady=10, padx=20)
         self.__eliminarProductoButton.grid(column=1, row=8, sticky="w", pady=10, padx=20)
         self.__activeProduct = producto
+        script = "SELECT cantidad FROM inventario WHERE id_producto = %s"
+        cursor = self.__conection.cursor()
+        cursor.execute(script,[producto.id])
+        result =cursor.fetchone()
+        self.__CantidadEntry.insert(0, result[0])
 
     # Configurar para Poder agregar un producto
     def __configureAgregar(self):
@@ -254,6 +261,11 @@ class CPr_Interface(twoSideWindow):
         else:
             self.__updateProductos()
         finally:
+            script = "Update inventario Set cantidad = %s Where id_producto = %s"
+            cursor = self.__conection.cursor()
+            asubir = [int(self.__CantidadEntry.get()), self.__activeProduct.id]
+            cursor.execute(script, asubir)
+            self.__conection.commit()
             barraCarga.destroy()
 
     def __eliminarProducto(self):
