@@ -60,21 +60,21 @@ class InventarioApp:
         self.modificar_unidad_button.pack(side=tk.LEFT, padx=5)
 
         # Botón de edición
-        self.editar_button = tk.Button(button_frame, text="Editar Cantidad", bg=c_azul, fg=c_blanco, command=self.editar_cantidad_seleccionada)
-        self.editar_button.pack(side=tk.LEFT, padx=5)
+        self.editar_cantidad_button = tk.Button(button_frame, text="Editar Cantidad", bg=c_azul, fg=c_blanco, command=self.editar_cantidad_seleccionada)
+        self.editar_cantidad_button.pack(side=tk.LEFT, padx=5)
 
         # Botón de candado
         self.candado_button = tk.Button(button_frame, text="🔒", bg=c_gris, fg=c_blanco, command=self.bloquear_botones)
         self.candado_button.pack(side=tk.LEFT, padx=5)
         # Lista de botones a bloquear/desbloquear
-        self.botones_a_bloquear = [self.actualizar_button, self.buscar_button, self.editar_button, self.modificar_unidad_button]
+        self.botones_a_bloquear = [self.actualizar_button, self.buscar_button, self.editar_cantidad_button, self.modificar_unidad_button]
 
         # Crear Treeview con scrollbar
         self.tree = ttk.Treeview(self.root, columns=('ID Producto', 'Nombre Producto', 'Unidad', 'Cantidad'), height=16)
         self.tree.place(relx=0.5, rely=0.4, anchor=tk.CENTER, relwidth=0.95)
 
         # Configuración de las columnas
-        self.tree.column('#0', anchor=tk.CENTER, width=0)
+        self.tree.column('#0', anchor=tk.CENTER, width=0)    # Nada xd
         self.tree.column('#1', anchor=tk.CENTER, width=100)  # ID Producto
         self.tree.column('#2', anchor=tk.CENTER, width=125)  # Nombre Producto
         self.tree.column('#3', anchor=tk.CENTER, width=100)  # Unidad
@@ -196,10 +196,12 @@ class InventarioApp:
             self.connection.commit()
 
             # Actualizar la unidad en la tabla
-            self.tree.set(selected_item, '#3', nueva_unidad)  # Suponiendo que la columna de unidad es la cuarta (#3)
+            self.tree.set(selected_item, '#3', nueva_unidad)
 
             # Cerrar el cursor
             cursor.close()
+        else:
+            tk.messagebox.showwarning("Advertencia", "No puede dejar el campo vacío.")
 
     # Función para bloquear/desbloquear botones
     def bloquear_botones(self):
