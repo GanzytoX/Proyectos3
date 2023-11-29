@@ -26,7 +26,16 @@ class GastoBeneficioInterface(Tk):
         self.choose.pack()
         self.si = Button(self, text="si", command=lambda: (self.calcularGastosDiarios(self.choose.get()), self.calcularGanacia(self.choose.get())))
         self.si.pack()
-
+        Fecha = fecha()
+        WEEK = Fecha.semana - 1
+        # as it starts with 0 and you want week to start from sunday
+        startdate = time.asctime(time.strptime(f'{Fecha.año} %d 0' % WEEK, '%Y %W %w'))
+        startdate = datetime.datetime.strptime(startdate, '%a %b %d %H:%M:%S %Y')
+        dates = [startdate.strftime('%Y-%m-%d')]
+        for i in range(1, 7):
+            day = startdate + datetime.timedelta(days=i)
+            dates.append(day.strftime('%Y-%m-%d'))
+        print(dates)
 
     def calcularGastosDiarios(self,estado):
         """"Empleados"""
