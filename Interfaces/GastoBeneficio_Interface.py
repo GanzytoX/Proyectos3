@@ -64,7 +64,7 @@ class GastoBeneficioInterface(Tk):
         self.__setFecha(time.localtime().tm_year, time.localtime().tm_mon, time.localtime().tm_mday)
 
         # Binds
-        self.__comboBoxMode.bind('<<ComboboxSelected>>', lambda event: setattr(self.__ticks, 0))
+        self.__comboBoxMode.bind('<<ComboboxSelected>>', lambda event: setattr(self,"__ticks",0))
         self.__buttonReturn.config(command=self.__rewind)
 
         #self.si = Button(self, text="si", command=lambda: (self.calcularGastosDiarios(self.choose.get()), self.calcularGanacia(self.choose.get())))
