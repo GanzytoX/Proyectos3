@@ -1,7 +1,10 @@
+import datetime
 from tkinter import *
 import mysql.connector
 from Utilities.FechaYMeses import *
 from tkinter import ttk
+from datetime import timedelta
+
 class GastoBeneficioInterface(Tk):
     def __init__(self):
         super().__init__()
@@ -15,29 +18,60 @@ class GastoBeneficioInterface(Tk):
         self.cursor = self.conection.cursor()
         self.script = ""
         self.title("Gasto-Beneficio")
-        self.geometry("1200x700")
+        self.geometry("800x400")
+        self.config(background="#bff0f5")
         self.gasto = float
         self.ganancia = float
-        self.gastoLabel = Label(self, text="Aqui va el gasto cuando le des al boton")
-        self.gastoLabel.pack()
-        self.gananciaLabel = Label(self, text="Aqui va la ganancia cuando le des al boton")
-        self.gananciaLabel.pack()
-        self.choose = ttk.Combobox(self, state="readonly", values=["Diario", "Semanal", "Mensual"])
-        self.choose.pack()
-        self.si = Button(self, text="si", command=lambda: (self.calcularGastosDiarios(self.choose.get()), self.calcularGanacia(self.choose.get())))
-        self.si.pack()
-        Fecha = fecha()
-        WEEK = Fecha.semana - 1
-        # as it starts with 0 and you want week to start from sunday
-        startdate = time.asctime(time.strptime(f'{Fecha.año} %d 0' % WEEK, '%Y %W %w'))
-        startdate = datetime.datetime.strptime(startdate, '%a %b %d %H:%M:%S %Y')
-        dates = [startdate.strftime('%Y-%m-%d')]
-        for i in range(1, 7):
-            day = startdate + datetime.timedelta(days=i)
-            dates.append(day.strftime('%Y-%m-%d'))
-        print(dates)
 
-    def calcularGastosDiarios(self,estado):
+        # Cosas relacionadas a la barra de búsqueda
+        frameBusqueda = Frame(self, background="white")
+        frameBusqueda.pack(ipadx=5, ipady=5, pady=15)
+        self.__comboBoxMode = ttk.Combobox(frameBusqueda)
+        self.__comboBoxMode["values"] = ("Diario", "Semanal", "Mesual")
+        self.__comboBoxMode.set("Diario")
+        self.__comboBoxMode['state'] = 'readonly'
+        self.__comboBoxMode.pack(side="left", padx=5)
+        self.__buttonReturn = Button(frameBusqueda, text="<")
+        self.__buttonReturn.pack(side="left")
+        self.__labelTiempo = Entry(frameBusqueda, relief="solid", borderwidth=2, background="white", width=50)
+        self.__labelTiempo.insert(0, "Waos")
+        self.__labelTiempo.pack(side="left", padx=6, ipady=2, ipadx=3)
+        self.__buttonNext = Button(frameBusqueda, text=">")
+        self.__buttonNext.pack(side="left")
+        #self.__buttonBusqueda = Button(frameBusqueda, text="Calendario")
+        #self.__buttonBusqueda.pack(side="left")
+
+        frameDatos = Frame(self, background="white")
+        frameDatos.pack(ipadx=10, ipady=10)
+        self.__gastoLabel = Label(frameDatos, text="Gasto total", background="white")
+        self.__gastoLabel.pack()
+        self.__gastoEntry = Entry(frameDatos, width=84, background="#e0e4e5")
+        self.__gastoEntry.pack(pady=(0,10))
+
+        self.__ventaLabel = Label(frameDatos, text="Ventas totales", background="white")
+        self.__ventaLabel.pack()
+        self.__ventaEntry = Entry(frameDatos, width=84, background="#e0e4e5")
+        self.__ventaEntry.pack(pady=(0,10))
+
+        self.__gananciaLabel = Label(frameDatos, text="Ganancias totales", background="white")
+        self.__gananciaLabel.pack()
+        self.__gananciaEntry = Entry(frameDatos, width=84, background="#e0e4e5")
+        self.__gananciaEntry.pack()
+
+        # Parametros para saber la fecha
+        self.__ticks = 0
+
+        self.__setFecha(time.localtime().tm_year, time.localtime().tm_mon, time.localtime().tm_mday)
+
+        # Binds
+        self.__comboBoxMode.bind('<<ComboboxSelected>>', lambda event: setattr(self.__ticks, 0))
+        self.__buttonReturn.config(command=self.__rewind)
+
+        #self.si = Button(self, text="si", command=lambda: (self.calcularGastosDiarios(self.choose.get()), self.calcularGanacia(self.choose.get())))
+        #self.si.pack()
+
+
+    def calcularGastosDiarios(self,estado, año, mes, dia):
         """"Empleados"""
         self.conection.reconnect()
         self.script = "SELECT SUM(sueldo) FROM empleado WHERE activo = 'V'"
@@ -72,7 +106,7 @@ class GastoBeneficioInterface(Tk):
             self.sueldoEmpleadoMensual = int(self.sueldoEmpleadoDiario)*int(Fecha.dia)
             self.gastoLabel.config(text=f"Total de gasto mensual: {result[0]+self.sueldoEmpleadoMensual}")
 
-    def calcularGanacia(self, estado):
+    def calcularVentas(self, estado, año, mes, dia):
         self.conection.reconnect()
         Fecha = fecha()
         if estado == "Diario":
@@ -97,3 +131,23 @@ class GastoBeneficioInterface(Tk):
                 result = [0, 0]
             self.gananciaLabel.config(text=f"Total ganancia mensual: {result[0]}")
 
+    def __setFecha(self, año, mes, dia):
+        self.__labelTiempo.delete(0, END)
+        self.__labelTiempo.insert(0,f"{año}/{mes}/{dia}")
+
+    def __rewind(self):
+        self.__ticks -= 1
+        self.__labelTiempo.delete(0, END)
+        if self.__comboBoxMode.get() == "Diario":
+            fechaTicks = datetime.datetime.now() + timedelta(days=self.__ticks)
+            print(fechaTicks)
+            self.__setFecha(time.localtime().tm_year, time.localtime().tm_mon,time.localtime().tm_mday+self.__ticks)
+        elif self.__comboBoxMode.get() == "Semanal":
+            fechaTicks = datetime.datetime.now() + timedelta(weeks=self.__ticks)
+            print(fechaTicks)
+        else:
+            fechaTicks = datetime.datetime.now() + timedelta(days=self.__ticks * 3*30)
+            print(fechaTicks)
+
+gasto = GastoBeneficioInterface()
+gasto.mainloop()
