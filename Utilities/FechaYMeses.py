@@ -3,6 +3,7 @@ import datetime
 
 
 class fecha:
+    mes = int
     def __init__(self):
         self.actual_time = time.localtime()
         self.timeFormatted = time.strftime("%Y/%m/%d", self.actual_time)
@@ -15,7 +16,8 @@ class fecha:
         self.calcularDias()
         self.biciesto = False
         self.semana = datetime.date(self.año, self.mes, self.dia).isocalendar().week
-    def calcularDias(self):
+
+    def calcularDias(self, numerodemes= mes):
         MesesTYU = [1, 3, 5, 7, 8, 10, 12]
         MesesT = [4, 6, 9, 11]
         if self.mes in MesesTYU:
@@ -27,4 +29,12 @@ class fecha:
             self.biciesto = True
         else:
             self.dias = 28
+        if numerodemes in MesesTYU:
+            return 31
+        elif numerodemes in MesesT:
+            return 30
+        elif (self.año % 400 == 0 or self.año % 100 != 0) and self.año % 4 == 0:
+            return 29
+        else:
+            return 28
 

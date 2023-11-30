@@ -2,7 +2,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from Crud.CRUD_Usuario import CrudEmpleado
-from Interfaces.AdminMainMenu import AdminMainMenu
+
 import mysql.connector
 
 class Ui_MainWindow(object):

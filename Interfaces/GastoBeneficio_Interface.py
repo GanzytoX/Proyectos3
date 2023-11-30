@@ -1,9 +1,10 @@
-import datetime
+
 from tkinter import *
 import mysql.connector
 from Utilities.FechaYMeses import *
 from tkinter import ttk
 from datetime import timedelta
+from dateutil.relativedelta import relativedelta
 
 class GastoBeneficioInterface(Tk):
     def __init__(self):
@@ -64,8 +65,9 @@ class GastoBeneficioInterface(Tk):
         self.__setFecha(time.localtime().tm_year, time.localtime().tm_mon, time.localtime().tm_mday)
 
         # Binds
-        self.__comboBoxMode.bind('<<ComboboxSelected>>', lambda event: setattr(self,"__ticks",0))
+        self.__comboBoxMode.bind('<<ComboboxSelected>>', self.__reset_ticks)
         self.__buttonReturn.config(command=self.__rewind)
+        self.__buttonNext.config(command=self.__next)
 
         #self.si = Button(self, text="si", command=lambda: (self.calcularGastosDiarios(self.choose.get()), self.calcularGanacia(self.choose.get())))
         #self.si.pack()
@@ -135,19 +137,29 @@ class GastoBeneficioInterface(Tk):
         self.__labelTiempo.delete(0, END)
         self.__labelTiempo.insert(0,f"{año}/{mes}/{dia}")
 
+
     def __rewind(self):
         self.__ticks -= 1
         self.__labelTiempo.delete(0, END)
-        if self.__comboBoxMode.get() == "Diario":
+        self.__labelTiempo.insert(0, self.__set_date(self.__comboBoxMode.get()))
+
+    def __next(self):
+        self.__ticks += 1
+        self.__labelTiempo.delete(0, END)
+        self.__labelTiempo.insert(0, self.__set_date(self.__comboBoxMode.get()))
+
+    def __set_date(self, mode):
+        if mode == "Diario":
             fechaTicks = datetime.datetime.now() + timedelta(days=self.__ticks)
-            print(fechaTicks)
-            self.__setFecha(time.localtime().tm_year, time.localtime().tm_mon,time.localtime().tm_mday+self.__ticks)
-        elif self.__comboBoxMode.get() == "Semanal":
+        elif mode == "Semanal":
             fechaTicks = datetime.datetime.now() + timedelta(weeks=self.__ticks)
-            print(fechaTicks)
         else:
-            fechaTicks = datetime.datetime.now() + timedelta(days=self.__ticks * 3*30)
-            print(fechaTicks)
+            fechaTicks = datetime.datetime.now() + relativedelta(months=self.__ticks)
+
+        return f"{fechaTicks.date().year}/{fechaTicks.date().month}/{fechaTicks.date().day}"
+
+    def __reset_ticks(self, event):
+        self.__ticks = 0
 
 gasto = GastoBeneficioInterface()
 gasto.mainloop()
