@@ -3,7 +3,7 @@ from tkinter import *
 import mysql.connector
 from Utilities.FechaYMeses import *
 from tkinter import ttk
-from datetime import timedelta
+from datetime import timedelta, date
 from dateutil.relativedelta import relativedelta
 
 class GastoBeneficioInterface(Tk):
@@ -73,40 +73,43 @@ class GastoBeneficioInterface(Tk):
         #self.si.pack()
 
 
-    def calcularGastosDiarios(self,estado, año, mes, dia):
+    def calcularGastosDiarios(self, estado, año, mes, dia) ->float:
         """"Empleados"""
         self.conection.reconnect()
         self.script = "SELECT SUM(sueldo) FROM empleado WHERE activo = 'V'"
         self.cursor.execute(self.script)
         self.sueldoEmpleadoSemanal = self.cursor.fetchone()
         self.sueldoEmpleadoDiario = self.sueldoEmpleadoSemanal[0] / 7
-        Fecha = fecha()
         """Gastos como tal"""
         #Necesito calcular conforme al dia que fueron hechos
         #Agarrar solo el dia
         if estado == "Diario":
-            self.script = f"SELECT SUM(monto) FROM gasto WHERE fecha BETWEEN '{Fecha.año}-{Fecha.mes}-{Fecha.dia} 00:00:00' AND '{Fecha.año}-{Fecha.mes}-{Fecha.dia} 23:59:59'"
+            self.script = f"SELECT SUM(monto) FROM gasto WHERE fecha BETWEEN '{año}-{mes}-{dia} 00:00:00' AND '{año}-{mes}-{dia} 23:59:59'"
             self.cursor.execute(self.script)
             result = self.cursor.fetchone()
             if result[0] == None:
                 result = [0,0]
-            self.gastoLabel.config(text = f"Total de gasto diario: {result[0]+self.sueldoEmpleadoDiario}")
-        if estado == "Semanal":
-            self.script = f"SELECT SUM(monto) FROM gasto WHERE WEEK(fecha) = {Fecha.semana}"
+            return float(result[0]+self.sueldoEmpleadoDiario)
+
+        elif estado == "Semanal":
+            self.script = f"SELECT SUM(monto) FROM gasto WHERE WEEK(fecha) = {date(año, mes, dia).isocalendar().week} AND YEAR(fecha) = {año}"
             self.cursor.execute(self.script)
             result = self.cursor.fetchone()
             if result[0] == None:
                 result = [0,0]
-            self.gastoLabel.config(text=f"Total de gasto Semanal: {float(result[0]) + self.sueldoEmpleadoSemanal[0]}")
+            return float(result[0]) + self.sueldoEmpleadoSemanal[0]
+
         #Agarrando el mes completo
-        if estado == "Mensual":
-            self.script = f"SELECT SUM(monto) FROM gasto WHERE fecha BETWEEN '{Fecha.año}-{Fecha.mes}-01' AND '{Fecha.año}-{Fecha.mes}-{Fecha.dias}'"
+        elif estado == "Mensual":
+            # Cambiar dia por dias
+            self.script = f"SELECT SUM(monto) FROM gasto WHERE fecha BETWEEN '{año}-{mes}-01' AND '{año}-{mes}-{dia}'"
             self.cursor.execute(self.script)
             result = self.cursor.fetchone()
             if result[0] == None:
                 result = [0,0]
             self.sueldoEmpleadoMensual = int(self.sueldoEmpleadoDiario)*int(Fecha.dia)
             self.gastoLabel.config(text=f"Total de gasto mensual: {result[0]+self.sueldoEmpleadoMensual}")
+
 
     def calcularVentas(self, estado, año, mes, dia):
         self.conection.reconnect()
@@ -133,22 +136,20 @@ class GastoBeneficioInterface(Tk):
                 result = [0, 0]
             self.gananciaLabel.config(text=f"Total ganancia mensual: {result[0]}")
 
-    def __setFecha(self, año, mes, dia):
+    def __setFecha(self, fecha):
         self.__labelTiempo.delete(0, END)
-        self.__labelTiempo.insert(0,f"{año}/{mes}/{dia}")
+        self.__labelTiempo.insert(0, fecha)
 
 
     def __rewind(self):
         self.__ticks -= 1
-        self.__labelTiempo.delete(0, END)
-        self.__labelTiempo.insert(0, self.__set_date(self.__comboBoxMode.get()))
+        self.__setFecha( self.__get_date(self.__comboBoxMode.get()))
 
     def __next(self):
         self.__ticks += 1
-        self.__labelTiempo.delete(0, END)
-        self.__labelTiempo.insert(0, self.__set_date(self.__comboBoxMode.get()))
+        self.__setFecha( self.__get_date(self.__comboBoxMode.get()))
 
-    def __set_date(self, mode):
+    def __get_date(self, mode):
         if mode == "Diario":
             fechaTicks = datetime.datetime.now() + timedelta(days=self.__ticks)
         elif mode == "Semanal":
