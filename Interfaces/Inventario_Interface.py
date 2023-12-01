@@ -189,6 +189,12 @@ class InventarioApp:
             # Convertir la nueva unidad a mayúsculas (si se desea)
             nueva_unidad = nueva_unidad.capitalize()
 
+            # Convertir la nueva unidad a minúsuclas (si se desea)
+            # nueva_unidad = nueva_unidad.lower()
+
+            # Convertir la nueva unidad a mayúsculas (si se desea)
+            # nueva_unidad = nueva_unidad.upper()
+
             # Actualizar la unidad en la base de datos
             cursor = self.connection.cursor()
             cursor.execute("UPDATE inventario SET unidad = %s WHERE nombre_producto = %s",
