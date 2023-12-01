@@ -1,4 +1,4 @@
-
+import decimal
 from tkinter import *
 import mysql.connector
 from Utilities.FechaYMeses import *
@@ -28,7 +28,7 @@ class GastoBeneficioInterface(Tk):
         frameBusqueda = Frame(self, background="white")
         frameBusqueda.pack(ipadx=5, ipady=5, pady=15)
         self.__comboBoxMode = ttk.Combobox(frameBusqueda)
-        self.__comboBoxMode["values"] = ("Diario", "Semanal", "Mesual")
+        self.__comboBoxMode["values"] = ("Diario", "Semanal", "Mensual")
         self.__comboBoxMode.set("Diario")
         self.__comboBoxMode['state'] = 'readonly'
         self.__comboBoxMode.pack(side="left", padx=5)
@@ -62,7 +62,7 @@ class GastoBeneficioInterface(Tk):
         # Parametros para saber la fecha
         self.__ticks = 0
 
-        self.__setFecha(time.localtime().tm_year, time.localtime().tm_mon, time.localtime().tm_mday)
+        self.__insertInEntries()
 
         # Binds
         self.__comboBoxMode.bind('<<ComboboxSelected>>', self.__reset_ticks)
@@ -89,65 +89,85 @@ class GastoBeneficioInterface(Tk):
             result = self.cursor.fetchone()
             if result[0] == None:
                 result = [0,0]
-            return float(result[0]+self.sueldoEmpleadoDiario)
+            return float(decimal.Decimal(result[0])+ decimal.Decimal(self.sueldoEmpleadoDiario))
 
         elif estado == "Semanal":
-            self.script = f"SELECT SUM(monto) FROM gasto WHERE WEEK(fecha) = {date(año, mes, dia).isocalendar().week} AND YEAR(fecha) = {año}"
+            self.script = f"SELECT SUM(monto) FROM gasto WHERE WEEK(fecha) = {date(int(año), int(mes), int(dia)).isocalendar().week} AND YEAR(fecha) = {año}"
             self.cursor.execute(self.script)
             result = self.cursor.fetchone()
             if result[0] == None:
                 result = [0,0]
-            return float(result[0]) + self.sueldoEmpleadoSemanal[0]
+            return float(decimal.Decimal(result[0]) + decimal.Decimal( self.sueldoEmpleadoSemanal[0]))
 
-        #Agarrando el mes completo
         elif estado == "Mensual":
             # Cambiar dia por dias
-            self.script = f"SELECT SUM(monto) FROM gasto WHERE fecha BETWEEN '{año}-{mes}-01' AND '{año}-{mes}-{dia}'"
+            self.script = f"SELECT SUM(monto) FROM gasto WHERE fecha BETWEEN '{año}-{mes}-01' AND '{año}-{mes}-{fecha.calcularDias(int(mes), int(año))}'"
             self.cursor.execute(self.script)
             result = self.cursor.fetchone()
             if result[0] == None:
                 result = [0,0]
-            self.sueldoEmpleadoMensual = int(self.sueldoEmpleadoDiario)*int(Fecha.dia)
-            self.gastoLabel.config(text=f"Total de gasto mensual: {result[0]+self.sueldoEmpleadoMensual}")
+            self.sueldoEmpleadoMensual = int(self.sueldoEmpleadoDiario)*int(fecha.calcularDias(int(mes), int(año)))
+            return float(decimal.Decimal(result[0])+decimal.Decimal(self.sueldoEmpleadoMensual))
+
 
 
     def calcularVentas(self, estado, año, mes, dia):
         self.conection.reconnect()
-        Fecha = fecha()
         if estado == "Diario":
-            self.script = f"SELECT SUM(total_De_Compra) FROM venta WHERE fecha_De_Venta BETWEEN '{Fecha.año}-{Fecha.mes}-{Fecha.dia} 00:00:00' AND '{Fecha.año}-{Fecha.mes}-{Fecha.dia} 23:59:59'"
+            self.script = f"SELECT SUM(total_De_Compra) FROM venta WHERE fecha_De_Venta BETWEEN '{año}-{mes}-{dia} 00:00:00' AND '{año}-{mes}-{dia} 23:59:59'"
             self.cursor.execute(self.script)
             result = self.cursor.fetchone()
             if result[0] == None:
                 result = [0,0]
-            self.gananciaLabel.config(text=f"Total ganancia diaria: {result[0]}")
+            return result[0]
         if estado == "Semanal":
-            self.script = f"SELECT SUM(total_De_Compra) FROM venta WHERE WEEK(fecha_De_Venta) = {Fecha.semana}"
+            self.script = f"SELECT SUM(total_De_Compra) FROM venta WHERE WEEK(fecha_De_Venta) = {date(int(año), int(mes), int(dia)).isocalendar().week} AND YEAR(fecha_De_Venta) = {año}"
             self.cursor.execute(self.script)
             result = self.cursor.fetchone()
             if result[0] == None:
                 result = [0,0]
-            self.gananciaLabel.config(text=f"Total ganancia Semanal: {result[0]}")
+            return result[0]
         if estado == "Mensual":
-            self.script = f"SELECT SUM(total_De_Compra) FROM venta WHERE fecha_De_Venta BETWEEN '{Fecha.año}-{Fecha.mes}-01' AND '{Fecha.año}-{Fecha.mes}-{Fecha.dias}'"
+            self.script = f"SELECT SUM(total_De_Compra) FROM venta WHERE fecha_De_Venta BETWEEN '{año}-{mes}-01' AND '{año}-{mes}-{fecha.calcularDias(int(mes), int(año))}'"
             self.cursor.execute(self.script)
             result = self.cursor.fetchone()
             if result[0] == None:
                 result = [0, 0]
-            self.gananciaLabel.config(text=f"Total ganancia mensual: {result[0]}")
+            return result[0]
 
     def __setFecha(self, fecha):
         self.__labelTiempo.delete(0, END)
         self.__labelTiempo.insert(0, fecha)
 
+    def __insertInEntries(self):
+        fechaActual = self.__get_date(self.__comboBoxMode.get())
+        self.__setFecha(fechaActual)
+        fechaSeparada = fechaActual.split("/")
+        self.__gastoEntry.delete(0, END)
+        self.__gastoEntry.insert(0, str(self.calcularGastosDiarios(self.__comboBoxMode.get(), fechaSeparada[0],
+                                                                   fechaSeparada[1], fechaSeparada[2])))
+        self.__ventaEntry.delete(0, END)
+        self.__ventaEntry.insert(0, str(self.calcularVentas(self.__comboBoxMode.get(), fechaSeparada[0],
+                                                           fechaSeparada[1], fechaSeparada[2])))
+
+    def __format_money(self, currency: str):
+        currency_splitted = currency.split(".")
+        contador = 0
+        finalString = ""
+        for i in range(len(currency_splitted)-1, -1, -1):
+            contador += 1
+            if contador == 3:
+                finalString = ", " + finalString
+                contador = 0
+            finalString = currency_splitted[i] + finalString
 
     def __rewind(self):
         self.__ticks -= 1
-        self.__setFecha( self.__get_date(self.__comboBoxMode.get()))
+        self.__insertInEntries()
 
     def __next(self):
         self.__ticks += 1
-        self.__setFecha( self.__get_date(self.__comboBoxMode.get()))
+        self.__insertInEntries()
 
     def __get_date(self, mode):
         if mode == "Diario":
@@ -161,6 +181,7 @@ class GastoBeneficioInterface(Tk):
 
     def __reset_ticks(self, event):
         self.__ticks = 0
+        self.__insertInEntries()
 
 gasto = GastoBeneficioInterface()
 gasto.mainloop()
