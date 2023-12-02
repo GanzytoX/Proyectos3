@@ -28,10 +28,9 @@ if __name__ != "__main__":
                 print("se subio " + subir[0], subir[1], subir[2], subir[3], subir[4],subir[5], subir[6], subir[7], subir[8])
                 self._conection.commit()
 
-
-        def Read(self, id: int = None, condition: str = None) -> list[Empleado] | Empleado:
+        def Read(self, id: int = None) -> list[Empleado] | Empleado:
             self._conection.commit()
-            if id is None and condition is None:
+            if id is None:
                 script = "SELECT empleado.*, rol.nombre FROM empleado inner JOIN rol ON empleado.id_rol = rol.id_rol WHERE activo = 'V';"
                 self._cursor.execute(script)
                 result = self._cursor.fetchall()
@@ -48,7 +47,7 @@ if __name__ != "__main__":
                                               id=empleado[0],
                                               active=empleado[9]))
                 return empleados
-            elif id is not None and condition is None:
+            elif id is not None:
                 script = (f"SELECT empleado.*, rol.nombre FROM empleado LEFT JOIN rol ON empleado.id_rol = rol.id_rol"
                           f" WHERE id_empleado = {id};")
                 self._cursor.execute(script)

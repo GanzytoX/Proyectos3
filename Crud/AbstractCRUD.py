@@ -9,7 +9,7 @@ class CRUD(ABC):
     def Create(self, object: object):
         raise NotImplementedError()
     @abstractmethod
-    def Read(self, id=None, condition=None):
+    def Read(self, id=None):
         raise NotImplementedError()
     @abstractmethod
     def Delete(self, id):

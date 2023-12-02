@@ -32,8 +32,8 @@ if __name__ != "__main__":
         def __init__(self, conection):
             super().__init__(conection)
 
-        def Read(self, id=None, condition=None):
-            if id is None and condition is None:
+        def Read(self, id=None):
+            if id is None:
                 script = f"SELECT * FROM rol"
                 self._cursor.execute(script)
                 results = self._cursor.fetchall()
@@ -41,13 +41,11 @@ if __name__ != "__main__":
                 for result in results:
                     roles.append(Rol(id=result[0], nombre=result[1]))
                 return roles
-            elif id is not None and condition is None:
+            elif id is not None:
                 script = f"SELECT * FROM rol WHERE id_rol={id}"
                 self._cursor.execute(script)
                 results = self._cursor.fetchone()
                 return Rol(results[0], results[1])
-            elif id is None and condition is not None:
-                raise NotImplementedError()
             else:
                 raise ValueError("Can only take either an id or a condition, not both")
 

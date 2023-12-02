@@ -25,7 +25,7 @@ class CRUDPromociones(CRUD):
         self._cursor.execute(script, datos_promocion)  # seria fetch si pidiera datos
         self._conection.commit()  # commit siempre que se modifique la tabla
 
-    def Read(self, id=None, condition=None):
+    def Read(self, id=None):
         con = mysql.connector.connect(
             user="u119126_pollos2LaVengazaDelPollo",
             host="174.136.28.78",

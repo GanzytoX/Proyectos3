@@ -53,7 +53,7 @@ if __name__ != "__main__":
             else:
                 raise ValueError("Id must be an integer")
 
-        def Read(self, id=None, condition: str = None):
+        def Read(self, id=None):
             self._conection.commit()
             if id is None and condition is None:
                 script = "SELECT * from producto where activo = 'V' "
