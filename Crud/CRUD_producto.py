@@ -55,7 +55,7 @@ if __name__ != "__main__":
 
         def Read(self, id=None):
             self._conection.commit()
-            if id is None and condition is None:
+            if id is None:
                 script = "SELECT * from producto where activo = 'V' "
                 self._cursor.execute(script)
                 result = self._cursor.fetchall()
