@@ -6,9 +6,9 @@ from typing import Callable
 class ListFrame(tk.Frame):
     __image = None
     __text = str
-    __object = None
+    object = None
 
-    def __init__(self, master: AutomaticScrollableFrame, text: str, objet, imageroute: str, imageSize: (int, int)):
+    def __init__(self, master, text: str, objet, imageroute: str, imageSize: (int, int)):
         super().__init__(master=master)
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=4)
@@ -41,12 +41,12 @@ class ListFrame(tk.Frame):
 
 
 class NoImageFrame(ListFrame):
-    def __init__(self, master: AutomaticScrollableFrame, text: str, objet):
+    def __init__(self, master, text: str, objet):
         super().__init__(master, text, objet, "../img/dot.png", (10, 10))
 
 
 class ImageFrame(ListFrame):
-    def __init__(self, master: AutomaticScrollableFrame, text: str, objet, imageroute: str):
+    def __init__(self, master, text: str, objet, imageroute: str):
         super().__init__(master, text, objet, imageroute, (60, 60))
 
 

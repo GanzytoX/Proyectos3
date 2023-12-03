@@ -225,15 +225,6 @@ class CPr_Interface(twoSideWindow):
         self.uwu = self.__entryNombre.get()
         try:
             self.__productManager.Create(self.__crearObjetoProducto())
-
-
-        except:
-            pass
-        else:
-            self.__update_productos_simplified()
-            self.__displayProductoMenu()
-        finally:
-            barraCarga.destroy()
             cursor = self.__conection.cursor()
             script = "INSERT INTO inventario(id_producto, nombre_producto, unidad, cantidad) VALUES (%s, %s, %s, %s)"
             if self.__activeProduct != None:
@@ -247,7 +238,16 @@ class CPr_Interface(twoSideWindow):
                 paramss = [result[0], self.uwu, "--", int(self.__CantidadEntry.get())]
             cursor.execute(script, paramss)
             self.__conection.commit()
-            self.__CantidadEntry.delete(0,END)
+            self.__CantidadEntry.delete(0, END)
+
+        except:
+            messagebox.showerror("Ocurrió un error al editar el producto, cheque los datos ingresados e intente de nuevo")
+        else:
+            self.__update_productos_simplified()
+            self.__displayProductoMenu()
+        finally:
+            barraCarga.destroy()
+
 
     def __editarProducto(self):
 
@@ -256,16 +256,16 @@ class CPr_Interface(twoSideWindow):
         barraCarga.start()
         try:
             self.__productManager.Update(self.__activeProduct.id, self.__crearObjetoProducto())
-        except:
-            pass
-        else:
-            self.__updateProductos()
-        finally:
             script = "Update inventario Set cantidad = %s Where id_producto = %s"
             cursor = self.__conection.cursor()
             asubir = [int(self.__CantidadEntry.get()), self.__activeProduct.id]
             cursor.execute(script, asubir)
             self.__conection.commit()
+        except:
+            messagebox.showerror("Ocurrió un error al editar el producto, cheque los datos ingresados e intente de nuevo")
+        else:
+            self.__updateProductos()
+        finally:
             barraCarga.destroy()
 
     def __eliminarProducto(self):

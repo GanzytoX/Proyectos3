@@ -229,20 +229,7 @@ class CUInterface(twoSideWindow):
         else:
             self.__updateEmpleados()
 
-class RUInterface(Tk):
-    def __init__(self):
-        super().__init__()
-        self.__conection = mysql.connector.connect(
-            user="u119126_pollos2LaVengazaDelPollo",
-            host="174.136.28.78",
-            port="3306",
-            password="$ShotGunKin0805",
-            database="u119126_pollos2LaVengazaDelPollo"
-        )
-        self.__userManager = CrudEmpleado(self.__conection)
-        self.title("Empleados")
-        self.geometry("1200x700")
-        self.resizable(False, False)
+
 
 
 
