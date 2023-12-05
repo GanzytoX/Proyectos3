@@ -182,6 +182,3 @@ class GastoBeneficioInterface(Tk):
     def __reset_ticks(self, event):
         self.__ticks = 0
         self.__insertInEntries()
-
-gasto = GastoBeneficioInterface()
-gasto.mainloop()

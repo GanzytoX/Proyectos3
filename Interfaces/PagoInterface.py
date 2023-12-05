@@ -14,6 +14,7 @@ class Pagos(Toplevel):
 
     def __init__(self, elementos, idU, master):
         super().__init__()
+        super().title = "Pago"
         self.idU = idU
         self.__master = master
         self.__conection = mysql.connector.connect(

@@ -163,12 +163,26 @@ class siFrame(Frame):
         self.countPromocionesAplicadas = 2
     def __add(self):
         self.cantidad = 1
-
-        self.cantidadLabel.config(text=(str(int(self.cantidadLabel.cget("text")) + self.cantidad))) if int(self.cantidadLabel.cget("text")) < 25 else 25
-        self.main.add_venta_frame(nombre=self.nombreProducto, cantidad=self.cantidadLabel.cget("text"),
-                             precio=self.preciofloat * float(self.cantidadLabel.cget("text")), id=self.__id_product)
-        self.main.calcularTotal()
-        validar(self.main, self, self.__id_product, self.countPromocionesAplicadas)
+        connection = mysql.connector.connect(
+            user="u119126_pollos2LaVengazaDelPollo",
+            host="174.136.28.78",
+            port="3306",
+            password="$ShotGunKin0805",
+            database="u119126_pollos2LaVengazaDelPollo"
+        )
+        cursor = connection.cursor()
+        script = "SELECT cantidad FROM inventario WHERE id_producto = %s"
+        cursor.execute(script, [self.__id_product])
+        result = cursor.fetchone()
+        print(f"Hay {result[0]} de {self.nombreProducto}")
+        if not int(self.cantidadLabel.cget("text")) + self.countPromocionesAplicadas - 1 >= result[0]:
+            self.cantidadLabel.config(text=(str(int(self.cantidadLabel.cget("text")) + self.cantidad))) if int(self.cantidadLabel.cget("text")) < 25 else 25
+            self.main.add_venta_frame(nombre=self.nombreProducto, cantidad=self.cantidadLabel.cget("text"),
+                                 precio=self.preciofloat * float(self.cantidadLabel.cget("text")), id=self.__id_product)
+            self.main.calcularTotal()
+            validar(self.main, self, self.__id_product, self.countPromocionesAplicadas)
+        elif int(self.cantidadLabel.cget("text")) + self.countPromocionesAplicadas - 1 >= result[0]:
+            messagebox.showerror("Chin", "Ya no hay del producto indicado en el inventario")
 
     def __subtract(self):
         self.cantidadLabel.config(text=str(int(self.cantidadLabel.cget("text")) - 1)) if (
