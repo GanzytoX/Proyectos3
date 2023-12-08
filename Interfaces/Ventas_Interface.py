@@ -174,7 +174,7 @@ class siFrame(Frame):
         script = "SELECT cantidad FROM inventario WHERE id_producto = %s"
         cursor.execute(script, [self.__id_product])
         result = cursor.fetchone()
-        print(f"Hay {result[0]} de {self.nombreProducto}")
+        #print(f"Hay {result[0]} de {self.nombreProducto}")
         if not int(self.cantidadLabel.cget("text")) + self.countPromocionesAplicadas - 1 >= result[0]:
             self.cantidadLabel.config(text=(str(int(self.cantidadLabel.cget("text")) + self.cantidad))) if int(self.cantidadLabel.cget("text")) < 25 else 25
             self.main.add_venta_frame(nombre=self.nombreProducto, cantidad=self.cantidadLabel.cget("text"),

@@ -179,6 +179,7 @@ class CPr_Interface(twoSideWindow):
 
     # Pone en la interfaz el producto activo
     def __showProduct(self, producto: Producto):
+        self.__conection.reconnect()
         self.__CantidadEntry.delete(0,END)
         self.__agregarProducto.grid_forget()
         self.__displayProductoMenu()
@@ -227,21 +228,19 @@ class CPr_Interface(twoSideWindow):
             self.__productManager.Create(self.__crearObjetoProducto())
             cursor = self.__conection.cursor()
             script = "INSERT INTO inventario(id_producto, nombre_producto, unidad, cantidad) VALUES (%s, %s, %s, %s)"
-            if self.__activeProduct != None:
-                paramss = [self.__activeProduct.id, self.__entryNombre.get(), "--", int(self.__CantidadEntry.get())]
-            else:
-                self.__conection.reconnect()
-                script2 = "SELECT MAX(id_producto) FROM producto"
-                cursor = self.__conection.cursor()
-                cursor.execute(script2)
-                result = cursor.fetchone()
-                paramss = [result[0], self.uwu, "--", int(self.__CantidadEntry.get())]
+            self.__conection.reconnect()
+            script2 = "SELECT MAX(id_producto) FROM producto"
+            cursor.execute(script2)
+            result = cursor.fetchone()
+            paramss = [result[0], self.uwu, "--", int(self.__CantidadEntry.get())]
+            print(paramss)
             cursor.execute(script, paramss)
             self.__conection.commit()
             self.__CantidadEntry.delete(0, END)
 
-        except:
-            messagebox.showerror("Ocurrió un error al editar el producto, cheque los datos ingresados e intente de nuevo")
+        except Exception as e:
+            messagebox.showerror("Error", "Ocurrió un error al crear el producto, cheque los datos ingresados e intente de nuevo")
+            print(e)
         else:
             self.__update_productos_simplified()
             self.__displayProductoMenu()
