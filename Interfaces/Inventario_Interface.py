@@ -96,7 +96,7 @@ class InventarioApp:
 
     def obtener_datos_de_bd(self):
         cursor = self.connection.cursor()
-        cursor.execute("SELECT id_producto, nombre_producto, unidad, cantidad FROM inventario")
+        cursor.execute("SELECT inventario.id_producto, inventario.nombre_producto, inventario.unidad, inventario.cantidad FROM inventario INNER JOIN producto on producto.id_producto = inventario.id_producto WHERE producto.activo = 'V'")
 
         # Limpiar datos actuales en la tabla antes de actualizar
         for item in self.tree.get_children():
