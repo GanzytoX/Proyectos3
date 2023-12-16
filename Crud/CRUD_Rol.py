@@ -46,8 +46,6 @@ if __name__ != "__main__":
                 self._cursor.execute(script)
                 results = self._cursor.fetchone()
                 return Rol(results[0], results[1])
-            else:
-                raise ValueError("Can only take either an id or a condition, not both")
 
         def Delete(self, id: int):
             if isinstance(id, int):

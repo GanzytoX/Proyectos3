@@ -161,6 +161,7 @@ class siFrame(Frame):
         self.precio = Label(self, text=f"${str(precio)} MXN")
         self.precio.pack()
         self.countPromocionesAplicadas = 2
+
     def __add(self):
         self.cantidad = 1
         connection = mysql.connector.connect(

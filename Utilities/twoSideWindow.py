@@ -60,7 +60,7 @@ class twoSideWindow(Tk):
         self.__set_agregar_elemento_button(Button(self.get_frame_left()))
         self.get_agregar_elemento_button().pack(pady=10)
 
-    # Encapsulaciones
+    # Encapsulamientos
     def get_frame_left(self) -> Frame:
         return self.__frame_left
 

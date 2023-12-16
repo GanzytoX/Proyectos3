@@ -239,7 +239,8 @@ class CPr_Interface(twoSideWindow):
             self.__CantidadEntry.delete(0, END)
 
         except Exception as e:
-            messagebox.showerror("Error", "Ocurrió un error al crear el producto, cheque los datos ingresados e intente de nuevo")
+            messagebox.showerror("Error", "Ocurrió un error al crear el producto, cheque los datos "
+                                          "ingresados e intente de nuevo")
             print(e)
         else:
             self.__update_productos_simplified()

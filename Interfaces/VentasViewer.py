@@ -34,7 +34,8 @@ class VentasViewer(Tk):
 
         # Tabla
         self.__tablaVentas = Treeview(frameTable, columns=("id", "FechaVenta", "TotalCompra", "TipoPago", "Empleado_Nombre",
-                                              "Empleado_Apellido_P", "Empleado_Apellido_M", "TipoVenta"), show="headings", height=self.__cantidad_elementos)
+                                              "Empleado_Apellido_P", "Empleado_Apellido_M", "TipoVenta"), show="headings",
+                                      height=self.__cantidad_elementos)
 
         self.__tablaVentas.heading("id", text="Id_venta")
         self.__tablaVentas.heading("FechaVenta", text="Fecha de venta")
