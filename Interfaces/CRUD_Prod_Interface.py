@@ -226,17 +226,7 @@ class CPr_Interface(twoSideWindow):
         self.uwu = self.__entryNombre.get()
         try:
             self.__productManager.Create(self.__crearObjetoProducto())
-            cursor = self.__conection.cursor()
-            script = "INSERT INTO inventario(id_producto, nombre_producto, unidad, cantidad) VALUES (%s, %s, %s, %s)"
-            self.__conection.reconnect()
-            script2 = "SELECT MAX(id_producto) FROM producto"
-            cursor.execute(script2)
-            result = cursor.fetchone()
-            paramss = [result[0], self.uwu, "--", int(self.__CantidadEntry.get())]
-            print(paramss)
-            cursor.execute(script, paramss)
-            self.__conection.commit()
-            self.__CantidadEntry.delete(0, END)
+
 
         except Exception as e:
             messagebox.showerror("Error", "Ocurrió un error al crear el producto, cheque los datos "
@@ -245,6 +235,24 @@ class CPr_Interface(twoSideWindow):
         else:
             self.__update_productos_simplified()
             self.__displayProductoMenu()
+            cursor = self.__conection.cursor()
+            script2 = "SELECT MAX(id_producto) FROM producto"
+            cursor.execute(script2)
+            result = cursor.fetchone()
+            script = "INSERT INTO inventario(id_producto, nombre_producto, unidad, cantidad) VALUES (%s, %s, %s, %s)"
+            self.__conection.reconnect()
+            
+            try:
+                paramss = [result[0], self.uwu, "--", int(self.__CantidadEntry.get())]
+                cursor.execute(script, paramss)
+                self.__conection.commit()
+            except Exception:
+                paramss = [result[0], self.uwu, "--", 0]
+                cursor.execute(script, paramss)
+                self.__conection.commit()
+            finally:
+                self.__CantidadEntry.delete(0, END)
+
         finally:
             barraCarga.destroy()
 
