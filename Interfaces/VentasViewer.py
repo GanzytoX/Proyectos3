@@ -75,9 +75,9 @@ class VentasViewer(Tk):
         frame_paginacion.pack()
 
         # Botones de la paginación
-        self.__buton_atras = Button(frame_paginacion, text="No", background="#d3eaf2", state="disabled",
+        self.__buton_atras = Button(frame_paginacion, text="Página anterior", background="#d3eaf2", state="disabled",
                                     command=self.__previous)
-        self.__buton_adelante = Button(frame_paginacion, text="Si", background="#d3eaf2", command=self.__next)
+        self.__buton_adelante = Button(frame_paginacion, text="Página siguiente", background="#d3eaf2", command=self.__next)
 
         self.__buton_atras.pack(side="left", padx=50)
         self.__buton_adelante.pack(side="right", padx=50)
